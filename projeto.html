@@ -1,0 +1,1894 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alfarrábio — Projeto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #1c2029;
+    --ink-soft: #3a3f4d;
+    --paper: #e9e2d1;
+    --card: #f4efe3;
+    --line: #cabf9f;
+    --wine: #7b3b3a;
+    --wine-deep: #5e2c2b;
+    --gold: #a9822e;
+    --sage: #5b6b4f;
+    --slate: #57626b;
+    --danger: #a13d3d;
+    --sidebar-w: 216px;
+    --sidebar-w-collapsed: 60px;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; margin:0; }
+  body{
+    font-family:'Inter', system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+  }
+  h1,h2,h3,.display{ font-family:'Fraunces', serif; font-weight:500; letter-spacing:-0.01em; }
+  button{ font-family:'Inter', sans-serif; cursor:pointer; border:none; background:none; }
+  :focus-visible{ outline: 2px solid var(--wine); outline-offset: 2px; }
+
+  /* ============ App shell ============ */
+
+  .app{
+    display:grid;
+    grid-template-columns: var(--sidebar-w) 1fr;
+    height:100vh;
+    transition: grid-template-columns .18s ease;
+  }
+  .app.collapsed{ grid-template-columns: var(--sidebar-w-collapsed) 1fr; }
+
+  /* ============ Sidebar ============ */
+
+  .sidebar{
+    background: #211d1a;
+    background: linear-gradient(180deg, #22201d, #1c1a18);
+    color: #e9e2d1;
+    display:flex;
+    flex-direction:column;
+    border-right: 1px solid #14120f;
+  }
+
+  .sidebar-header{
+    padding: 20px 18px 16px;
+    border-bottom: 1px solid rgba(233,226,209,.1);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:0;
+  }
+  .sidebar-header .back{
+    color:#a89b7c;
+    display:flex; align-items:center; justify-content:center;
+    width:26px; height:26px;
+    border-radius:6px;
+    flex-shrink:0;
+  }
+  .sidebar-header .back:hover{ background: rgba(233,226,209,.08); color:#e9e2d1; }
+  .proj-name{
+    font-family:'Fraunces', serif;
+    font-size: 1rem;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .app.collapsed .proj-name, .app.collapsed .sidebar-header{ display:none; }
+
+  .nav{
+    flex:1;
+    padding: 14px 10px;
+    display:flex;
+    flex-direction:column;
+    gap: 3px;
+    overflow-y:auto;
+  }
+
+  .nav-item{
+    display:flex;
+    align-items:center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 7px;
+    color: #c9bfa0;
+    font-size: .88rem;
+    white-space:nowrap;
+    text-align:left;
+    width:100%;
+    transition: background .12s ease, color .12s ease;
+  }
+  .nav-item svg{ flex-shrink:0; }
+  .nav-item:hover{ background: rgba(233,226,209,.07); color:#e9e2d1; }
+  .nav-item.active{ background: var(--wine); color:#f4efe3; }
+  .app.collapsed .nav-item span{ display:none; }
+  .app.collapsed .nav-item{ justify-content:center; padding:10px 0; }
+
+  .sidebar-footer{
+    padding: 10px;
+    border-top: 1px solid rgba(233,226,209,.1);
+  }
+  .collapse-btn{
+    display:flex; align-items:center; gap:10px;
+    width:100%; padding: 9px 12px;
+    border-radius:7px;
+    color:#a89b7c;
+    font-size:.82rem;
+  }
+  .collapse-btn:hover{ background: rgba(233,226,209,.07); color:#e9e2d1; }
+  .app.collapsed .collapse-btn span{ display:none; }
+  .app.collapsed .collapse-btn{ justify-content:center; }
+  .collapse-btn svg{ transition: transform .18s ease; flex-shrink:0; }
+  .app.collapsed .collapse-btn svg{ transform: rotate(180deg); }
+
+  /* ============ Main area ============ */
+
+  .main{ display:flex; flex-direction:column; min-width:0; height:100vh; }
+
+  .view{ flex:1; min-height:0; display:none; }
+  .view.active{ display:flex; flex-direction:column; }
+
+  /* ---- placeholder views ---- */
+  .placeholder{
+    flex:1;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; gap:10px; padding: 40px;
+    color: var(--slate);
+  }
+  .placeholder .glyph{
+    width:52px; height:52px; border-radius:12px;
+    background: var(--card); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    color: var(--wine);
+    margin-bottom: 6px;
+  }
+  .placeholder h2{ color: var(--ink); font-size:1.3rem; margin:0; }
+  .placeholder p{ margin:0; font-size:.9rem; max-width: 360px; }
+  .placeholder .tag{
+    margin-top:14px;
+    font-size:.72rem; font-weight:600; letter-spacing:.02em;
+    color: var(--gold); background:#f4efe3; border:1px solid var(--line);
+    padding:5px 12px; border-radius:999px;
+  }
+
+  /* ============ Livro view ============ */
+
+  .book-toolbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--line);
+    background: var(--card);
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .fmt-group{ display:flex; align-items:center; gap:2px; }
+  .fmt-sep{ width:1px; height:22px; background: var(--line); margin: 0 8px; }
+  .fmt-btn{
+    width:30px; height:30px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:6px; color: var(--ink-soft);
+  }
+  .fmt-btn:hover{ background: var(--paper); }
+  .fmt-btn.active{ background: var(--wine); color:#f4efe3; }
+  .fmt-select{
+    font-size:.82rem; padding:6px 26px 6px 10px; border-radius:6px;
+    border:1px solid var(--line); background: var(--card) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7"><path d="M1 1l4 4 4-4" stroke="%2357626b" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 8px center;
+    appearance:none; -webkit-appearance:none; cursor:pointer; color: var(--ink);
+  }
+
+  .view-toggle{
+    display:flex; background: var(--paper); border:1px solid var(--line); border-radius:7px; padding:2px;
+  }
+  .view-toggle button{
+    padding: 6px 14px; font-size:.8rem; font-weight:600; border-radius:5px; color: var(--slate);
+  }
+  .view-toggle button.active{ background: var(--card); color: var(--wine); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+
+  .book-body{ flex:1; display:flex; min-height:0; }
+
+  /* ---- chapter tree panel ---- */
+  .tree-panel{
+    width: 250px;
+    flex-shrink:0;
+    border-right: 1px solid var(--line);
+    background: #f0ead9;
+    display:flex; flex-direction:column;
+    min-height:0;
+  }
+  .tree-head{
+    padding: 14px 16px 10px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .tree-head h3{ font-size:.78rem; text-transform: uppercase; letter-spacing:.06em; color: var(--slate); font-family:'Inter'; font-weight:600; margin:0; }
+  .tree-add{
+    width:24px; height:24px; border-radius:6px; color: var(--wine);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .tree-add:hover{ background: var(--card); }
+
+  .tree{ flex:1; overflow-y:auto; padding: 4px 8px 16px; }
+
+  .chapter-block{ margin-bottom: 4px; }
+  .chapter-row, .scene-row{
+    display:flex; align-items:center; gap:6px;
+    padding: 7px 8px;
+    border-radius: 6px;
+    cursor:pointer;
+    font-size: .86rem;
+    color: var(--ink-soft);
+    position:relative;
+  }
+  .chapter-row{ font-weight:600; color: var(--ink); }
+  .chapter-row:hover, .scene-row:hover{ background: rgba(28,32,41,.05); }
+  .scene-row.active{ background: var(--wine); color:#f4efe3; }
+  .scene-row.active:hover{ background: var(--wine); }
+
+  .chevron{ flex-shrink:0; transition: transform .15s ease; color: var(--slate); }
+  .chapter-block.collapsed .chevron{ transform: rotate(-90deg); }
+  .chapter-block.collapsed .scenes{ display:none; }
+
+  .chapter-title, .scene-title{
+    flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    background:none; border:none; font-family:inherit; font-size:inherit; color:inherit;
+    padding: 1px 2px;
+  }
+  .chapter-title:focus, .scene-title:focus{ outline: 1.5px solid var(--wine); border-radius:3px; background: var(--card); }
+
+  .row-actions{ display:flex; gap:1px; flex-shrink:0; opacity:.65; transition: opacity .15s ease; }
+  .chapter-row:hover .row-actions, .scene-row:hover .row-actions,
+  .chapter-row:focus-within .row-actions, .scene-row:focus-within .row-actions{ opacity:1; }
+  .row-actions button{
+    width:20px; height:20px; border-radius:4px;
+    display:flex; align-items:center; justify-content:center;
+    color: inherit; opacity:.75;
+  }
+  .row-actions button:hover{ opacity:1; background: rgba(0,0,0,.08); }
+  .scene-row.active .row-actions button:hover{ background: rgba(255,255,255,.18); }
+
+  .scenes{ margin-left: 20px; }
+
+  .empty-tree{ padding: 20px 12px; text-align:center; color: var(--slate); font-size:.82rem; }
+  .empty-tree button{ color: var(--wine); font-weight:600; text-decoration: underline; text-underline-offset:2px; }
+
+  /* ---- editor area ---- */
+  .editor-wrap{ flex:1; min-width:0; overflow-y:auto; background: #d8cfb8; padding: 40px 24px; }
+
+  .editor-empty{
+    height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    color: var(--slate); gap:8px; text-align:center;
+  }
+  .editor-empty p{ margin:0; font-size:.9rem; }
+
+  /* editor mode: continuous page */
+  .page{
+    max-width: 680px;
+    margin: 0 auto 30px;
+    background: var(--card);
+    box-shadow: 0 18px 40px -20px rgba(28,32,41,.4);
+    border-radius: 3px;
+    padding: 64px 68px;
+    min-height: 800px;
+  }
+
+  .scene-heading{
+    font-family:'Fraunces', serif;
+    font-size: 1.5rem;
+    margin: 0 0 22px;
+    color: var(--ink);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 14px;
+  }
+
+  .editable{
+    font-family:'Source Serif 4', serif;
+    font-size: 1.08rem;
+    line-height: 1.75;
+    color: var(--ink);
+    outline:none;
+    min-height: 500px;
+  }
+  .editable p{ margin: 0 0 1em; }
+  .editable h1{ font-family:'Fraunces',serif; font-size:1.5em; margin:1em 0 .4em; }
+  .editable h2{ font-family:'Fraunces',serif; font-size:1.25em; margin:1em 0 .4em; }
+  .editable blockquote{
+    margin: 1em 0; padding: 4px 0 4px 18px; border-left: 3px solid var(--gold);
+    color: var(--ink-soft); font-style: italic;
+  }
+  .editable ul, .editable ol{ margin: 0 0 1em; padding-left: 1.4em; }
+
+  /* livro (spread) mode */
+  .spread-outer{ display:flex; justify-content:center; align-items:flex-start; gap: 0; }
+  .spread{
+    display:flex;
+    background: var(--card);
+    box-shadow: 0 22px 46px -20px rgba(28,32,41,.5);
+    border-radius: 3px;
+    overflow:hidden;
+  }
+  .spread-page{
+    width: 380px;
+    min-height: 560px;
+    padding: 52px 42px;
+    position:relative;
+  }
+  .spread-page.left{ border-right: 1px solid var(--line); }
+  .spread .editable{ font-size: 1rem; min-height:auto; }
+  .page-num{
+    position:absolute; bottom:18px; font-size:.72rem; color: var(--slate);
+  }
+  .spread-page.left .page-num{ right: 42px; }
+  .spread-page.right .page-num{ left: 42px; }
+
+  .spread-controls{
+    display:flex; align-items:center; justify-content:center; gap: 14px;
+    margin-top: 18px;
+  }
+  .spread-controls button{
+    width:32px; height:32px; border-radius:50%;
+    background: var(--card); border:1px solid var(--line); color: var(--ink);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .spread-controls button:hover{ background: var(--wine); color:#f4efe3; border-color: var(--wine); }
+  .spread-controls button:disabled{ opacity:.35; cursor:default; }
+  .spread-controls span{ font-size:.8rem; color: var(--slate); }
+
+  .status-bar{
+    padding: 8px 20px;
+    border-top: 1px solid var(--line);
+    background: var(--card);
+    display:flex; justify-content:space-between; align-items:center;
+    font-size: .74rem; color: var(--slate);
+  }
+
+  @media (max-width: 900px){
+    .tree-panel{ width: 200px; }
+    .page{ padding: 40px 26px; }
+    .spread{ flex-direction:column; }
+    .spread-page{ width: 100%; }
+    .spread-page.left{ border-right:none; border-bottom:1px solid var(--line); }
+  }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+
+  /* ============ Personagens ============ */
+
+  #view-personagens{ overflow-y:auto; }
+
+  .char-toolbar{
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding: 22px 28px 10px; flex-wrap:wrap;
+  }
+  .char-search{ flex:1 1 280px; max-width:380px; position:relative; }
+  .char-search svg{ position:absolute; left:14px; top:50%; transform:translateY(-50%); opacity:.55; }
+  #char-search{
+    width:100%; padding:10px 14px 10px 40px; border-radius:8px; border:1px solid var(--line);
+    background: var(--card); outline:none; font-family:'Inter'; font-size:.9rem; color:var(--ink);
+  }
+  #char-search:focus{ border-color: var(--wine); box-shadow:0 0 0 3px rgba(123,59,58,.12); }
+
+  .btn{ display:inline-flex; align-items:center; gap:8px; padding:10px 18px; border-radius:8px; font-size:.88rem; font-weight:600; }
+  .btn-primary{ background: var(--wine); color:#f4efe3; }
+  .btn-primary:hover{ background: var(--wine-deep); }
+  .btn-ghost{ background: transparent; color: var(--ink); border:1px solid var(--line); }
+  .btn-ghost:hover{ background: var(--card); }
+
+  .char-grid-wrap{ padding: 14px 28px 60px; }
+  .char-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+    gap: 22px;
+  }
+
+  .char-card{
+    position:relative;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding-top: 10px;
+    cursor:pointer;
+    transition: transform .15s ease, box-shadow .15s ease;
+    overflow:hidden;
+  }
+  .char-card::before{
+    content:"";
+    position:absolute; top:0; left:16px; width:34px; height:8px;
+    background: var(--gold); border-radius:0 0 3px 3px; opacity:.8;
+  }
+  .char-card:hover{ transform: translateY(-3px); box-shadow: 0 16px 26px -16px rgba(28,32,41,.4); }
+
+  .char-photo{
+    width: 76px; height:76px; border-radius:50%;
+    margin: 10px auto 12px;
+    background-size:cover; background-position: top center; background-color:#e3dac5;
+    border: 2px solid var(--card); box-shadow: 0 0 0 2px var(--line);
+    display:flex; align-items:center; justify-content:center;
+    color: var(--slate); font-size: 1.4rem; font-family:'Fraunces', serif;
+  }
+  .char-info{ padding: 0 14px 14px; text-align:center; }
+  .char-name{ font-family:'Fraunces', serif; font-weight:600; font-size:.98rem; color:var(--ink); margin:0 0 2px; }
+  .char-sub{ font-size:.74rem; color: var(--slate); margin:0; min-height: 1em; }
+
+  .char-card-actions{
+    position:absolute; top:8px; right:8px; display:flex; gap:2px; opacity:.7; transition: opacity .15s ease;
+  }
+  .char-card:hover .char-card-actions, .char-card:focus-within .char-card-actions{ opacity:1; }
+  .char-card-actions .icon-btn{ background: rgba(244,239,227,.9); }
+
+  .char-empty{
+    grid-column: 1/-1; text-align:center; padding:60px 20px; color: var(--slate);
+  }
+  .char-empty h2{ color:var(--ink); font-size:1.3rem; margin:0 0 8px; }
+
+  .icon-btn{
+    width:32px; height:32px; display:flex; align-items:center; justify-content:center;
+    border-radius:7px; background:transparent; color: var(--ink-soft); border:1px solid transparent;
+  }
+  .icon-btn:hover{ background: var(--paper); border-color: var(--line); color: var(--ink); }
+  .icon-btn.danger:hover{ color: var(--danger); border-color:#e2c9c9; background:#f7ecec; }
+
+  /* ---- drawer (ficha) ---- */
+  .drawer-overlay{
+    position:fixed; inset:0; background: rgba(28,32,41,.35);
+    display:flex; justify-content:flex-end;
+    opacity:0; pointer-events:none; transition: opacity .18s ease;
+    z-index: 60;
+  }
+  .drawer-overlay.open{ opacity:1; pointer-events:auto; }
+  .drawer{
+    width: 420px; max-width: 92vw; height:100%;
+    background: var(--paper);
+    box-shadow: -20px 0 40px -20px rgba(0,0,0,.4);
+    display:flex; flex-direction:column;
+    transform: translateX(24px); transition: transform .2s ease;
+    overflow-y:auto;
+  }
+  .drawer-overlay.open .drawer{ transform: translateX(0); }
+  .drawer-head{ display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:1px solid var(--line); position:sticky; top:0; background:var(--paper); z-index:2; }
+  .drawer-head-actions{ display:flex; gap:8px; }
+  .drawer-body{ padding: 4px 26px 40px; }
+
+  .drawer-photos{ display:flex; gap:16px; margin: 6px 0 20px; align-items:flex-end; }
+  .drawer-photo-round{ width:96px; height:96px; border-radius:50%; background-size:cover; background-position:top center; background-color:#e3dac5; border:1px solid var(--line); flex-shrink:0; }
+  .drawer-photo-body{ width:110px; height:150px; border-radius:6px; background-size:cover; background-position:top center; background-color:#e3dac5; border:1px solid var(--line); flex-shrink:0; }
+
+  .drawer-name{ font-size:1.4rem; margin:0 0 2px; }
+  .drawer-sub{ font-size:.85rem; color: var(--slate); margin: 0 0 16px; }
+
+  .drawer-section{ margin-bottom: 20px; }
+  .drawer-section h4{ font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color: var(--gold); font-family:'Inter'; font-weight:700; margin:0 0 8px; }
+  .drawer-section p{ font-size:.88rem; line-height:1.55; color: var(--ink-soft); margin:0; white-space:pre-wrap; }
+
+  .drawer-field-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px 16px; }
+  .drawer-field-grid div span{ display:block; }
+  .drawer-field-label{ font-size:.68rem; color:var(--slate); text-transform:uppercase; letter-spacing:.03em; }
+  .drawer-field-value{ font-size:.86rem; color:var(--ink); margin-top:2px; }
+
+  .relation-chip{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    font-size:.85rem; padding: 8px 12px; border-radius:7px; background: var(--card); border:1px solid var(--line);
+    margin-bottom: 6px;
+  }
+  .relation-chip button{ color: var(--danger); opacity:.7; }
+  .relation-chip button:hover{ opacity:1; }
+  .relation-chip .rel-type{ color: var(--slate); font-size:.76rem; }
+
+  /* ---- tabs in modal ---- */
+  .char-tabs{ display:flex; gap:2px; padding: 0 26px; border-bottom:1px solid var(--line); background: var(--card); }
+  .char-tab{ padding: 12px 14px; font-size:.84rem; font-weight:600; color: var(--slate); border-bottom:2px solid transparent; margin-bottom:-1px; }
+  .char-tab:hover{ color: var(--ink); }
+  .char-tab.active{ color: var(--wine); border-bottom-color: var(--wine); }
+  .char-tab-panel{ display:none; }
+  .char-tab-panel.active{ display:block; }
+
+  .cover-preview{
+    background: #efe8d8 center/cover no-repeat;
+    border: 1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    color: var(--slate); font-size:.62rem; text-align:center; flex-shrink:0;
+  }
+
+  .photo-uploads{ display:flex; gap:24px; flex-wrap:wrap; }
+  .photo-upload-item{ display:flex; align-items:center; gap:12px; }
+
+  .relation-list{ margin-bottom:14px; }
+  .relation-add-row{ display:flex; gap:8px; flex-wrap:wrap; }
+  .relation-add-row select{
+    padding:9px 30px 9px 12px; border-radius:7px; border:1px solid var(--line); background: var(--card) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7"><path d="M1 1l4 4 4-4" stroke="%2357626b" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 10px center;
+    appearance:none; -webkit-appearance:none; cursor:pointer; font-size:.85rem; color: var(--ink);
+  }
+
+  /* ============ Modal / form base (compartilhado) ============ */
+
+  .overlay{
+    position:fixed; inset:0; background: rgba(28,32,41,.5); backdrop-filter: blur(2px);
+    display:flex; align-items:center; justify-content:center; padding:20px; z-index:70;
+    opacity:0; pointer-events:none; transition: opacity .18s ease;
+  }
+  .overlay.open{ opacity:1; pointer-events:auto; }
+
+  .modal{
+    background: var(--paper); width:100%; max-width:640px; max-height:88vh; overflow-y:auto;
+    border-radius:10px; box-shadow: 0 30px 60px -20px rgba(0,0,0,.5);
+    transform: translateY(14px) scale(.98); transition: transform .18s ease; border:1px solid var(--line);
+  }
+  .overlay.open .modal{ transform: translateY(0) scale(1); }
+
+  .modal-head{ display:flex; align-items:center; justify-content:space-between; padding:22px 26px; border-bottom:1px solid var(--line); }
+  .modal-head h2{ font-size:1.3rem; margin:0; }
+  .modal-body{ padding:22px 26px; }
+  .modal-foot{ display:flex; justify-content:flex-end; gap:10px; padding:18px 26px 24px; }
+
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px 18px; }
+  .form-field{ display:flex; flex-direction:column; gap:6px; }
+  .form-field.full{ grid-column: 1/-1; }
+  label{ font-size:.78rem; font-weight:600; color: var(--ink-soft); }
+
+  input[type="text"], textarea{
+    font-family:'Inter', sans-serif; font-size:.9rem; color: var(--ink);
+    padding:10px 12px; border-radius:7px; border:1px solid var(--line);
+    background: var(--card); outline:none; width:100%; resize:vertical;
+  }
+  input[type="text"]:focus, textarea:focus{ border-color: var(--wine); box-shadow: 0 0 0 3px rgba(123,59,58,.12); }
+
+  .hint{ font-size:.72rem; color: var(--slate); margin-top:6px; }
+
+  @media (max-width: 560px){ .form-grid{ grid-template-columns:1fr; } }
+
+  /* ============ Genealogia ============ */
+
+  /* Observação: a visibilidade das abas é controlada só por .view / .view.active
+     (regras por ID que definem "display" aqui quebrariam a troca de abas,
+     pois um seletor de ID tem prioridade maior que .view.active) */
+
+  .gen-toolbar{
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    padding: 16px 24px; border-bottom:1px solid var(--line); background: var(--card);
+  }
+  .gen-toolbar-left{ display:flex; flex-direction:column; gap:2px; }
+  .gen-title{ font-family:'Fraunces', serif; font-size:1.05rem; color:var(--ink); }
+  .gen-hint-text{ font-size:.74rem; color:var(--slate); }
+  .gen-toolbar-right{ display:flex; align-items:center; gap:6px; }
+  .gen-zoom-label{ font-size:.78rem; color: var(--slate); width:38px; text-align:center; }
+
+  .gen-viewport{
+    flex:1; position:relative; overflow:hidden;
+    background:
+      radial-gradient(circle, rgba(28,32,41,.08) 1px, transparent 1px) 0 0/22px 22px,
+      #d8cfb8;
+    cursor:grab;
+  }
+  .gen-viewport.grabbing{ cursor:grabbing; }
+
+  .gen-canvas{
+    position:absolute; top:50%; left:50%;
+    transform-origin: 0 0;
+    will-change: transform;
+  }
+
+  .gen-svg{ position:absolute; top:0; left:0; overflow:visible; pointer-events:none; }
+
+  .gen-edge-label{
+    font-size: 10px; font-family:'Inter', sans-serif; fill: var(--ink-soft);
+  }
+  .gen-edge-label-bg{ fill: #d8cfb8; }
+
+  #gen-nodes{ position:absolute; top:0; left:0; }
+
+  .gen-node{
+    position:absolute;
+    width: 108px;
+    transform: translate(-50%, -50%);
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    cursor:pointer;
+    user-select:none;
+  }
+  .gen-node-photo{
+    width:58px; height:58px; border-radius:50%;
+    background-size:cover; background-position: top center; background-color:#efe8d8;
+    border: 2px solid var(--card); box-shadow: 0 0 0 2px var(--line), 0 6px 14px -6px rgba(28,32,41,.5);
+    display:flex; align-items:center; justify-content:center;
+    color: var(--slate); font-family:'Fraunces', serif; font-size:1.1rem;
+    transition: box-shadow .15s ease;
+  }
+  .gen-node:hover .gen-node-photo{ box-shadow: 0 0 0 2px var(--wine), 0 8px 18px -6px rgba(28,32,41,.55); }
+  .gen-node-name{
+    font-size:.76rem; font-weight:600; color: var(--ink); text-align:center;
+    background: rgba(244,239,227,.92); padding: 2px 8px; border-radius:5px;
+    max-width: 108px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .gen-node-toggle{
+    position:absolute; bottom: 30px; right: 4px;
+    width:18px; height:18px; border-radius:50%;
+    background: var(--wine); color:#f4efe3;
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px; font-weight:700; box-shadow: 0 2px 6px rgba(0,0,0,.3);
+  }
+  .gen-node-toggle:hover{ background: var(--wine-deep); }
+
+  .gen-empty{
+    position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; gap:10px; padding:40px; color: var(--slate); background: var(--paper);
+  }
+  .gen-empty.show{ display:flex; }
+  .gen-empty .glyph{ width:52px; height:52px; border-radius:12px; background: var(--card); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; color: var(--wine); }
+  .gen-empty h2{ color: var(--ink); font-size:1.25rem; margin:0; }
+  .gen-empty p{ margin:0; font-size:.88rem; max-width:340px; }
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <a class="back" href="index.html" title="Voltar aos projetos">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <div class="proj-name" id="proj-name-label">Meu projeto</div>
+    </div>
+
+    <nav class="nav" id="nav">
+      <button class="nav-item active" data-view="livro">
+        <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M2.5 3.2c1.6-.7 3.6-.7 5.2.4v9.8c-1.6-1.1-3.6-1.1-5.2-.4V3.2zM14.5 3.2c-1.6-.7-3.6-.7-5.2.4v9.8c1.6-1.1 3.6-1.1 5.2-.4V3.2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+        <span>Livro</span>
+      </button>
+      <button class="nav-item" data-view="personagens">
+        <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><circle cx="8.5" cy="5.5" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M2.8 14.2c1-2.6 3.2-4 5.7-4s4.7 1.4 5.7 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <span>Personagens</span>
+      </button>
+      <button class="nav-item" data-view="genealogia">
+        <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><circle cx="8.5" cy="3.2" r="1.7" stroke="currentColor" stroke-width="1.2"/><circle cx="4" cy="13.5" r="1.7" stroke="currentColor" stroke-width="1.2"/><circle cx="13" cy="13.5" r="1.7" stroke="currentColor" stroke-width="1.2"/><path d="M8.5 4.9V8M8.5 8H4v3.8M8.5 8h4.5v3.8" stroke="currentColor" stroke-width="1.2"/></svg>
+        <span>Genealogia</span>
+      </button>
+      <button class="nav-item" data-view="mapas">
+        <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M6 3L2.5 4.4v9.4L6 12.4l5 1.6 3.5-1.4V3.2L11 4.8 6 3z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M6 3v9.4M11 4.8v9.4" stroke="currentColor" stroke-width="1.2"/></svg>
+        <span>Mapas</span>
+      </button>
+      <button class="nav-item" data-view="racas">
+        <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M8.5 2.2l5.5 3.2v6.2L8.5 14.8 3 11.6V5.4l5.5-3.2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M8.5 2.2v12.6M3 5.4l5.5 3.2 5.5-3.2" stroke="currentColor" stroke-width="1.1"/></svg>
+        <span>Raças</span>
+      </button>
+      <button class="nav-item" data-view="config">
+        <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><circle cx="8.5" cy="8.5" r="2.4" stroke="currentColor" stroke-width="1.2"/><path d="M8.5 2.5v2M8.5 12v2M2.5 8.5h2M12 8.5h2M4.4 4.4l1.4 1.4M11.2 11.2l1.4 1.4M12.6 4.4l-1.4 1.4M5.8 11.2l-1.4 1.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        <span>Configurações</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="collapse-btn" id="collapse-toggle">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M9.5 2.5L4.5 7.5l5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Colapsar</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+
+    <!-- ---- Livro ---- -->
+    <section class="view active" id="view-livro">
+      <div class="book-toolbar">
+        <div class="fmt-group">
+          <select class="fmt-select" id="block-type">
+            <option value="p">Parágrafo</option>
+            <option value="h1">Título</option>
+            <option value="h2">Subtítulo</option>
+            <option value="blockquote">Citação</option>
+          </select>
+          <div class="fmt-sep"></div>
+          <button class="fmt-btn" data-cmd="bold" title="Negrito"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3.5 2h4a2.3 2.3 0 010 4.6h-4V2zM3.5 6.6H8a2.4 2.4 0 010 4.8H3.5V6.6z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></button>
+          <button class="fmt-btn" data-cmd="italic" title="Itálico"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M6 2h4M4 12h4M8.5 2L5.5 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button>
+          <button class="fmt-btn" data-cmd="underline" title="Sublinhado"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3.5 2v5a3.5 3.5 0 007 0V2M2.5 12h9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button>
+          <button class="fmt-btn" data-cmd="strikeThrough" title="Tachado"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M4.5 7C4 4.5 6 3 8 3.6c1.2.4 1.7 1.2 1.7 1.7M9.5 7c.5 2.2-1.5 3.8-3.5 3.4-1.3-.3-1.8-1-2-1.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></button>
+          <div class="fmt-sep"></div>
+          <button class="fmt-btn" data-cmd="insertUnorderedList" title="Lista"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="2.3" cy="3.5" r="1"/><circle cx="2.3" cy="7" r="1"/><circle cx="2.3" cy="10.5" r="1"/><path d="M5.5 3.5h7M5.5 7h7M5.5 10.5h7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></button>
+          <button class="fmt-btn" data-cmd="insertOrderedList" title="Lista numerada"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><text x="0.5" y="4.6" font-size="3.4" fill="currentColor">1</text><text x="0.5" y="8.1" font-size="3.4" fill="currentColor">2</text><text x="0.5" y="11.6" font-size="3.4" fill="currentColor">3</text><path d="M5.5 3.5h7M5.5 7h7M5.5 10.5h7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></button>
+          <div class="fmt-sep"></div>
+          <button class="fmt-btn" id="undo-btn" title="Desfazer"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 4H10.5A2.5 2.5 0 0113 6.5v0A2.5 2.5 0 0110.5 9H5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M6 1.8L3.5 4 6 6.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button class="fmt-btn" id="redo-btn" title="Refazer"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M10 4H3.5A2.5 2.5 0 001 6.5v0A2.5 2.5 0 003.5 9H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M8 1.8L10.5 4 8 6.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+
+        <div class="view-toggle">
+          <button data-mode="editor" class="active">Editor</button>
+          <button data-mode="livro">Livro</button>
+        </div>
+      </div>
+
+      <div class="book-body">
+        <!-- tree -->
+        <div class="tree-panel">
+          <div class="tree-head">
+            <h3>Estrutura</h3>
+            <button class="tree-add" id="add-chapter" title="Novo capítulo">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+          <div class="tree" id="tree"></div>
+        </div>
+
+        <!-- editor -->
+        <div class="editor-wrap" id="editor-wrap"></div>
+      </div>
+
+      <div class="status-bar">
+        <span id="status-scene">Nenhuma cena selecionada</span>
+        <span id="status-count">0 palavras · 0 caracteres</span>
+      </div>
+    </section>
+
+    <!-- ---- Personagens ---- -->
+    <section class="view" id="view-personagens">
+      <div class="char-toolbar">
+        <div class="search-wrap char-search">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#1c2029" stroke-width="1.4"/><path d="M10.3 10.3L13.5 13.5" stroke="#1c2029" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <input type="search" id="char-search" placeholder="Pesquisar personagem…">
+        </div>
+        <button class="btn btn-primary" id="char-new-btn">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          Novo personagem
+        </button>
+      </div>
+
+      <div class="char-grid-wrap">
+        <div class="char-grid" id="char-grid"></div>
+      </div>
+    </section>
+
+    <!-- ---- Ficha (drawer) de personagem ---- -->
+    <div class="drawer-overlay" id="char-drawer-overlay">
+      <aside class="drawer" id="char-drawer">
+        <div class="drawer-head">
+          <button class="icon-btn" id="char-drawer-close" aria-label="Fechar"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+          <div class="drawer-head-actions">
+            <button class="btn btn-ghost" id="char-drawer-edit">Editar</button>
+            <button class="icon-btn danger" id="char-drawer-delete" title="Excluir"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 4h9M6 4V2.5h3V4M4.5 4l.6 8.5a1 1 0 0 0 1 1h3.8a1 1 0 0 0 1-1L11.5 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+        <div class="drawer-body" id="char-drawer-body"><!-- preenchido via JS --></div>
+      </aside>
+    </div>
+
+    <!-- ---- Modal criar/editar personagem ---- -->
+    <div class="overlay" id="char-form-overlay">
+      <div class="modal" style="max-width:720px;">
+        <div class="modal-head">
+          <h2 id="char-form-title">Novo personagem</h2>
+          <button class="icon-btn" id="char-form-close" aria-label="Fechar"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        </div>
+
+        <div class="char-tabs" id="char-tabs">
+          <button class="char-tab active" data-tab="basico">Básico</button>
+          <button class="char-tab" data-tab="vida">Aparência &amp; vida</button>
+          <button class="char-tab" data-tab="perfil">Perfil</button>
+          <button class="char-tab" data-tab="parentesco">Parentesco</button>
+        </div>
+
+        <div class="modal-body">
+          <form id="char-form">
+
+            <!-- BÁSICO -->
+            <div class="char-tab-panel active" data-panel="basico">
+              <div class="form-grid">
+                <div class="form-field full">
+                  <label>Fotos</label>
+                  <div class="photo-uploads">
+                    <div class="photo-upload-item">
+                      <div class="cover-preview" id="char-perfil-preview" style="width:80px;height:80px;border-radius:50%;">perfil</div>
+                      <div class="upload-buttons">
+                        <button type="button" class="btn btn-ghost" id="char-perfil-btn">Foto de perfil</button>
+                        <input type="file" id="char-perfil-input" accept="image/*" hidden>
+                      </div>
+                    </div>
+                    <div class="photo-upload-item">
+                      <div class="cover-preview" id="char-corpo-preview" style="width:70px;height:100px;">corpo inteiro</div>
+                      <div class="upload-buttons">
+                        <button type="button" class="btn btn-ghost" id="char-corpo-btn">Corpo inteiro</button>
+                        <input type="file" id="char-corpo-input" accept="image/*" hidden>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-field"><label for="char-nome">Nome *</label><input type="text" id="char-nome" required placeholder="Como ele(a) é chamado(a)"></div>
+                <div class="form-field"><label for="char-nome-completo">Nome completo</label><input type="text" id="char-nome-completo"></div>
+
+                <div class="form-field"><label for="char-apelido">Apelido</label><input type="text" id="char-apelido"></div>
+                <div class="form-field"><label for="char-nascimento">Data de nascimento</label><input type="text" id="char-nascimento" placeholder="Ex: 12 de março, ano 340"></div>
+
+                <div class="form-field"><label for="char-genero">Gênero</label><input type="text" id="char-genero"></div>
+                <div class="form-field"><label for="char-raca">Raça</label><input type="text" id="char-raca" placeholder="Ex: Elfo da Floresta"></div>
+
+                <div class="form-field full"><label for="char-descricao">Descrição</label><textarea id="char-descricao" rows="2" placeholder="Uma ou duas frases sobre quem é este personagem"></textarea></div>
+                <div class="form-field full"><label for="char-biografia">Biografia</label><textarea id="char-biografia" rows="4"></textarea></div>
+              </div>
+            </div>
+
+            <!-- APARÊNCIA & VIDA -->
+            <div class="char-tab-panel" data-panel="vida">
+              <div class="form-grid">
+                <div class="form-field full"><label for="char-aparencia">Aparência</label><textarea id="char-aparencia" rows="3"></textarea></div>
+                <div class="form-field"><label for="char-altura">Altura</label><input type="text" id="char-altura" placeholder="Ex: 1,78 m"></div>
+                <div class="form-field"><label for="char-peso">Peso</label><input type="text" id="char-peso" placeholder="Ex: 70 kg"></div>
+                <div class="form-field"><label for="char-profissao">Profissão / ocupação</label><input type="text" id="char-profissao"></div>
+                <div class="form-field"><label for="char-local-nascimento">Local de nascimento</label><input type="text" id="char-local-nascimento"></div>
+                <div class="form-field"><label for="char-local-atual">Local atual</label><input type="text" id="char-local-atual"></div>
+              </div>
+            </div>
+
+            <!-- PERFIL PSICOLÓGICO -->
+            <div class="char-tab-panel" data-panel="perfil">
+              <div class="form-grid">
+                <div class="form-field full"><label for="char-personalidade">Personalidade</label><textarea id="char-personalidade" rows="3"></textarea></div>
+                <div class="form-field"><label for="char-objetivos">Objetivos</label><textarea id="char-objetivos" rows="2"></textarea></div>
+                <div class="form-field"><label for="char-medos">Medos</label><textarea id="char-medos" rows="2"></textarea></div>
+                <div class="form-field"><label for="char-gostos">Gostos</label><textarea id="char-gostos" rows="2"></textarea></div>
+                <div class="form-field"><label for="char-desgostos">Desgostos</label><textarea id="char-desgostos" rows="2"></textarea></div>
+                <div class="form-field full"><label for="char-curiosidades">Curiosidades</label><textarea id="char-curiosidades" rows="2"></textarea></div>
+                <div class="form-field full"><label for="char-observacoes">Observações</label><textarea id="char-observacoes" rows="2"></textarea></div>
+              </div>
+            </div>
+
+            <!-- PARENTESCO -->
+            <div class="char-tab-panel" data-panel="parentesco">
+              <div id="relation-list" class="relation-list"></div>
+              <div class="relation-add-row">
+                <select id="relation-type-select"></select>
+                <select id="relation-char-select"></select>
+                <button type="button" class="btn btn-ghost" id="relation-add-btn">Adicionar parentesco</button>
+              </div>
+              <div class="hint">As relações conectam este personagem a outros já cadastrados no projeto.</div>
+            </div>
+
+          </form>
+        </div>
+
+        <div class="modal-foot">
+          <button class="btn btn-ghost" id="char-form-cancel">Cancelar</button>
+          <button class="btn btn-primary" id="char-form-save">Salvar personagem</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Confirmação genérica (substitui window.confirm) ---- -->
+    <div class="overlay" id="app-confirm-overlay">
+      <div class="modal confirm-box" style="max-width:400px;">
+        <div class="modal-head">
+          <h2 style="font-size:1.15rem;" id="app-confirm-title">Confirmar ação</h2>
+          <button class="icon-btn" id="app-confirm-close" aria-label="Fechar"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        </div>
+        <div class="modal-body">
+          <p id="app-confirm-message" style="color:var(--ink-soft); font-size:.92rem; line-height:1.5; margin:0;"></p>
+        </div>
+        <div class="modal-foot">
+          <button class="btn btn-ghost" id="app-confirm-cancel">Cancelar</button>
+          <button class="btn btn-primary" style="background:var(--danger);" id="app-confirm-ok">Excluir</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Aviso genérico (substitui window.alert) ---- -->
+    <div class="overlay" id="app-notice-overlay">
+      <div class="modal confirm-box" style="max-width:400px;">
+        <div class="modal-head">
+          <h2 style="font-size:1.15rem;" id="app-notice-title">Aviso</h2>
+          <button class="icon-btn" id="app-notice-close" aria-label="Fechar"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        </div>
+        <div class="modal-body">
+          <p id="app-notice-message" style="color:var(--ink-soft); font-size:.92rem; line-height:1.5; margin:0;"></p>
+        </div>
+        <div class="modal-foot">
+          <button class="btn btn-primary" id="app-notice-ok">Entendi</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Genealogia ---- -->
+    <section class="view" id="view-genealogia">
+      <div class="gen-toolbar">
+        <div class="gen-toolbar-left">
+          <span class="gen-title">Árvore genealógica</span>
+          <span class="gen-hint-text">Gerada a partir dos parentescos em Personagens</span>
+        </div>
+        <div class="gen-toolbar-right">
+          <button class="icon-btn" id="gen-zoom-out" title="Diminuir zoom">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.6" stroke="currentColor" stroke-width="1.3"/><path d="M9.6 9.6L13 13M4 6h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </button>
+          <span class="gen-zoom-label" id="gen-zoom-label">100%</span>
+          <button class="icon-btn" id="gen-zoom-in" title="Aumentar zoom">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.6" stroke="currentColor" stroke-width="1.3"/><path d="M9.6 9.6L13 13M6 4v4M4 6h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </button>
+          <button class="btn btn-ghost" id="gen-reset-view">Centralizar</button>
+          <button class="btn btn-primary" id="gen-add-char">Novo personagem</button>
+        </div>
+      </div>
+
+      <div class="gen-viewport" id="gen-viewport">
+        <div class="gen-canvas" id="gen-canvas">
+          <svg id="gen-svg" class="gen-svg"></svg>
+          <div id="gen-nodes"></div>
+        </div>
+
+        <div class="gen-empty" id="gen-empty">
+          <div class="glyph"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="4.5" r="2.3"/><circle cx="5.5" cy="19" r="2.3"/><circle cx="18.5" cy="19" r="2.3"/><path d="M12 6.8v4M12 10.8H5.5v6M12 10.8h6.5v6" stroke="currentColor" stroke-width="1.4"/></svg></div>
+          <h2>Ainda não há relações suficientes</h2>
+          <p>Cadastre personagens e defina parentescos na ficha de cada um para ver a árvore aparecer aqui.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Mapas ---- -->
+    <section class="view" id="view-mapas">
+      <div class="placeholder">
+        <div class="glyph"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M8.5 4L3.5 6v14l5-2 7 2 5-2V4l-5 2-7-2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8.5 4v14M15.5 6v14" stroke="currentColor" stroke-width="1.5"/></svg></div>
+        <h2>Mapas</h2>
+        <p>Construa visualmente o mundo da sua história: reinos, cidades, rotas e lugares importantes.</p>
+        <span class="tag">Próxima etapa</span>
+      </div>
+    </section>
+
+    <!-- ---- Raças ---- -->
+    <section class="view" id="view-racas">
+      <div class="placeholder">
+        <div class="glyph"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2.5l8 4.6v9.8L12 21.5l-8-4.6V7.1l8-4.6z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 2.5v19M4 7.1l8 4.6 8-4.6" stroke="currentColor" stroke-width="1.3"/></svg></div>
+        <h2>Raças e sub-raças</h2>
+        <p>Defina os povos do seu universo, suas características e como se organizam em sub-raças.</p>
+        <span class="tag">Próxima etapa</span>
+      </div>
+    </section>
+
+    <!-- ---- Configurações ---- -->
+    <section class="view" id="view-config">
+      <div class="placeholder">
+        <div class="glyph"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="1.5"/><path d="M12 3v2.6M12 18.4V21M3 12h2.6M18.4 12H21M5.8 5.8l1.8 1.8M16.4 16.4l1.8 1.8M18.2 5.8l-1.8 1.8M7.6 16.4l-1.8 1.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <h2>Configurações do projeto</h2>
+        <p>Renomear o projeto, gerenciar a capa, exportações e preferências de escrita.</p>
+        <span class="tag">Próxima etapa</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="app-storage.js"></script>
+<script>
+(function(){
+
+  // ---------- Confirmação / aviso próprios da interface ----------
+  // (substituem window.confirm / window.alert, que costumam ser bloqueados
+  // silenciosamente dentro de janelas restritas/sandbox de pré-visualização)
+
+  const confirmOverlay = document.getElementById('app-confirm-overlay');
+  const confirmTitleEl = document.getElementById('app-confirm-title');
+  const confirmMsgEl = document.getElementById('app-confirm-message');
+  const confirmOkBtn = document.getElementById('app-confirm-ok');
+  const confirmCancelBtn = document.getElementById('app-confirm-cancel');
+  const confirmCloseBtn = document.getElementById('app-confirm-close');
+
+  function appConfirm(message, onConfirm, opts){
+    opts = opts || {};
+    confirmTitleEl.textContent = opts.title || 'Confirmar ação';
+    confirmMsgEl.textContent = message;
+    confirmOkBtn.textContent = opts.okLabel || 'Excluir';
+    confirmOverlay.classList.add('open');
+
+    function cleanup(){
+      confirmOverlay.classList.remove('open');
+      confirmOkBtn.removeEventListener('click', onOk);
+      confirmCancelBtn.removeEventListener('click', onCancel);
+      confirmCloseBtn.removeEventListener('click', onCancel);
+    }
+    function onOk(){ cleanup(); onConfirm(); }
+    function onCancel(){ cleanup(); }
+
+    confirmOkBtn.addEventListener('click', onOk);
+    confirmCancelBtn.addEventListener('click', onCancel);
+    confirmCloseBtn.addEventListener('click', onCancel);
+  }
+
+  const noticeOverlay = document.getElementById('app-notice-overlay');
+  const noticeTitleEl = document.getElementById('app-notice-title');
+  const noticeMsgEl = document.getElementById('app-notice-message');
+  const noticeOkBtn = document.getElementById('app-notice-ok');
+  const noticeCloseBtn = document.getElementById('app-notice-close');
+
+  function appNotice(message, title){
+    noticeTitleEl.textContent = title || 'Aviso';
+    noticeMsgEl.textContent = message;
+    noticeOverlay.classList.add('open');
+    function cleanup(){
+      noticeOverlay.classList.remove('open');
+      noticeOkBtn.removeEventListener('click', cleanup);
+      noticeCloseBtn.removeEventListener('click', cleanup);
+    }
+    noticeOkBtn.addEventListener('click', cleanup);
+    noticeCloseBtn.addEventListener('click', cleanup);
+  }
+
+  [confirmOverlay, noticeOverlay].forEach(ov => {
+    ov.addEventListener('click', (e) => { if (e.target === ov) ov.classList.remove('open'); });
+  });
+
+  // ---------- Identidade do projeto + dados persistidos ----------
+  const params = new URLSearchParams(location.search);
+  const projName = params.get('nome');
+  if (projName) document.getElementById('proj-name-label').textContent = decodeURIComponent(projName);
+
+  // id vem da tela de Projetos (index.html); sem ele, cai num id fixo local
+  // (funciona sozinho, mas não fica ligado a nenhum card na lista de projetos)
+  const projectId = params.get('id') || 'sem-id';
+  if (!params.get('id')){
+    console.warn('Alfarrábio: projeto aberto sem id — abra pela tela de projetos (index.html) para salvar corretamente.');
+  }
+  const savedProjectData = alfaLoadProjectData(projectId); // { book, characters } ou null
+
+  // ---------- Navegação lateral ----------
+  const app = document.getElementById('app');
+  const navItems = document.querySelectorAll('.nav-item');
+  const views = document.querySelectorAll('.view');
+
+  navItems.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navItems.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const target = btn.dataset.view;
+      views.forEach(v => v.classList.toggle('active', v.id === 'view-' + target));
+    });
+  });
+
+  document.getElementById('collapse-toggle').addEventListener('click', () => {
+    app.classList.toggle('collapsed');
+  });
+
+  // ================= LIVRO =================
+
+  let book = (savedProjectData && savedProjectData.book) ? savedProjectData.book : { chapters: [] };
+
+  // ao restaurar, abre a primeira cena disponível (se houver alguma)
+  let currentSceneId = (book.chapters[0] && book.chapters[0].scenes[0]) ? book.chapters[0].scenes[0].id : null;
+  let viewMode = 'editor'; // 'editor' | 'livro'
+  let spreadIndex = 0; // for livro mode pagination (simplified: splits by scenes list, 2 per spread)
+
+  // Salva o conteúdo do projeto (livro + personagens) no navegador.
+  // "characters" só é declarado mais abaixo, mas como esta função só roda
+  // quando chamada (nunca na hora da definição), a variável já existe em tempo de uso.
+  function persistProject(){
+    alfaSaveProjectData(projectId, { book, characters });
+    alfaTouchProject(projectId);
+  }
+  const persistProjectDebounced = alfaDebounce(persistProject, 500);
+
+  const tree = document.getElementById('tree');
+  const editorWrap = document.getElementById('editor-wrap');
+  const statusScene = document.getElementById('status-scene');
+  const statusCount = document.getElementById('status-count');
+  const blockTypeSelect = document.getElementById('block-type');
+
+  function findScene(id){
+    for (const ch of book.chapters){
+      const s = ch.scenes.find(x => x.id === id);
+      if (s) return { chapter: ch, scene: s };
+    }
+    return null;
+  }
+
+  function flatSceneList(){
+    const out = [];
+    book.chapters.forEach(ch => ch.scenes.forEach(s => out.push({ chapter: ch, scene: s })));
+    return out;
+  }
+
+  // ---------- Render tree ----------
+
+  function renderTree(){
+    tree.innerHTML = "";
+
+    if (book.chapters.length === 0){
+      tree.innerHTML = `<div class="empty-tree">Nenhum capítulo ainda.<br><button id="empty-add-chapter">Criar o primeiro capítulo</button></div>`;
+      document.getElementById('empty-add-chapter').addEventListener('click', addChapter);
+      return;
+    }
+
+    book.chapters.forEach(ch => {
+      const block = document.createElement('div');
+      block.className = 'chapter-block' + (ch.collapsed ? ' collapsed' : '');
+
+      const row = document.createElement('div');
+      row.className = 'chapter-row';
+      row.innerHTML = `
+        <svg class="chevron" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 2l4 3.5L2 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <input class="chapter-title" value="${escapeAttr(ch.title)}" data-chapter="${ch.id}">
+        <div class="row-actions">
+          <button data-action="add-scene" title="Nova cena">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </button>
+          <button data-action="delete-chapter" title="Excluir capítulo">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 3.2h7M4.6 3.2V2h2.8v1.2M3.6 3.2l.5 6.6a.8.8 0 00.8.7h2.2a.8.8 0 00.8-.7l.5-6.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      `;
+
+      row.querySelector('.chevron').addEventListener('click', () => { ch.collapsed = !ch.collapsed; renderTree(); persistProjectDebounced(); });
+      row.querySelector('.chapter-title').addEventListener('click', (e) => e.stopPropagation());
+      row.querySelector('.chapter-title').addEventListener('change', (e) => { ch.title = e.target.value.trim() || ch.title; persistProject(); });
+      row.querySelector('[data-action="add-scene"]').addEventListener('click', (e) => { e.stopPropagation(); addScene(ch.id); });
+      row.querySelector('[data-action="delete-chapter"]').addEventListener('click', (e) => { e.stopPropagation(); deleteChapter(ch.id); });
+
+      block.appendChild(row);
+
+      const scenesWrap = document.createElement('div');
+      scenesWrap.className = 'scenes';
+
+      ch.scenes.forEach(sc => {
+        const srow = document.createElement('div');
+        srow.className = 'scene-row' + (sc.id === currentSceneId ? ' active' : '');
+        srow.innerHTML = `
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="flex-shrink:0;opacity:.7;"><path d="M2 2h5.5L9 3.5V9H2V2z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>
+          <input class="scene-title" value="${escapeAttr(sc.title)}" data-scene="${sc.id}">
+          <div class="row-actions">
+            <button data-action="delete-scene" title="Excluir cena">
+              <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 3.2h7M4.6 3.2V2h2.8v1.2M3.6 3.2l.5 6.6a.8.8 0 00.8.7h2.2a.8.8 0 00.8-.7l.5-6.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        `;
+        srow.addEventListener('click', () => selectScene(sc.id));
+        srow.querySelector('.scene-title').addEventListener('click', (e) => e.stopPropagation());
+        srow.querySelector('.scene-title').addEventListener('change', (e) => {
+          sc.title = e.target.value.trim() || sc.title;
+          if (sc.id === currentSceneId) renderStatus();
+          persistProject();
+        });
+        srow.querySelector('[data-action="delete-scene"]').addEventListener('click', (e) => { e.stopPropagation(); deleteScene(ch.id, sc.id); });
+
+        scenesWrap.appendChild(srow);
+      });
+
+      block.appendChild(scenesWrap);
+      tree.appendChild(block);
+    });
+  }
+
+  function escapeAttr(str){
+    return (str||"").replace(/"/g, '&quot;');
+  }
+
+  // ---------- Tree mutations ----------
+
+  function addChapter(){
+    const ch = { id: crypto.randomUUID(), title: `Capítulo ${book.chapters.length + 1}`, collapsed:false,
+      scenes: [{ id: crypto.randomUUID(), title: "Cena 1", content: "<p></p>" }] };
+    book.chapters.push(ch);
+    currentSceneId = ch.scenes[0].id;
+    renderTree();
+    renderEditor();
+    persistProject();
+  }
+
+  function addScene(chapterId){
+    const ch = book.chapters.find(c => c.id === chapterId);
+    const sc = { id: crypto.randomUUID(), title: `Cena ${ch.scenes.length + 1}`, content: "<p></p>" };
+    ch.scenes.push(sc);
+    ch.collapsed = false;
+    currentSceneId = sc.id;
+    renderTree();
+    renderEditor();
+    persistProject();
+  }
+
+  function deleteChapter(chapterId){
+    const ch = book.chapters.find(c => c.id === chapterId);
+    appConfirm(`Excluir "${ch.title}" e todas as suas cenas? Essa ação não pode ser desfeita.`, () => {
+      const idx = book.chapters.findIndex(c => c.id === chapterId);
+      const wasActive = book.chapters[idx].scenes.some(s => s.id === currentSceneId);
+      book.chapters.splice(idx, 1);
+      if (wasActive){
+        const all = flatSceneList();
+        currentSceneId = all.length ? all[0].scene.id : null;
+      }
+      renderTree();
+      renderEditor();
+      persistProject();
+    });
+  }
+
+  function deleteScene(chapterId, sceneId){
+    const ch = book.chapters.find(c => c.id === chapterId);
+    if (ch.scenes.length === 1){
+      appNotice('O capítulo precisa ter ao menos uma cena. Exclua o capítulo inteiro se necessário.');
+      return;
+    }
+    const sc = ch.scenes.find(s => s.id === sceneId);
+    appConfirm(`Excluir "${sc.title}"? Essa ação não pode ser desfeita.`, () => {
+      ch.scenes = ch.scenes.filter(s => s.id !== sceneId);
+      if (currentSceneId === sceneId){
+        currentSceneId = ch.scenes[0].id;
+      }
+      renderTree();
+      renderEditor();
+      persistProject();
+    });
+  }
+
+  function selectScene(id){
+    currentSceneId = id;
+    renderTree();
+    renderEditor();
+  }
+
+  document.getElementById('add-chapter').addEventListener('click', addChapter);
+
+  // ---------- Editor rendering ----------
+
+  function renderEditor(){
+    editorWrap.innerHTML = "";
+
+    if (!currentSceneId){
+      editorWrap.innerHTML = `<div class="editor-empty"><p>Crie um capítulo para começar a escrever.</p></div>`;
+      renderStatus();
+      return;
+    }
+
+    const found = findScene(currentSceneId);
+    if (!found){ editorWrap.innerHTML = `<div class="editor-empty"><p>Selecione uma cena.</p></div>`; return; }
+    const { chapter, scene } = found;
+
+    if (viewMode === 'editor'){
+      const page = document.createElement('div');
+      page.className = 'page';
+      page.innerHTML = `
+        <div class="scene-heading">${escapeHtml(chapter.title)} — ${escapeHtml(scene.title)}</div>
+        <div class="editable" contenteditable="true" id="editable-area">${scene.content}</div>
+      `;
+      editorWrap.appendChild(page);
+      bindEditable(document.getElementById('editable-area'), scene);
+    } else {
+      // livro (spread) mode — simplified: shows the current scene split visually across two facing pages
+      const all = flatSceneList();
+      const curIdx = all.findIndex(x => x.scene.id === currentSceneId);
+      const leftEntry = all[curIdx];
+      const rightEntry = all[curIdx + 1] || null;
+
+      const outer = document.createElement('div');
+      outer.className = 'spread-outer';
+      outer.innerHTML = `
+        <div>
+          <div class="spread">
+            <div class="spread-page left">
+              <div class="scene-heading" style="font-size:1.1rem;">${escapeHtml(leftEntry.chapter.title)} — ${escapeHtml(leftEntry.scene.title)}</div>
+              <div class="editable" contenteditable="true" id="editable-left">${leftEntry.scene.content}</div>
+              <div class="page-num">${curIdx + 1}</div>
+            </div>
+            <div class="spread-page right">
+              ${rightEntry ? `
+                <div class="scene-heading" style="font-size:1.1rem;">${escapeHtml(rightEntry.chapter.title)} — ${escapeHtml(rightEntry.scene.title)}</div>
+                <div class="editable" contenteditable="true" id="editable-right">${rightEntry.scene.content}</div>
+                <div class="page-num">${curIdx + 2}</div>
+              ` : `<div style="color:var(--slate); font-size:.85rem; padding-top:8px;">Fim do conteúdo escrito até aqui.</div>`}
+            </div>
+          </div>
+          <div class="spread-controls">
+            <button id="prev-spread" ${curIdx <= 0 ? 'disabled' : ''}>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M7.5 2.5L3.5 6l4 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <span>Página ${curIdx + 1}${rightEntry ? '–' + (curIdx + 2) : ''} de ${all.length}</span>
+            <button id="next-spread" ${curIdx >= all.length - 1 ? 'disabled' : ''}>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5l4 3.5-4 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+      `;
+      editorWrap.appendChild(outer);
+
+      bindEditable(document.getElementById('editable-left'), leftEntry.scene);
+      if (rightEntry) bindEditable(document.getElementById('editable-right'), rightEntry.scene);
+
+      const prevBtn = document.getElementById('prev-spread');
+      const nextBtn = document.getElementById('next-spread');
+      if (prevBtn) prevBtn.addEventListener('click', () => { if (curIdx > 0){ currentSceneId = all[curIdx - 1].scene.id; renderTree(); renderEditor(); } });
+      if (nextBtn) nextBtn.addEventListener('click', () => { if (curIdx < all.length - 1){ currentSceneId = all[curIdx + 1].scene.id; renderTree(); renderEditor(); } });
+    }
+
+    renderStatus();
+  }
+
+  function bindEditable(el, scene){
+    if (!el) return;
+    el.addEventListener('input', () => {
+      scene.content = el.innerHTML;
+      if (scene.id === currentSceneId) renderStatus();
+      persistProjectDebounced();
+    });
+    el.addEventListener('focus', () => { activeEditable = el; });
+    el.addEventListener('keyup', updateBlockTypeSelect);
+    el.addEventListener('mouseup', updateBlockTypeSelect);
+  }
+
+  function escapeHtml(str){
+    return (str||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // ---------- Status bar ----------
+
+  function renderStatus(){
+    const found = currentSceneId ? findScene(currentSceneId) : null;
+    if (!found){ statusScene.textContent = "Nenhuma cena selecionada"; statusCount.textContent = "0 palavras · 0 caracteres"; return; }
+    statusScene.textContent = `${found.chapter.title} — ${found.scene.title}`;
+    const text = found.scene.content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    const words = text ? text.split(' ').length : 0;
+    statusCount.textContent = `${words} palavra${words===1?'':'s'} · ${text.length} caractere${text.length===1?'':'s'}`;
+  }
+
+  // ---------- Formatting toolbar ----------
+
+  let activeEditable = null;
+
+  document.querySelectorAll('.fmt-btn[data-cmd]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const editable = activeEditable || document.getElementById('editable-area');
+      if (!editable) return;
+      editable.focus();
+      document.execCommand(btn.dataset.cmd, false, null);
+      editable.dispatchEvent(new Event('input'));
+    });
+  });
+
+  document.getElementById('undo-btn').addEventListener('click', () => {
+    const editable = activeEditable || document.getElementById('editable-area');
+    if (!editable) return;
+    editable.focus();
+    document.execCommand('undo');
+    editable.dispatchEvent(new Event('input'));
+  });
+  document.getElementById('redo-btn').addEventListener('click', () => {
+    const editable = activeEditable || document.getElementById('editable-area');
+    if (!editable) return;
+    editable.focus();
+    document.execCommand('redo');
+    editable.dispatchEvent(new Event('input'));
+  });
+
+  blockTypeSelect.addEventListener('change', () => {
+    const editable = activeEditable || document.getElementById('editable-area');
+    if (!editable) return;
+    editable.focus();
+    const tag = blockTypeSelect.value;
+    document.execCommand('formatBlock', false, tag === 'p' ? 'P' : tag.toUpperCase());
+    editable.dispatchEvent(new Event('input'));
+  });
+
+  function updateBlockTypeSelect(){
+    ['h1','h2','blockquote','p'].some(tag => {
+      if (document.queryCommandValue && document.queryCommandState){
+        try {
+          if (document.queryCommandValue('formatBlock').toLowerCase() === tag){
+            blockTypeSelect.value = tag; return true;
+          }
+        } catch(e){}
+      }
+      return false;
+    });
+  }
+
+  // ---------- View mode toggle ----------
+
+  document.querySelectorAll('.view-toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      viewMode = btn.dataset.mode;
+      renderEditor();
+    });
+  });
+
+  // ================= PERSONAGENS =================
+
+  const RELATION_TYPES = ["Pai","Mãe","Filho","Filha","Irmão","Irmã","Avô","Avó","Neto","Neta","Tio","Tia","Primo","Prima","Cônjuge","Companheiro","Outro"];
+
+  let characters = (savedProjectData && savedProjectData.characters) ? savedProjectData.characters : [];
+
+  let charEditingId = null;
+  let charViewingId = null;
+  let charPendingPerfil = null;
+  let charPendingCorpo = null;
+  let charPendingRelations = [];
+
+  const charGrid = document.getElementById('char-grid');
+  const charSearch = document.getElementById('char-search');
+  const charDrawerOverlay = document.getElementById('char-drawer-overlay');
+  const charFormOverlay = document.getElementById('char-form-overlay');
+
+  function initials(name){
+    return (name||"?").trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  }
+
+  function renderCharGrid(){
+    const q = charSearch.value.trim().toLowerCase();
+    const list = characters.filter(c => !q || c.nome.toLowerCase().includes(q) || (c.apelido||'').toLowerCase().includes(q));
+
+    charGrid.innerHTML = "";
+
+    if (characters.length === 0){
+      charGrid.innerHTML = `<div class="char-empty"><h2>Nenhum personagem ainda</h2><p>Comece cadastrando quem habita a sua história.</p></div>`;
+      return;
+    }
+    if (list.length === 0){
+      charGrid.innerHTML = `<div class="char-empty"><h2>Nenhum resultado</h2><p>Tente pesquisar por outro nome.</p></div>`;
+      return;
+    }
+
+    list.forEach(c => {
+      const card = document.createElement('div');
+      card.className = 'char-card';
+      card.innerHTML = `
+        <div class="char-card-actions">
+          <button class="icon-btn" data-action="edit" title="Editar"><svg width="14" height="14" viewBox="0 0 15 15" fill="none"><path d="M9.5 2.5l3 3L4 14H1v-3l8.5-8.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></button>
+          <button class="icon-btn danger" data-action="delete" title="Excluir"><svg width="14" height="14" viewBox="0 0 15 15" fill="none"><path d="M3 4h9M6 4V2.5h3V4M4.5 4l.6 8.5a1 1 0 0 0 1 1h3.8a1 1 0 0 0 1-1L11.5 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+        <div class="char-photo" style="${c.fotoPerfil ? `background-image:url('${c.fotoPerfil}')` : ''}">${c.fotoPerfil ? '' : initials(c.nome)}</div>
+        <div class="char-info">
+          <p class="char-name">${escapeHtml(c.nome)}</p>
+          <p class="char-sub">${escapeHtml(c.raca || '')}</p>
+        </div>
+      `;
+      card.addEventListener('click', () => openCharDrawer(c.id));
+      card.querySelector('[data-action="edit"]').addEventListener('click', (e) => { e.stopPropagation(); openCharForm(c.id); });
+      card.querySelector('[data-action="delete"]').addEventListener('click', (e) => { e.stopPropagation(); deleteCharacter(c.id); });
+      charGrid.appendChild(card);
+    });
+  }
+
+  function deleteCharacter(id){
+    const c = characters.find(x => x.id === id);
+    if (!c) return;
+    appConfirm(`Excluir "${c.nome}"? As relações de parentesco com outros personagens também serão removidas. Essa ação não pode ser desfeita.`, () => {
+      characters = characters.filter(x => x.id !== id);
+      characters.forEach(other => { other.relations = other.relations.filter(r => r.charId !== id); });
+      renderCharGrid();
+      closeCharDrawer();
+      persistProject();
+    });
+  }
+
+  // ---------- Drawer (ficha de leitura) ----------
+
+  function openCharDrawer(id){
+    const c = characters.find(x => x.id === id);
+    if (!c) return;
+    charViewingId = id;
+
+    const relHtml = c.relations.length
+      ? c.relations.map(r => {
+          const other = characters.find(x => x.id === r.charId);
+          return `<div class="relation-chip"><span>${escapeHtml(other ? other.nome : '(removido)')} <span class="rel-type">— ${escapeHtml(r.type)}</span></span></div>`;
+        }).join('')
+      : `<p style="color:var(--slate); font-size:.85rem;">Nenhuma relação cadastrada.</p>`;
+
+    function section(title, value){
+      if (!value) return '';
+      return `<div class="drawer-section"><h4>${title}</h4><p>${escapeHtml(value)}</p></div>`;
+    }
+
+    document.getElementById('char-drawer-body').innerHTML = `
+      <div class="drawer-photos">
+        <div class="drawer-photo-round" style="${c.fotoPerfil ? `background-image:url('${c.fotoPerfil}')` : ''}"></div>
+        ${c.fotoCorpo ? `<div class="drawer-photo-body" style="background-image:url('${c.fotoCorpo}')"></div>` : ''}
+      </div>
+      <h2 class="drawer-name">${escapeHtml(c.nome)}</h2>
+      <p class="drawer-sub">${[c.apelido, c.raca].filter(Boolean).map(escapeHtml).join(' · ') || 'Sem detalhes adicionais'}</p>
+
+      ${section('Descrição', c.descricao)}
+      ${section('Biografia', c.biografia)}
+
+      <div class="drawer-section">
+        <h4>Dados</h4>
+        <div class="drawer-field-grid">
+          ${c.nomeCompleto ? `<div><span class="drawer-field-label">Nome completo</span><span class="drawer-field-value">${escapeHtml(c.nomeCompleto)}</span></div>` : ''}
+          ${c.nascimento ? `<div><span class="drawer-field-label">Nascimento</span><span class="drawer-field-value">${escapeHtml(c.nascimento)}</span></div>` : ''}
+          ${c.genero ? `<div><span class="drawer-field-label">Gênero</span><span class="drawer-field-value">${escapeHtml(c.genero)}</span></div>` : ''}
+          ${c.altura ? `<div><span class="drawer-field-label">Altura</span><span class="drawer-field-value">${escapeHtml(c.altura)}</span></div>` : ''}
+          ${c.peso ? `<div><span class="drawer-field-label">Peso</span><span class="drawer-field-value">${escapeHtml(c.peso)}</span></div>` : ''}
+          ${c.profissao ? `<div><span class="drawer-field-label">Profissão</span><span class="drawer-field-value">${escapeHtml(c.profissao)}</span></div>` : ''}
+          ${c.localNascimento ? `<div><span class="drawer-field-label">Local de nascimento</span><span class="drawer-field-value">${escapeHtml(c.localNascimento)}</span></div>` : ''}
+          ${c.localAtual ? `<div><span class="drawer-field-label">Local atual</span><span class="drawer-field-value">${escapeHtml(c.localAtual)}</span></div>` : ''}
+        </div>
+      </div>
+
+      ${section('Aparência', c.aparencia)}
+      ${section('Personalidade', c.personalidade)}
+      ${section('Objetivos', c.objetivos)}
+      ${section('Medos', c.medos)}
+      ${section('Gostos', c.gostos)}
+      ${section('Desgostos', c.desgostos)}
+      ${section('Curiosidades', c.curiosidades)}
+      ${section('Observações', c.observacoes)}
+
+      <div class="drawer-section">
+        <h4>Parentesco</h4>
+        ${relHtml}
+      </div>
+    `;
+
+    charDrawerOverlay.classList.add('open');
+  }
+
+  function closeCharDrawer(){
+    charDrawerOverlay.classList.remove('open');
+    charViewingId = null;
+  }
+
+  document.getElementById('char-drawer-close').addEventListener('click', closeCharDrawer);
+  charDrawerOverlay.addEventListener('click', (e) => { if (e.target === charDrawerOverlay) closeCharDrawer(); });
+  document.getElementById('char-drawer-edit').addEventListener('click', () => { const id = charViewingId; closeCharDrawer(); openCharForm(id); });
+  document.getElementById('char-drawer-delete').addEventListener('click', () => deleteCharacter(charViewingId));
+
+  // ---------- Form (criar/editar) ----------
+
+  const charFields = ['nome','nome-completo','apelido','nascimento','genero','raca','descricao','biografia',
+    'aparencia','altura','peso','profissao','local-nascimento','local-atual',
+    'personalidade','objetivos','medos','gostos','desgostos','curiosidades','observacoes'];
+
+  function fieldEl(name){ return document.getElementById('char-' + name); }
+
+  function resetCharForm(){
+    charFields.forEach(f => { const el = fieldEl(f); if (el) el.value = ""; });
+    charPendingPerfil = null; charPendingCorpo = null; charPendingRelations = [];
+    updatePhotoPreview('char-perfil-preview', null, 'perfil');
+    updatePhotoPreview('char-corpo-preview', null, 'corpo inteiro');
+    renderRelationList();
+    switchCharTab('basico');
+  }
+
+  function updatePhotoPreview(elId, dataUrl, placeholder){
+    const el = document.getElementById(elId);
+    if (dataUrl){ el.style.backgroundImage = `url('${dataUrl}')`; el.textContent = ""; }
+    else { el.style.backgroundImage = ""; el.textContent = placeholder; }
+  }
+
+  function openCharForm(id){
+    charEditingId = id || null;
+    resetCharForm();
+
+    if (id){
+      const c = characters.find(x => x.id === id);
+      charFields.forEach(f => {
+        const key = f.replace(/-([a-z])/g, (_, ch) => ch.toUpperCase());
+        const el = fieldEl(f);
+        if (el) el.value = c[key] || "";
+      });
+      charPendingPerfil = c.fotoPerfil; charPendingCorpo = c.fotoCorpo;
+      charPendingRelations = c.relations.map(r => ({...r}));
+      updatePhotoPreview('char-perfil-preview', c.fotoPerfil, 'perfil');
+      updatePhotoPreview('char-corpo-preview', c.fotoCorpo, 'corpo inteiro');
+      renderRelationList();
+      document.getElementById('char-form-title').textContent = "Editar personagem";
+    } else {
+      document.getElementById('char-form-title').textContent = "Novo personagem";
+    }
+
+    populateRelationSelects();
+    charFormOverlay.classList.add('open');
+    setTimeout(() => fieldEl('nome').focus(), 50);
+  }
+
+  function closeCharForm(){ charFormOverlay.classList.remove('open'); charEditingId = null; }
+
+  document.getElementById('char-new-btn').addEventListener('click', () => openCharForm(null));
+  document.getElementById('char-form-close').addEventListener('click', closeCharForm);
+  document.getElementById('char-form-cancel').addEventListener('click', closeCharForm);
+  charFormOverlay.addEventListener('click', (e) => { if (e.target === charFormOverlay) closeCharForm(); });
+
+  document.getElementById('char-perfil-btn').addEventListener('click', () => document.getElementById('char-perfil-input').click());
+  document.getElementById('char-corpo-btn').addEventListener('click', () => document.getElementById('char-corpo-input').click());
+
+  document.getElementById('char-perfil-input').addEventListener('change', (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => { charPendingPerfil = ev.target.result; updatePhotoPreview('char-perfil-preview', charPendingPerfil, 'perfil'); };
+    reader.readAsDataURL(file);
+  });
+  document.getElementById('char-corpo-input').addEventListener('change', (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => { charPendingCorpo = ev.target.result; updatePhotoPreview('char-corpo-preview', charPendingCorpo, 'corpo inteiro'); };
+    reader.readAsDataURL(file);
+  });
+
+  // tabs
+  function switchCharTab(tab){
+    document.querySelectorAll('.char-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    document.querySelectorAll('.char-tab-panel').forEach(p => p.classList.toggle('active', p.dataset.panel === tab));
+  }
+  document.querySelectorAll('.char-tab').forEach(btn => btn.addEventListener('click', () => switchCharTab(btn.dataset.tab)));
+
+  // relations
+  function populateRelationSelects(){
+    const typeSel = document.getElementById('relation-type-select');
+    typeSel.innerHTML = RELATION_TYPES.map(t => `<option value="${t}">${t}</option>`).join('');
+
+    const charSel = document.getElementById('relation-char-select');
+    const others = characters.filter(c => c.id !== charEditingId);
+    charSel.innerHTML = others.length
+      ? others.map(c => `<option value="${c.id}">${escapeHtml(c.nome)}</option>`).join('')
+      : `<option value="">Nenhum outro personagem cadastrado</option>`;
+  }
+
+  function renderRelationList(){
+    const wrap = document.getElementById('relation-list');
+    if (charPendingRelations.length === 0){
+      wrap.innerHTML = `<p style="color:var(--slate); font-size:.85rem;">Nenhuma relação adicionada ainda.</p>`;
+      return;
+    }
+    wrap.innerHTML = charPendingRelations.map((r, idx) => {
+      const other = characters.find(x => x.id === r.charId);
+      return `<div class="relation-chip">
+        <span>${escapeHtml(other ? other.nome : '(personagem removido)')} <span class="rel-type">— ${escapeHtml(r.type)}</span></span>
+        <button type="button" data-idx="${idx}" title="Remover"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 2l9 9M11 2l-9 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+      </div>`;
+    }).join('');
+    wrap.querySelectorAll('button[data-idx]').forEach(btn => {
+      btn.addEventListener('click', () => { charPendingRelations.splice(+btn.dataset.idx, 1); renderRelationList(); });
+    });
+  }
+
+  document.getElementById('relation-add-btn').addEventListener('click', () => {
+    const charSel = document.getElementById('relation-char-select');
+    const typeSel = document.getElementById('relation-type-select');
+    if (!charSel.value) return;
+    charPendingRelations.push({ charId: charSel.value, type: typeSel.value });
+    renderRelationList();
+  });
+
+  document.getElementById('char-form-save').addEventListener('click', () => {
+    const nome = fieldEl('nome').value.trim();
+    if (!nome){ fieldEl('nome').focus(); switchCharTab('basico'); return; }
+
+    const data = { nome, fotoPerfil: charPendingPerfil, fotoCorpo: charPendingCorpo, relations: charPendingRelations.map(r => ({...r})) };
+    charFields.forEach(f => {
+      if (f === 'nome') return;
+      const key = f.replace(/-([a-z])/g, (_, ch) => ch.toUpperCase());
+      data[key] = fieldEl(f).value.trim();
+    });
+
+    if (charEditingId){
+      const c = characters.find(x => x.id === charEditingId);
+      Object.assign(c, data);
+    } else {
+      characters.unshift({ id: crypto.randomUUID(), ...data });
+    }
+
+    // sync inverse relations minimally is skipped by design — relations are declared per-character on purpose,
+    // so the writer can phrase both sides independently ("pai" from one side, "filho" from the other).
+
+    closeCharForm();
+    renderCharGrid();
+    persistProject();
+  });
+
+  charSearch.addEventListener('input', renderCharGrid);
+
+  // ================= GENEALOGIA =================
+
+  const LEVEL_DELTA = {
+    "Pai": -1, "Mãe": -1, "Filho": 1, "Filha": 1,
+    "Avô": -2, "Avó": -2, "Neto": 2, "Neta": 2,
+    "Irmão": 0, "Irmã": 0, "Tio": -1, "Tia": -1,
+    "Primo": 0, "Prima": 0, "Cônjuge": 0, "Companheiro": 0, "Outro": 0,
+  };
+
+  const genViewport = document.getElementById('gen-viewport');
+  const genCanvas = document.getElementById('gen-canvas');
+  const genSvg = document.getElementById('gen-svg');
+  const genNodesEl = document.getElementById('gen-nodes');
+  const genEmpty = document.getElementById('gen-empty');
+
+  let genZoom = 1, genPanX = 0, genPanY = 0;
+  let genDragging = false, genDragStart = {x:0,y:0}, genPanStart = {x:0,y:0};
+  let collapsedIds = new Set();
+
+  const NODE_SPACING_X = 150;
+  const LEVEL_SPACING_Y = 160;
+
+  function applyGenTransform(){
+    genCanvas.style.transform = `translate(${genPanX}px, ${genPanY}px) scale(${genZoom})`;
+    document.getElementById('gen-zoom-label').textContent = Math.round(genZoom * 100) + '%';
+  }
+
+  document.getElementById('gen-zoom-in').addEventListener('click', () => { genZoom = Math.min(2, genZoom + 0.15); applyGenTransform(); });
+  document.getElementById('gen-zoom-out').addEventListener('click', () => { genZoom = Math.max(0.35, genZoom - 0.15); applyGenTransform(); });
+  document.getElementById('gen-reset-view').addEventListener('click', () => { genZoom = 1; genPanX = 0; genPanY = 0; applyGenTransform(); });
+  document.getElementById('gen-add-char').addEventListener('click', () => openCharForm(null));
+
+  genViewport.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.08 : 0.08;
+    genZoom = Math.min(2, Math.max(0.35, genZoom + delta));
+    applyGenTransform();
+  }, { passive: false });
+
+  genViewport.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.gen-node')) return;
+    genDragging = true;
+    genViewport.classList.add('grabbing');
+    genDragStart = { x: e.clientX, y: e.clientY };
+    genPanStart = { x: genPanX, y: genPanY };
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!genDragging) return;
+    genPanX = genPanStart.x + (e.clientX - genDragStart.x);
+    genPanY = genPanStart.y + (e.clientY - genDragStart.y);
+    applyGenTransform();
+  });
+  window.addEventListener('mouseup', () => { genDragging = false; genViewport.classList.remove('grabbing'); });
+
+  function buildParentChildMap(){
+    // directed edges: parentId -> Set(childId), derived only from direct Pai/Mãe/Filho/Filha assertions
+    const children = {};
+    const addEdge = (parent, child) => { (children[parent] = children[parent] || new Set()).add(child); };
+    characters.forEach(c => {
+      c.relations.forEach(r => {
+        if (r.type === 'Filho' || r.type === 'Filha') addEdge(c.id, r.charId);
+        if (r.type === 'Pai' || r.type === 'Mãe') addEdge(r.charId, c.id);
+      });
+    });
+    return children;
+  }
+
+  function computeHiddenSet(childrenMap){
+    const hidden = new Set();
+    function hideDescendants(id){
+      const kids = childrenMap[id];
+      if (!kids) return;
+      kids.forEach(k => { if (!hidden.has(k)) { hidden.add(k); hideDescendants(k); } });
+    }
+    collapsedIds.forEach(id => hideDescendants(id));
+    return hidden;
+  }
+
+  function computeLevels(){
+    const levelOf = {};
+    const visited = new Set();
+
+    characters.forEach(start => {
+      if (visited.has(start.id)) return;
+      levelOf[start.id] = 0;
+      visited.add(start.id);
+      const queue = [start.id];
+      while (queue.length){
+        const curId = queue.shift();
+        const cur = characters.find(x => x.id === curId);
+        if (!cur) continue;
+        cur.relations.forEach(r => {
+          const delta = LEVEL_DELTA[r.type] ?? 0;
+          if (!visited.has(r.charId)){
+            levelOf[r.charId] = levelOf[curId] + delta;
+            visited.add(r.charId);
+            queue.push(r.charId);
+          }
+        });
+        // also walk relations that point *to* cur from others already visited in this pass is unnecessary
+        // since we iterate all characters as potential BFS roots above.
+      }
+    });
+
+    return levelOf;
+  }
+
+  function renderGenealogy(){
+    const hasRelations = characters.some(c => c.relations.length > 0);
+    genEmpty.classList.toggle('show', characters.length === 0 || !hasRelations);
+    if (characters.length === 0 || !hasRelations){
+      genSvg.innerHTML = ""; genNodesEl.innerHTML = "";
+      return;
+    }
+
+    const childrenMap = buildParentChildMap();
+    const hidden = computeHiddenSet(childrenMap);
+    const levelOf = computeLevels();
+
+    const visibleChars = characters.filter(c => !hidden.has(c.id));
+
+    // group by level
+    const byLevel = {};
+    visibleChars.forEach(c => {
+      const lvl = levelOf[c.id] ?? 0;
+      (byLevel[lvl] = byLevel[lvl] || []).push(c);
+    });
+
+    const levels = Object.keys(byLevel).map(Number).sort((a,b) => a-b);
+    const positions = {}; // charId -> {x,y}
+
+    levels.forEach(lvl => {
+      const list = byLevel[lvl];
+      const totalWidth = (list.length - 1) * NODE_SPACING_X;
+      list.forEach((c, i) => {
+        positions[c.id] = {
+          x: i * NODE_SPACING_X - totalWidth / 2,
+          y: lvl * LEVEL_SPACING_Y,
+        };
+      });
+    });
+
+    // edges (dedupe by unordered pair + type to avoid drawing both directions identically)
+    const edgeSet = new Set();
+    const edges = [];
+    visibleChars.forEach(c => {
+      c.relations.forEach(r => {
+        if (hidden.has(r.charId) || !positions[r.charId]) return;
+        const key = [c.id, r.charId].sort().join('|') + '|' + r.type;
+        const revKey = [r.charId, c.id].sort().join('|');
+        if (edgeSet.has(key)) return;
+        edgeSet.add(key);
+        edges.push({ from: c.id, to: r.charId, type: r.type });
+      });
+    });
+
+    // --- render SVG edges ---
+    let svgHtml = "";
+    edges.forEach(e => {
+      const p1 = positions[e.from], p2 = positions[e.to];
+      if (!p1 || !p2) return;
+      const mx = (p1.x + p2.x) / 2, my = (p1.y + p2.y) / 2;
+      svgHtml += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="#a9822e" stroke-width="1.4" stroke-opacity="0.75" />`;
+      svgHtml += `<rect x="${mx - e.type.length*3.6 - 5}" y="${my - 9}" width="${e.type.length*7.2+10}" height="16" rx="4" class="gen-edge-label-bg" />`;
+      svgHtml += `<text x="${mx}" y="${my+3.5}" text-anchor="middle" class="gen-edge-label">${escapeHtml(e.type)}</text>`;
+    });
+    genSvg.innerHTML = svgHtml;
+
+    // --- render nodes ---
+    genNodesEl.innerHTML = "";
+    visibleChars.forEach(c => {
+      const pos = positions[c.id];
+      if (!pos) return;
+      const node = document.createElement('div');
+      node.className = 'gen-node';
+      node.style.left = pos.x + 'px';
+      node.style.top = pos.y + 'px';
+
+      const hasChildren = !!(childrenMap[c.id] && childrenMap[c.id].size);
+      const isCollapsed = collapsedIds.has(c.id);
+
+      node.innerHTML = `
+        <div class="gen-node-photo" style="${c.fotoPerfil ? `background-image:url('${c.fotoPerfil}')` : ''}">${c.fotoPerfil ? '' : initials(c.nome)}</div>
+        <div class="gen-node-name">${escapeHtml(c.nome)}</div>
+        ${hasChildren ? `<div class="gen-node-toggle" data-id="${c.id}">${isCollapsed ? '+' : '−'}</div>` : ''}
+      `;
+      node.addEventListener('click', (e) => {
+        if (e.target.closest('.gen-node-toggle')) return;
+        openCharDrawer(c.id);
+      });
+      const toggle = node.querySelector('.gen-node-toggle');
+      if (toggle){
+        toggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (collapsedIds.has(c.id)) collapsedIds.delete(c.id); else collapsedIds.add(c.id);
+          renderGenealogy();
+        });
+      }
+      genNodesEl.appendChild(node);
+    });
+
+    applyGenTransform();
+  }
+
+  // Re-render genealogy whenever the tab is opened, and after any character change
+  document.querySelector('.nav-item[data-view="genealogia"]').addEventListener('click', renderGenealogy);
+
+  const _origRenderCharGrid = renderCharGrid;
+  renderCharGrid = function(){ _origRenderCharGrid(); renderGenealogy(); };
+
+  // ---------- Init ----------
+  renderTree();
+  renderEditor();
+  renderCharGrid();
+  renderGenealogy();
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alfarrábio — Seus projetos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #1c2029;
+    --ink-soft: #3a3f4d;
+    --paper: #e9e2d1;
+    --paper-deep: #ded5bf;
+    --card: #f4efe3;
+    --line: #cabf9f;
+    --wine: #7b3b3a;
+    --wine-deep: #5e2c2b;
+    --gold: #a9822e;
+    --sage: #5b6b4f;
+    --slate: #57626b;
+    --danger: #a13d3d;
+    --shadow: 0 14px 30px -18px rgba(28,32,41,.45);
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{ height:100%; }
+
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 15% -10%, #f1ead9 0%, transparent 60%),
+      var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,h2,h3, .display{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  /* ---------- Top bar ---------- */
+
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap: wrap;
+    padding: 28px clamp(20px, 5vw, 64px) 20px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .brand{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+
+  .brand .mark{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size: 1.5rem;
+    color: var(--ink);
+  }
+
+  .brand .mark span{ color: var(--wine); }
+
+  .brand .tagline{
+    font-size: .8rem;
+    color: var(--slate);
+    padding-left: 10px;
+    border-left: 1px solid var(--line);
+  }
+
+  .topbar-actions{
+    display:flex;
+    gap: 12px;
+    align-items:center;
+  }
+
+  /* ---------- Controls row ---------- */
+
+  .controls{
+    display:flex;
+    flex-wrap:wrap;
+    gap: 14px;
+    align-items:center;
+    justify-content:space-between;
+    padding: 22px clamp(20px, 5vw, 64px) 0;
+  }
+
+  .search-wrap{
+    position:relative;
+    flex: 1 1 280px;
+    max-width: 420px;
+  }
+
+  .search-wrap svg{
+    position:absolute;
+    left: 14px; top:50%;
+    transform:translateY(-50%);
+    opacity:.55;
+  }
+
+  input[type="text"], input[type="search"], select, textarea{
+    font-family:'Inter', sans-serif;
+    font-size: .92rem;
+    color: var(--ink);
+  }
+
+  #search{
+    width:100%;
+    padding: 10px 14px 10px 40px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    outline:none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  #search:focus{ border-color: var(--wine); box-shadow: 0 0 0 3px rgba(123,59,58,.12); }
+
+  .sort-wrap{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:.85rem;
+    color: var(--slate);
+  }
+
+  select{
+    padding: 9px 32px 9px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--card) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="8" viewBox="0 0 12 8"><path d="M1 1l5 5 5-5" stroke="%2357626b" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 12px center;
+    appearance:none;
+    -webkit-appearance:none;
+    cursor:pointer;
+    outline:none;
+  }
+  select:focus{ border-color: var(--wine); }
+
+  /* ---------- Buttons ---------- */
+
+  button{ font-family:'Inter', sans-serif; cursor:pointer; border:none; }
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: .88rem;
+    font-weight: 600;
+    transition: transform .12s ease, box-shadow .12s ease, background .15s ease;
+  }
+  .btn:active{ transform: translateY(1px); }
+
+  .btn-primary{
+    background: var(--wine);
+    color: #f4efe3;
+    box-shadow: 0 8px 18px -10px rgba(94,44,43,.65);
+  }
+  .btn-primary:hover{ background: var(--wine-deep); }
+
+  .btn-ghost{
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .btn-ghost:hover{ background: var(--card); }
+
+  .icon-btn{
+    width: 34px; height:34px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1px solid transparent;
+  }
+  .icon-btn:hover{ background: var(--card); border-color: var(--line); color: var(--ink); }
+  .icon-btn.danger:hover{ color: var(--danger); border-color: #e2c9c9; background:#f7ecec; }
+
+  /* ---------- Shelf / grid ---------- */
+
+  .shelf{
+    padding: 30px clamp(20px, 5vw, 64px) 80px;
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 34px 26px;
+  }
+
+  .book-card{
+    position:relative;
+    border-radius: 4px 8px 8px 4px;
+    background: var(--card);
+    box-shadow: var(--shadow);
+    aspect-ratio: 3 / 4.35;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    border: 1px solid rgba(28,32,41,.06);
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+
+  .book-card::before{
+    /* spine */
+    content:"";
+    position:absolute; left:0; top:0; bottom:0;
+    width: 9px;
+    background: linear-gradient(180deg, var(--gold), var(--wine));
+    opacity:.85;
+  }
+
+  .book-card:hover{
+    transform: translateY(-5px);
+    box-shadow: 0 22px 34px -18px rgba(28,32,41,.55);
+  }
+
+  .book-cover{
+    flex: 1;
+    margin-left: 9px;
+    background-size: cover;
+    background-position:center;
+    background-color:#efe8d8;
+    display:flex;
+    align-items:flex-end;
+    padding: 16px;
+    position:relative;
+  }
+
+  .book-cover.no-image{
+    background:
+      repeating-linear-gradient(135deg, rgba(28,32,41,.035) 0 2px, transparent 2px 14px),
+      #efe8d8;
+  }
+
+  .book-cover-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size: 1.05rem;
+    line-height:1.22;
+    color: var(--ink);
+    text-shadow: 0 1px 0 rgba(255,255,255,.35);
+  }
+
+  .book-cover-title.on-image{
+    color:#f4efe3;
+    text-shadow: 0 2px 10px rgba(0,0,0,.55);
+  }
+
+  .book-meta{
+    margin-left:9px;
+    padding: 12px 14px 14px;
+    border-top: 1px solid var(--line);
+    background: var(--card);
+  }
+
+  .book-author{
+    font-size: .8rem;
+    color: var(--slate);
+    margin: 0 0 8px;
+  }
+
+  .book-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap: 8px;
+  }
+
+  .status-chip{
+    font-size: .68rem;
+    font-weight:600;
+    padding: 4px 9px;
+    border-radius: 999px;
+    white-space:nowrap;
+    border: 1px solid transparent;
+    max-width: 100%;
+    overflow:hidden;
+    text-overflow: ellipsis;
+  }
+  .status-rascunho{ background:#efe8d3; color:#7a6b3d; border-color:#ddd0a3; }
+  .status-desenvolvimento{ background:#e6ece0; color:var(--sage); border-color:#c9d8bd; }
+  .status-revisao{ background:#f1e2d9; color:#93542e; border-color:#e5c4ac; }
+  .status-finalizado{ background:#e2e8ec; color:#3b5a70; border-color:#c1d3dd; }
+  .status-publicado{ background:#f0e0e0; color:var(--wine); border-color:#e3bcbc; }
+
+  /* Ações do projeto: barra fixa sobre a capa — nunca afetada pelo tamanho do
+     texto de status, então excluir/editar/exportar sempre ficam acessíveis. */
+  .card-actions{
+    position:absolute;
+    top: 8px; right: 8px; left: 8px;
+    display:flex;
+    justify-content:flex-end;
+    gap: 3px;
+    z-index: 2;
+    opacity: .85;
+    transition: opacity .15s ease;
+  }
+  .book-card:hover .card-actions, .book-card:focus-within .card-actions{ opacity: 1; }
+  .card-actions .icon-btn{
+    width: 27px; height: 27px;
+    background: rgba(244,239,227,.94);
+    border: 1px solid rgba(202,191,159,.8);
+    box-shadow: 0 2px 6px rgba(28,32,41,.18);
+  }
+  .card-actions .icon-btn:hover{ background: var(--card); }
+
+  .book-updated{
+    font-size:.68rem;
+    color: var(--slate);
+    margin-top: 8px;
+  }
+
+  /* new project card */
+  .new-card{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap: 10px;
+    border: 1.5px dashed var(--line);
+    border-radius: 8px;
+    aspect-ratio: 3 / 4.35;
+    color: var(--slate);
+    background: transparent;
+    transition: border-color .15s ease, color .15s ease, background .15s ease;
+  }
+  .new-card:hover{ border-color: var(--wine); color: var(--wine); background: rgba(123,59,58,.04); }
+  .new-card span{ font-size:.85rem; font-weight:600; }
+
+  /* ---------- Empty state ---------- */
+
+  .empty{
+    grid-column: 1 / -1;
+    text-align:center;
+    padding: 70px 20px;
+    color: var(--slate);
+  }
+  .empty h2{ color: var(--ink); font-size:1.4rem; margin-bottom:8px; }
+  .empty p{ margin: 0 0 20px; font-size:.92rem; }
+
+  /* ---------- Modal ---------- */
+
+  .overlay{
+    position:fixed; inset:0;
+    background: rgba(28,32,41,.5);
+    backdrop-filter: blur(2px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 20px;
+    z-index: 50;
+    opacity:0;
+    pointer-events:none;
+    transition: opacity .18s ease;
+  }
+  .overlay.open{ opacity:1; pointer-events:auto; }
+
+  .modal{
+    background: var(--paper);
+    width: 100%;
+    max-width: 640px;
+    max-height: 88vh;
+    overflow-y:auto;
+    border-radius: 10px;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,.5);
+    transform: translateY(14px) scale(.98);
+    transition: transform .18s ease;
+    border: 1px solid var(--line);
+  }
+  .overlay.open .modal{ transform: translateY(0) scale(1); }
+
+  .modal-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 22px 26px;
+    border-bottom: 1px solid var(--line);
+  }
+  .modal-head h2{ font-size: 1.3rem; margin:0; }
+
+  .modal-body{ padding: 22px 26px; }
+
+  .form-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 18px;
+  }
+  .form-field{ display:flex; flex-direction:column; gap:6px; }
+  .form-field.full{ grid-column: 1 / -1; }
+
+  label{ font-size:.78rem; font-weight:600; color: var(--ink-soft); }
+
+  input[type="text"]:not(#search), textarea{
+    padding: 10px 12px;
+    border-radius: 7px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    outline:none;
+    width:100%;
+    resize: vertical;
+  }
+  input[type="text"]:not(#search):focus, textarea:focus, .form-field select:focus{
+    border-color: var(--wine);
+    box-shadow: 0 0 0 3px rgba(123,59,58,.12);
+  }
+  .form-field select{
+    padding: 10px 32px 10px 12px;
+    border-radius: 7px;
+    border: 1px solid var(--line);
+    background: var(--card) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="8" viewBox="0 0 12 8"><path d="M1 1l5 5 5-5" stroke="%2357626b" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 12px center;
+    appearance:none; -webkit-appearance:none; outline:none; cursor:pointer;
+  }
+
+  .cover-upload{
+    display:flex;
+    gap: 14px;
+    align-items:center;
+  }
+  .cover-preview{
+    width: 74px; height: 100px;
+    border-radius: 4px;
+    background: #efe8d8 center/cover no-repeat;
+    border: 1px solid var(--line);
+    flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    color: var(--slate);
+    font-size:.65rem;
+    text-align:center;
+  }
+  .upload-buttons{ display:flex; gap:10px; flex-wrap:wrap; }
+
+  .modal-foot{
+    display:flex;
+    justify-content:flex-end;
+    gap: 10px;
+    padding: 18px 26px 24px;
+  }
+
+  .hint{ font-size:.72rem; color: var(--slate); margin-top:2px; }
+
+  /* ---------- Confirm dialog ---------- */
+  .confirm-box{ max-width: 400px; }
+  .confirm-box .modal-body p{ color: var(--ink-soft); font-size:.92rem; line-height:1.5; margin:0; }
+
+  /* ---------- Toast ---------- */
+  #toast{
+    position: fixed;
+    bottom: 26px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink);
+    color: #f4efe3;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: .85rem;
+    box-shadow: 0 14px 30px -10px rgba(0,0,0,.5);
+    opacity: 0;
+    pointer-events:none;
+    transition: opacity .2s ease, transform .2s ease;
+    z-index: 100;
+  }
+  #toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 560px){
+    .form-grid{ grid-template-columns: 1fr; }
+    .topbar{ flex-direction:column; align-items:flex-start; gap:14px; }
+  }
+
+  :focus-visible{ outline: 2px solid var(--wine); outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="mark">Alfarr<span>á</span>bio</div>
+      <div class="tagline">seus livros e universos, num só lugar</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" id="btn-import-top">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 9.5v-8M4 4l3-3 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M1.5 9.5v2a1 1 0 001 1h9a1 1 0 001-1v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Importar projeto
+      </button>
+      <input type="file" id="import-input" accept="application/json,.json" hidden>
+      <button class="btn btn-primary" id="btn-new-top">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Novo projeto
+      </button>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="search-wrap">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#1c2029" stroke-width="1.4"/><path d="M10.3 10.3L13.5 13.5" stroke="#1c2029" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <input type="search" id="search" placeholder="Pesquisar por nome, título ou autor…">
+    </div>
+    <div class="sort-wrap">
+      <label for="sort" style="margin:0;">Organizar por</label>
+      <select id="sort">
+        <option value="updated_desc">Última alteração</option>
+        <option value="created_desc">Mais recentes</option>
+        <option value="name_asc">Nome (A–Z)</option>
+        <option value="status">Status</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="shelf" id="shelf"></div>
+
+  <!-- Modal: criar/editar -->
+  <div class="overlay" id="overlay-form">
+    <div class="modal">
+      <div class="modal-head">
+        <h2 id="form-title">Novo projeto</h2>
+        <button class="icon-btn" id="close-form" aria-label="Fechar">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="project-form">
+          <div class="form-grid">
+            <div class="form-field full">
+              <label>Capa</label>
+              <div class="cover-upload">
+                <div class="cover-preview" id="cover-preview">sem capa</div>
+                <div class="upload-buttons">
+                  <button type="button" class="btn btn-ghost" id="btn-upload-cover">Escolher imagem</button>
+                  <button type="button" class="btn btn-ghost" id="btn-remove-cover">Remover</button>
+                  <input type="file" id="cover-input" accept="image/*" hidden>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="f-nome">Nome do projeto *</label>
+              <input type="text" id="f-nome" required placeholder="Ex: As Crônicas de Aramir">
+            </div>
+            <div class="form-field">
+              <label for="f-titulo">Título do livro</label>
+              <input type="text" id="f-titulo" placeholder="Se diferente do nome do projeto">
+            </div>
+
+            <div class="form-field">
+              <label for="f-autor">Autor</label>
+              <input type="text" id="f-autor" placeholder="Seu nome ou pseudônimo">
+            </div>
+            <div class="form-field">
+              <label for="f-status">Status</label>
+              <select id="f-status">
+                <option value="rascunho">Rascunho</option>
+                <option value="desenvolvimento">Em desenvolvimento</option>
+                <option value="revisao">Em revisão</option>
+                <option value="finalizado">Finalizado</option>
+                <option value="publicado">Publicado</option>
+              </select>
+            </div>
+
+            <div class="form-field full">
+              <label for="f-descricao">Descrição</label>
+              <textarea id="f-descricao" rows="3" placeholder="Do que trata a história?"></textarea>
+              <div class="hint">Os dados ficam só nesta sessão do navegador — recarregar a página os apaga.</div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" id="cancel-form">Cancelar</button>
+        <button class="btn btn-primary" id="save-form">Salvar projeto</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: confirmar exclusão -->
+  <div class="overlay" id="overlay-confirm">
+    <div class="modal confirm-box">
+      <div class="modal-head">
+        <h2 style="font-size:1.15rem;">Excluir projeto</h2>
+        <button class="icon-btn" id="close-confirm" aria-label="Fechar">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-text">Tem certeza que deseja excluir este projeto? Essa ação não pode ser desfeita.</p>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" id="cancel-confirm">Cancelar</button>
+        <button class="btn btn-primary" style="background:var(--danger);" id="confirm-delete">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+<script src="app-storage.js"></script>
+<script>
+(function(){
+
+  // ---------- Estado (somente em memória) ----------
+
+  // Carrega os projetos já salvos no navegador (se existirem)
+  let projects = alfaLoadProjects();
+
+  let editingId = null;
+  let deletingId = null;
+  let pendingCoverData = null;
+
+  const STATUS_LABEL = {
+    rascunho: "Rascunho",
+    desenvolvimento: "Em desenvolvimento",
+    revisao: "Em revisão",
+    finalizado: "Finalizado",
+    publicado: "Publicado",
+  };
+  const STATUS_CLASS = {
+    rascunho: "status-rascunho",
+    desenvolvimento: "status-desenvolvimento",
+    revisao: "status-revisao",
+    finalizado: "status-finalizado",
+    publicado: "status-publicado",
+  };
+
+  // ---------- Elementos ----------
+
+  const shelf = document.getElementById('shelf');
+  const searchInput = document.getElementById('search');
+  const sortSelect = document.getElementById('sort');
+
+  const overlayForm = document.getElementById('overlay-form');
+  const overlayConfirm = document.getElementById('overlay-confirm');
+  const formTitle = document.getElementById('form-title');
+
+  const fNome = document.getElementById('f-nome');
+  const fTitulo = document.getElementById('f-titulo');
+  const fAutor = document.getElementById('f-autor');
+  const fStatus = document.getElementById('f-status');
+  const fDescricao = document.getElementById('f-descricao');
+  const coverPreview = document.getElementById('cover-preview');
+  const coverInput = document.getElementById('cover-input');
+
+  const toastEl = document.getElementById('toast');
+  let toastTimer = null;
+
+  // ---------- Utilidades ----------
+
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> toastEl.classList.remove('show'), 2200);
+  }
+
+  function formatDate(iso){
+    const d = new Date(iso);
+    return d.toLocaleDateString('pt-BR', { day:'2-digit', month:'short', year:'numeric' });
+  }
+
+  function relativeUpdated(iso){
+    const diffMs = Date.now() - new Date(iso).getTime();
+    const mins = Math.floor(diffMs/60000);
+    if (mins < 1) return "agora mesmo";
+    if (mins < 60) return `há ${mins} min`;
+    const hours = Math.floor(mins/60);
+    if (hours < 24) return `há ${hours} h`;
+    const days = Math.floor(hours/24);
+    if (days < 30) return `há ${days} d`;
+    return formatDate(iso);
+  }
+
+  function escapeHtml(str){
+    return (str || "").replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  // ---------- Render ----------
+
+  function render(){
+    const query = searchInput.value.trim().toLowerCase();
+    let list = projects.filter(p => {
+      if (!query) return true;
+      return [p.nome, p.titulo, p.autor].some(v => (v||"").toLowerCase().includes(query));
+    });
+
+    const sortMode = sortSelect.value;
+    list = [...list].sort((a,b) => {
+      if (sortMode === 'updated_desc') return new Date(b.updatedAt) - new Date(a.updatedAt);
+      if (sortMode === 'created_desc') return new Date(b.createdAt) - new Date(a.createdAt);
+      if (sortMode === 'name_asc') return a.nome.localeCompare(b.nome, 'pt-BR');
+      if (sortMode === 'status') return a.status.localeCompare(b.status);
+      return 0;
+    });
+
+    shelf.innerHTML = "";
+
+    // card "novo projeto"
+    const newCard = document.createElement('button');
+    newCard.className = 'new-card';
+    newCard.innerHTML = `
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M13 3v20M3 13h20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span>Novo projeto</span>
+    `;
+    newCard.addEventListener('click', openCreateModal);
+    shelf.appendChild(newCard);
+
+    if (projects.length === 0){
+      // nada além do card de novo — ok, deixamos como está
+    }
+
+    if (list.length === 0 && projects.length > 0){
+      const empty = document.createElement('div');
+      empty.className = 'empty';
+      empty.innerHTML = `
+        <h2>Nenhum projeto encontrado</h2>
+        <p>Tente pesquisar por outro nome, título ou autor.</p>
+      `;
+      shelf.appendChild(empty);
+      return;
+    }
+
+    list.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'book-card';
+
+      const hasCover = !!p.capa;
+      const displayTitle = p.titulo || p.nome;
+
+      card.innerHTML = `
+        <div class="book-cover ${hasCover ? '' : 'no-image'}" style="${hasCover ? `background-image:url('${p.capa}')` : ''}">
+          <div class="card-actions">
+            <button class="icon-btn" data-action="export" title="Exportar (.json)">
+              <svg width="14" height="14" viewBox="0 0 15 15" fill="none"><path d="M7.5 1.5v8M4.5 6.5l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 10.5v2a1 1 0 001 1h9a1 1 0 001-1v-2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            </button>
+            <button class="icon-btn" data-action="duplicate" title="Duplicar">
+              <svg width="14" height="14" viewBox="0 0 15 15" fill="none"><rect x="5" y="5" width="8" height="8" rx="1.2" stroke="currentColor" stroke-width="1.3"/><path d="M3 10V3a1 1 0 0 1 1-1h7" stroke="currentColor" stroke-width="1.3"/></svg>
+            </button>
+            <button class="icon-btn" data-action="edit" title="Editar">
+              <svg width="14" height="14" viewBox="0 0 15 15" fill="none"><path d="M9.5 2.5l3 3L4 14H1v-3l8.5-8.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+            </button>
+            <button class="icon-btn danger" data-action="delete" title="Excluir">
+              <svg width="14" height="14" viewBox="0 0 15 15" fill="none"><path d="M3 4h9M6 4V2.5h3V4M4.5 4l.6 8.5a1 1 0 0 0 1 1h3.8a1 1 0 0 0 1-1L11.5 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+          <div class="book-cover-title ${hasCover ? 'on-image' : ''}">${escapeHtml(displayTitle)}</div>
+        </div>
+        <div class="book-meta">
+          <p class="book-author">${escapeHtml(p.autor) || 'Autor não definido'}</p>
+          <div class="book-row">
+            <span class="status-chip ${STATUS_CLASS[p.status]}">${STATUS_LABEL[p.status]}</span>
+          </div>
+          <div class="book-updated">Editado ${relativeUpdated(p.updatedAt)}</div>
+        </div>
+      `;
+
+      card.querySelector('.book-cover').addEventListener('click', () => openProject(p));
+      card.querySelector('[data-action="edit"]').addEventListener('click', (e)=>{ e.stopPropagation(); openEditModal(p.id); });
+      card.querySelector('[data-action="duplicate"]').addEventListener('click', (e)=>{ e.stopPropagation(); duplicateProject(p.id); });
+      card.querySelector('[data-action="delete"]').addEventListener('click', (e)=>{ e.stopPropagation(); openDeleteConfirm(p.id); });
+      card.querySelector('[data-action="export"]').addEventListener('click', (e)=>{ e.stopPropagation(); exportProject(p.id); });
+
+      shelf.appendChild(card);
+    });
+  }
+
+  // ---------- Ações ----------
+
+  function openProject(p){
+    window.location.href = `projeto.html?id=${encodeURIComponent(p.id)}&nome=${encodeURIComponent(p.nome)}`;
+  }
+
+  function duplicateProject(id){
+    const original = projects.find(p => p.id === id);
+    if (!original) return;
+    const copy = {
+      ...original,
+      id: crypto.randomUUID(),
+      nome: original.nome + " (cópia)",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    projects.unshift(copy);
+
+    // duplica também o conteúdo (livro, personagens...), não só a capa do projeto
+    const originalContent = alfaLoadProjectData(original.id);
+    if (originalContent) alfaSaveProjectData(copy.id, originalContent);
+
+    alfaSaveProjects(projects);
+    render();
+    toast(`"${original.nome}" duplicado`);
+  }
+
+  // ---------- Exportar / Importar (JSON) ----------
+
+  function slugify(str){
+    return (str || "projeto")
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '') || 'projeto';
+  }
+
+  function exportProject(id){
+    const p = projects.find(x => x.id === id);
+    if (!p) return;
+    const { id: _omit, ...meta } = p; // não exporta o id interno — um novo é gerado ao importar
+    const content = alfaLoadProjectData(id); // livro, personagens, etc. (se já houver)
+    const data = { ...meta, content: content || null };
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${slugify(p.nome)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toast(`"${p.nome}" exportado`);
+  }
+
+  const importInput = document.getElementById('import-input');
+
+  document.getElementById('btn-import-top').addEventListener('click', () => importInput.click());
+
+  importInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      let list;
+      try {
+        const parsed = JSON.parse(ev.target.result);
+        list = Array.isArray(parsed) ? parsed : [parsed];
+      } catch (err) {
+        toast("Arquivo inválido: não é um JSON legível");
+        importInput.value = "";
+        return;
+      }
+
+      let importedCount = 0;
+      list.forEach(item => {
+        if (!item || typeof item !== 'object' || !item.nome){
+          return; // ignora entradas sem o mínimo necessário (nome do projeto)
+        }
+        const now = new Date().toISOString();
+        const newId = crypto.randomUUID();
+        projects.unshift({
+          id: newId,
+          nome: String(item.nome).trim(),
+          titulo: item.titulo || "",
+          autor: item.autor || "",
+          descricao: item.descricao || "",
+          capa: item.capa || null,
+          status: STATUS_LABEL[item.status] ? item.status : 'rascunho',
+          createdAt: item.createdAt || now,
+          updatedAt: now,
+        });
+        if (item.content){
+          alfaSaveProjectData(newId, item.content); // restaura livro/personagens, se o arquivo tinha
+        }
+        importedCount++;
+      });
+
+      alfaSaveProjects(projects);
+      render();
+      if (importedCount === 0){
+        toast("Nenhum projeto válido encontrado no arquivo");
+      } else {
+        toast(importedCount === 1 ? "Projeto importado" : `${importedCount} projetos importados`);
+      }
+      importInput.value = "";
+    };
+    reader.onerror = () => { toast("Não foi possível ler o arquivo"); importInput.value = ""; };
+    reader.readAsText(file);
+  });
+
+  function openDeleteConfirm(id){
+    deletingId = id;
+    const p = projects.find(x => x.id === id);
+    document.getElementById('confirm-text').textContent =
+      `Tem certeza que deseja excluir "${p.nome}"? Essa ação não pode ser desfeita.`;
+    overlayConfirm.classList.add('open');
+  }
+
+  function closeConfirm(){
+    overlayConfirm.classList.remove('open');
+    deletingId = null;
+  }
+
+  document.getElementById('confirm-delete').addEventListener('click', () => {
+    const p = projects.find(x => x.id === deletingId);
+    projects = projects.filter(x => x.id !== deletingId);
+    alfaSaveProjects(projects);
+    alfaDeleteProjectData(deletingId); // remove também o livro/personagens salvos desse projeto
+    closeConfirm();
+    render();
+    if (p) toast(`"${p.nome}" excluído`);
+  });
+  document.getElementById('cancel-confirm').addEventListener('click', closeConfirm);
+  document.getElementById('close-confirm').addEventListener('click', closeConfirm);
+  overlayConfirm.addEventListener('click', (e) => { if (e.target === overlayConfirm) closeConfirm(); });
+
+  // ---------- Modal criar/editar ----------
+
+  function resetForm(){
+    fNome.value = "";
+    fTitulo.value = "";
+    fAutor.value = "";
+    fStatus.value = "rascunho";
+    fDescricao.value = "";
+    pendingCoverData = null;
+    coverPreview.style.backgroundImage = "";
+    coverPreview.textContent = "sem capa";
+  }
+
+  function openCreateModal(){
+    editingId = null;
+    resetForm();
+    formTitle.textContent = "Novo projeto";
+    overlayForm.classList.add('open');
+    setTimeout(()=> fNome.focus(), 50);
+  }
+
+  function openEditModal(id){
+    const p = projects.find(x => x.id === id);
+    if (!p) return;
+    editingId = id;
+    fNome.value = p.nome;
+    fTitulo.value = p.titulo || "";
+    fAutor.value = p.autor || "";
+    fStatus.value = p.status;
+    fDescricao.value = p.descricao || "";
+    pendingCoverData = p.capa || null;
+    if (p.capa){
+      coverPreview.style.backgroundImage = `url('${p.capa}')`;
+      coverPreview.textContent = "";
+    } else {
+      coverPreview.style.backgroundImage = "";
+      coverPreview.textContent = "sem capa";
+    }
+    formTitle.textContent = "Editar projeto";
+    overlayForm.classList.add('open');
+    setTimeout(()=> fNome.focus(), 50);
+  }
+
+  function closeForm(){
+    overlayForm.classList.remove('open');
+    editingId = null;
+  }
+
+  document.getElementById('btn-new-top').addEventListener('click', openCreateModal);
+  document.getElementById('close-form').addEventListener('click', closeForm);
+  document.getElementById('cancel-form').addEventListener('click', closeForm);
+  overlayForm.addEventListener('click', (e) => { if (e.target === overlayForm) closeForm(); });
+
+  document.getElementById('btn-upload-cover').addEventListener('click', () => coverInput.click());
+  document.getElementById('btn-remove-cover').addEventListener('click', () => {
+    pendingCoverData = null;
+    coverPreview.style.backgroundImage = "";
+    coverPreview.textContent = "sem capa";
+  });
+
+  coverInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      pendingCoverData = ev.target.result;
+      coverPreview.style.backgroundImage = `url('${pendingCoverData}')`;
+      coverPreview.textContent = "";
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('save-form').addEventListener('click', () => {
+    const nome = fNome.value.trim();
+    if (!nome){
+      fNome.focus();
+      toast("Dê um nome ao projeto antes de salvar");
+      return;
+    }
+
+    const now = new Date().toISOString();
+
+    if (editingId){
+      const p = projects.find(x => x.id === editingId);
+      p.nome = nome;
+      p.titulo = fTitulo.value.trim();
+      p.autor = fAutor.value.trim();
+      p.status = fStatus.value;
+      p.descricao = fDescricao.value.trim();
+      p.capa = pendingCoverData;
+      p.updatedAt = now;
+      toast(`"${nome}" atualizado`);
+    } else {
+      projects.unshift({
+        id: crypto.randomUUID(),
+        nome,
+        titulo: fTitulo.value.trim(),
+        autor: fAutor.value.trim(),
+        status: fStatus.value,
+        descricao: fDescricao.value.trim(),
+        capa: pendingCoverData,
+        createdAt: now,
+        updatedAt: now,
+      });
+      toast(`"${nome}" criado`);
+    }
+
+    alfaSaveProjects(projects);
+    closeForm();
+    render();
+  });
+
+  // Enter no form envia (exceto na textarea)
+  document.getElementById('project-form').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA'){
+      e.preventDefault();
+      document.getElementById('save-form').click();
+    }
+  });
+
+  // Esc fecha modais
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape'){
+      closeForm();
+      closeConfirm();
+    }
+  });
+
+  searchInput.addEventListener('input', render);
+  sortSelect.addEventListener('change', render);
+
+  render();
+})();
+</script>
+</body>
+</html>
