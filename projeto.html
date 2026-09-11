@@ -619,6 +619,270 @@
   .gen-empty .glyph{ width:52px; height:52px; border-radius:12px; background: var(--card); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; color: var(--wine); }
   .gen-empty h2{ color: var(--ink); font-size:1.25rem; margin:0; }
   .gen-empty p{ margin:0; font-size:.88rem; max-width:340px; }
+
+  /* ============ Raças e Sub-raças ============ */
+
+  #view-racas{ overflow-y:auto; }
+
+  .race-toolbar{
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding: 22px 28px 10px; flex-wrap:wrap;
+  }
+  .race-search{ flex:1 1 280px; max-width:380px; position:relative; }
+  .race-search svg{ position:absolute; left:14px; top:50%; transform:translateY(-50%); opacity:.55; }
+  #race-search{
+    width:100%; padding:10px 14px 10px 40px; border-radius:8px; border:1px solid var(--line);
+    background: var(--card); outline:none; font-family:'Inter'; font-size:.9rem; color:var(--ink);
+  }
+  #race-search:focus{ border-color: var(--wine); box-shadow:0 0 0 3px rgba(123,59,58,.12); }
+
+  .race-toolbar-actions{ display:flex; align-items:center; gap:10px; }
+
+  .race-grid-wrap{ padding: 14px 28px 60px; }
+  .race-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 22px;
+  }
+
+  .race-card{
+    position:relative;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 18px 16px;
+    cursor:pointer;
+    transition: transform .15s ease, box-shadow .15s ease;
+    display:flex; flex-direction:column; gap:12px;
+    overflow:hidden;
+  }
+  .race-card::before{
+    content:"";
+    position:absolute; top:0; left:0; right:0; height:4px;
+    background: linear-gradient(90deg, var(--gold), var(--wine));
+    opacity:.9;
+  }
+  .race-card:hover{ transform: translateY(-3px); box-shadow: 0 16px 26px -16px rgba(28,32,41,.4); }
+
+  .race-card-top{ display:flex; align-items:flex-start; gap:14px; }
+  .race-avatar{
+    width:58px; height:58px; border-radius:10px;
+    background-size:cover; background-position:center; background-color:#e3dac5;
+    border: 1px solid var(--line); box-shadow: 0 2px 6px rgba(28,32,41,.12);
+    display:flex; align-items:center; justify-content:center;
+    color: var(--slate); font-size:1.2rem; font-family:'Fraunces', serif; font-weight:600;
+    flex-shrink:0;
+  }
+  .race-card-header-info{ flex:1; min-width:0; padding-top:2px; }
+  .race-name{ font-family:'Fraunces', serif; font-weight:600; font-size:1.15rem; color:var(--ink); margin:0 0 4px; line-height:1.2; }
+  .race-meta-tags{ display:flex; flex-wrap:wrap; gap:6px; font-size:.73rem; color:var(--slate); }
+  .race-meta-tag{ background:var(--paper); padding:2px 7px; border-radius:4px; border:1px solid rgba(202,191,159,.6); }
+
+  .race-card-actions{
+    position:absolute; top:12px; right:12px; display:flex; gap:2px; opacity:.7; transition: opacity .15s ease;
+  }
+  .race-card:hover .race-card-actions, .race-card:focus-within .race-card-actions{ opacity:1; }
+  .race-card-actions .icon-btn{ background: rgba(244,239,227,.9); width:28px; height:28px; }
+
+  .race-desc{
+    font-size:.86rem; line-height:1.5; color:var(--ink-soft); margin:0;
+    display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
+  }
+
+  .subraces-container{
+    border-top: 1px dashed var(--line);
+    padding-top: 10px;
+    margin-top:auto;
+  }
+  .subraces-header{
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--gold);
+    margin-bottom: 6px;
+  }
+  .subraces-chips{ display:flex; flex-wrap:wrap; gap:6px; }
+  .subrace-chip{
+    font-size:.74rem; background: var(--paper); border:1px solid var(--line);
+    padding: 3px 8px; border-radius: 6px; color: var(--ink);
+    display:flex; align-items:center; gap:5px;
+  }
+  .subrace-chip-empty{ font-size:.75rem; color:var(--slate); font-style:italic; }
+
+  .race-card-footer{
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:.76rem; color:var(--slate); padding-top:4px; border-top:1px solid rgba(202,191,159,.3);
+  }
+  .race-char-count{ display:flex; align-items:center; gap:5px; }
+
+  .race-empty{
+    grid-column: 1/-1; text-align:center; padding:60px 20px; color: var(--slate);
+  }
+  .race-empty h2{ color:var(--ink); font-size:1.3rem; margin:0 0 8px; }
+
+  /* Sub-raças dentro do drawer */
+  .subrace-drawer-card{
+    background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+    padding: 14px; margin-bottom: 12px; position:relative;
+  }
+  .subrace-drawer-card-head{
+    display:flex; align-items:center; justify-content:space-between; margin-bottom: 8px;
+  }
+  .subrace-drawer-title{
+    font-family:'Fraunces', serif; font-size:1.05rem; font-weight:600; color:var(--wine); margin:0;
+  }
+  .subrace-drawer-actions{ display:flex; gap:4px; }
+  .subrace-drawer-detail{ font-size:.84rem; color:var(--ink-soft); line-height:1.5; margin:0 0 6px; }
+  .subrace-drawer-meta{ font-size:.76rem; color:var(--slate); display:flex; flex-wrap:wrap; gap:8px; margin-top:6px; }
+  .subrace-drawer-meta span{ background:var(--paper); padding:2px 6px; border-radius:4px; border:1px solid var(--line); }
+
+  .race-chars-list{ display:flex; flex-wrap:wrap; gap:8px; }
+  .race-char-chip{
+    display:inline-flex; align-items:center; gap:8px; padding:4px 10px 4px 5px;
+    background:var(--card); border:1px solid var(--line); border-radius:20px;
+    font-size:.8rem; color:var(--ink); cursor:pointer; transition:background .15s ease, border-color .15s ease;
+  }
+  .race-char-chip:hover{ background:var(--paper); border-color:var(--wine); color:var(--wine); }
+  .race-char-chip-photo{
+    width:24px; height:24px; border-radius:50%; background-size:cover; background-position:center;
+    background-color:#e3dac5; display:flex; align-items:center; justify-content:center;
+    font-size:.65rem; font-weight:600; color:var(--slate);
+  }
+
+  /* ============ Mapas e Cartografia ============ */
+
+  #view-mapas{ display:none; height:100%; position:relative; overflow:hidden; }
+  #view-mapas.active{ display:flex; flex-direction:column; }
+
+  .map-header{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding: 10px 18px; border-bottom: 1px solid var(--line); background: var(--card);
+    z-index: 10; flex-wrap:wrap;
+  }
+  .map-header-left{ display:flex; align-items:center; gap:12px; min-width:0; }
+  .map-select-wrap{ display:flex; align-items:center; gap:8px; }
+  .map-select{
+    font-family:'Fraunces', serif; font-size:1.02rem; font-weight:600; color:var(--ink);
+    border:1px solid var(--line); background:var(--paper); padding:6px 28px 6px 12px; border-radius:7px;
+    outline:none; cursor:pointer; max-width:280px;
+  }
+  .map-select:focus{ border-color:var(--wine); }
+
+  .map-header-right{ display:flex; align-items:center; gap:8px; }
+
+  /* Toolbar de ferramentas de cartografia */
+  .map-toolbar{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding: 7px 16px; border-bottom: 1px solid var(--line); background: #eee7d6;
+    z-index: 9; flex-wrap:wrap;
+  }
+  .map-tools-group{ display:flex; align-items:center; gap:4px; }
+  .map-tool-btn{
+    display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:6px;
+    font-size:.82rem; font-weight:500; color:var(--ink-soft); background:transparent; border:1px solid transparent;
+    transition: all .15s ease;
+  }
+  .map-tool-btn:hover{ background:var(--card); color:var(--ink); border-color:var(--line); }
+  .map-tool-btn.active{ background:var(--wine); color:#f4efe3; border-color:var(--wine-deep); }
+  .map-tool-btn svg{ flex-shrink:0; }
+
+  .map-tool-preset-select{
+    padding: 5px 22px 5px 8px; font-size: .8rem; border-radius: 6px; border: 1px solid var(--line);
+    background: var(--card) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7"><path d="M1 1l4 4 4-4" stroke="%2357626b" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 6px center;
+    appearance: none; -webkit-appearance: none; cursor: pointer; color: var(--ink);
+  }
+
+  /* Layers popover */
+  .layers-btn-wrap{ position:relative; }
+  .layers-popup{
+    position:absolute; top:calc(100% + 6px); right:0; background:var(--card); border:1px solid var(--line);
+    border-radius:8px; padding:12px; box-shadow:0 12px 28px -10px rgba(0,0,0,.35); z-index:25;
+    display:none; width:210px; flex-direction:column; gap:8px;
+  }
+  .layers-popup.open{ display:flex; }
+  .layer-checkbox-label{
+    display:flex; align-items:center; gap:8px; font-size:.82rem; color:var(--ink); cursor:pointer;
+  }
+
+  /* Viewport do mapa */
+  .map-viewport{
+    flex:1; position:relative; overflow:hidden;
+    background:
+      radial-gradient(circle, rgba(169,130,46,.12) 1.5px, transparent 1.5px) 0 0/28px 28px,
+      #dcd4be;
+    cursor:grab; user-select:none;
+  }
+  .map-viewport.grabbing{ cursor:grabbing; }
+  .map-viewport.mode-draw{ cursor:crosshair; }
+
+  .map-canvas{
+    position:absolute; top:50%; left:50%; transform-origin:0 0; will-change:transform;
+    width:2400px; height:1600px; margin-left:-1200px; margin-top:-800px;
+    background-color: #f7f2e4;
+    box-shadow: 0 0 50px rgba(0,0,0,.3), 0 0 0 1px var(--line);
+  }
+
+  .map-bg-image{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover; pointer-events:none; opacity:0.85;
+  }
+
+  .map-svg{
+    position:absolute; inset:0; width:100%; height:100%; overflow:visible;
+  }
+
+  /* SVG elements */
+  .map-area-shape{
+    cursor:pointer; transition: filter .15s ease, opacity .15s ease;
+  }
+  .map-area-shape:hover{
+    filter: drop-shadow(0 0 6px rgba(123,59,58,.45)); opacity:0.95;
+  }
+  .map-area-shape.selected{
+    stroke-dasharray: 6 3; stroke-width: 3px !important;
+  }
+
+  .map-line-path{
+    cursor:pointer; transition: stroke-width .15s ease, filter .15s ease;
+  }
+  .map-line-path:hover{
+    filter: drop-shadow(0 0 4px rgba(123,59,58,.5)); stroke-width: 4px;
+  }
+  .map-line-path.selected{
+    stroke-dasharray: 4 2; stroke-width: 4px !important;
+  }
+
+  .map-pin-group{
+    cursor:pointer; transition: transform .12s ease;
+  }
+  .map-pin-group:hover{ transform: scale(1.18); }
+  .map-pin-label{
+    font-family:'Fraunces', serif; font-weight:600; font-size:12px; fill:var(--ink);
+    text-shadow: 0 1px 2px rgba(255,255,255,.9), 0 0 4px rgba(255,255,255,.8);
+    pointer-events:none;
+  }
+
+  .map-text-element{
+    font-family:'Fraunces', serif; cursor:pointer; fill:var(--ink-soft);
+    text-shadow: 0 1px 3px rgba(255,255,255,.8); user-select:none;
+  }
+  .map-text-element:hover{ fill:var(--wine); }
+
+  .map-guide-line{
+    stroke: var(--wine); stroke-width: 1.5; stroke-dasharray: 4 4; pointer-events: none;
+  }
+  .map-vertex-handle{
+    fill: #ffffff; stroke: var(--wine); stroke-width: 2; cursor: pointer;
+  }
+
+  /* Rosa dos ventos decorativa */
+  .compass-rose{
+    position:absolute; bottom:24px; left:24px; width:80px; height:80px; pointer-events:none; opacity:0.65;
+  }
+
+  /* Map empty state */
+  .map-empty-overlay{
+    position:absolute; inset:0; background:var(--paper); display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:12px; text-align:center; padding:40px; z-index:20;
+  }
+  .map-empty-overlay.hide{ display:none; }
 </style>
 </head>
 <body>
@@ -803,7 +1067,11 @@
                 <div class="form-field"><label for="char-nascimento">Data de nascimento</label><input type="text" id="char-nascimento" placeholder="Ex: 12 de março, ano 340"></div>
 
                 <div class="form-field"><label for="char-genero">Gênero</label><input type="text" id="char-genero"></div>
-                <div class="form-field"><label for="char-raca">Raça</label><input type="text" id="char-raca" placeholder="Ex: Elfo da Floresta"></div>
+                <div class="form-field">
+                  <label for="char-raca">Raça</label>
+                  <input type="text" id="char-raca" list="char-raca-list" placeholder="Ex: Elfo ou Elfo da Floresta">
+                  <datalist id="char-raca-list"></datalist>
+                </div>
 
                 <div class="form-field full"><label for="char-descricao">Descrição</label><textarea id="char-descricao" rows="2" placeholder="Uma ou duas frases sobre quem é este personagem"></textarea></div>
                 <div class="form-field full"><label for="char-biografia">Biografia</label><textarea id="char-biografia" rows="4"></textarea></div>
@@ -923,25 +1191,415 @@
       </div>
     </section>
 
-    <!-- ---- Mapas ---- -->
+    <!-- ---- Mapas e Cartografia ---- -->
     <section class="view" id="view-mapas">
-      <div class="placeholder">
-        <div class="glyph"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M8.5 4L3.5 6v14l5-2 7 2 5-2V4l-5 2-7-2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8.5 4v14M15.5 6v14" stroke="currentColor" stroke-width="1.5"/></svg></div>
-        <h2>Mapas</h2>
-        <p>Construa visualmente o mundo da sua história: reinos, cidades, rotas e lugares importantes.</p>
-        <span class="tag">Próxima etapa</span>
+      <!-- Cabeçalho do mapa -->
+      <div class="map-header">
+        <div class="map-header-left">
+          <div class="map-select-wrap">
+            <select class="map-select" id="map-select"></select>
+            <button class="btn btn-ghost" id="map-new-btn" title="Criar novo mapa">+ Novo mapa</button>
+          </div>
+        </div>
+        <div class="map-header-right">
+          <button class="btn btn-ghost" id="map-bg-btn" title="Carregar imagem de referência para desenhar por cima">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3z" stroke="currentColor" stroke-width="1.3"/><circle cx="5.5" cy="5.5" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M14 11l-4-4-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Imagem de fundo
+          </button>
+          <input type="file" id="map-bg-input" accept="image/*" hidden>
+          <button class="btn btn-ghost" id="map-export-btn" title="Exportar mapa como imagem PNG">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M4 7l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 11v2a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Exportar PNG
+          </button>
+          <button class="btn btn-ghost" id="map-edit-meta-btn" title="Editar nome e detalhes do mapa">Editar mapa</button>
+          <button class="icon-btn danger" id="map-delete-btn" title="Excluir este mapa">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 4h9M6 4V2.5h3V4M4.5 4l.6 8.5a1 1 0 0 0 1 1h3.8a1 1 0 0 0 1-1L11.5 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Barra de ferramentas cartográficas -->
+      <div class="map-toolbar">
+        <div class="map-tools-group">
+          <button class="map-tool-btn active" data-map-tool="select" title="Mover canvas / Selecionar elemento">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 3l4.5 11 1.8-4.5L14 7.7 3 3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+            <span>Mover / Selecionar</span>
+          </button>
+
+          <button class="map-tool-btn" data-map-tool="area" title="Desenhar Continente, País ou Território (polígono)">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 4l5-2 5 3-2 8-8-2-0-7z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+            <span>Território / Área</span>
+          </button>
+          <select class="map-tool-preset-select" id="tool-preset-area" title="Tipo de território a desenhar">
+            <option value="continente">Continente</option>
+            <option value="pais">País / Reino</option>
+            <option value="estado">Estado / Província</option>
+            <option value="floresta">Floresta / Bioma</option>
+            <option value="lago">Lago / Mar</option>
+          </select>
+
+          <button class="map-tool-btn" data-map-tool="ponto" title="Adicionar Cidade, Capital ou Ponto de Interesse">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3.2" stroke="currentColor" stroke-width="1.3"/><path d="M8 9.2V14M5.5 14h5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            <span>Ponto / Cidade</span>
+          </button>
+          <select class="map-tool-preset-select" id="tool-preset-ponto" title="Tipo de ponto">
+            <option value="capital">Capital</option>
+            <option value="cidade">Cidade</option>
+            <option value="vila">Vila / Povoado</option>
+            <option value="castelo">Castelo / Fortaleza</option>
+            <option value="montanha">Montanha / Pico</option>
+            <option value="porto">Porto</option>
+            <option value="ruinas">Ruínas / Masmorra</option>
+          </select>
+
+          <button class="map-tool-btn" data-map-tool="linha" title="Traçar Estrada, Rio ou Fronteira">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 13c3-5 5-1 8-6s3 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            <span>Rota / Rio</span>
+          </button>
+          <select class="map-tool-preset-select" id="tool-preset-linha" title="Tipo de rota">
+            <option value="estrada">Estrada</option>
+            <option value="rio">Rio / Curso d'água</option>
+            <option value="maritima">Rota Marítima</option>
+            <option value="fronteira">Fronteira</option>
+          </select>
+
+          <button class="map-tool-btn" data-map-tool="freehand" title="Desenho Livre (Mão livre com curvas suaves para divisas, rios e litorais)">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M12.5 3.5l-8 8L2 14l2.5-2.5 8-8a1.5 1.5 0 0 0-2-2z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.5 5.5l2 2" stroke="currentColor" stroke-width="1.3"/></svg>
+            <span>Mão Livre / Curvas</span>
+          </button>
+          <select class="map-tool-preset-select" id="tool-preset-freehand" title="Tipo de traçado livre">
+            <option value="fronteira_curva">Divisa / Fronteira Livre</option>
+            <option value="continente_curvo">Continente (Área Curva)</option>
+            <option value="pais_curvo">País / Território (Área Curva)</option>
+            <option value="estado_curvo">Estado / Região (Área Curva)</option>
+            <option value="rio_curvo">Rio Sinuoso</option>
+            <option value="estrada_curva">Estrada Livre</option>
+          </select>
+
+          <button class="map-tool-btn" data-map-tool="texto" title="Adicionar Rótulo de Texto">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><text x="3" y="12" font-size="12" font-family="'Fraunces',serif" font-weight="600" fill="currentColor">T</text></svg>
+            <span>Rótulo</span>
+          </button>
+        </div>
+
+        <div class="map-tools-group">
+          <!-- Popover de Camadas -->
+          <div class="layers-btn-wrap">
+            <button class="btn btn-ghost" id="map-layers-toggle" style="padding:6px 12px; font-size:.82rem;">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2l6 3.5L8 9 2 5.5 8 2zM2 8.5l6 3.5 6-3.5M2 11.5l6 3.5 6-3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Camadas
+            </button>
+            <div class="layers-popup" id="map-layers-popup">
+              <label class="layer-checkbox-label"><input type="checkbox" id="layer-show-continente" checked> Continentes</label>
+              <label class="layer-checkbox-label"><input type="checkbox" id="layer-show-pais" checked> Países / Reinos</label>
+              <label class="layer-checkbox-label"><input type="checkbox" id="layer-show-estado" checked> Estados / Províncias</label>
+              <label class="layer-checkbox-label"><input type="checkbox" id="layer-show-cidades" checked> Cidades &amp; Pontos</label>
+              <label class="layer-checkbox-label"><input type="checkbox" id="layer-show-rotas" checked> Rios &amp; Estradas</label>
+              <label class="layer-checkbox-label"><input type="checkbox" id="layer-show-rotulos" checked> Rótulos de Texto</label>
+            </div>
+          </div>
+
+          <div style="width:1px; height:20px; background:var(--line); margin:0 4px;"></div>
+
+          <button class="icon-btn" id="map-zoom-out" title="Diminuir zoom">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.6" stroke="currentColor" stroke-width="1.3"/><path d="M9.6 9.6L13 13M4 6h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </button>
+          <span class="gen-zoom-label" id="map-zoom-label" style="font-size:.78rem; width:38px; text-align:center; color:var(--slate);">100%</span>
+          <button class="icon-btn" id="map-zoom-in" title="Aumentar zoom">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.6" stroke="currentColor" stroke-width="1.3"/><path d="M9.6 9.6L13 13M6 4v4M4 6h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </button>
+          <button class="btn btn-ghost" id="map-reset-view" style="padding:5px 10px; font-size:.8rem;">Centralizar</button>
+        </div>
+      </div>
+
+      <!-- Viewport interativo -->
+      <div class="map-viewport" id="map-viewport">
+        <div class="map-canvas" id="map-canvas">
+          <img id="map-bg-image" class="map-bg-image" style="display:none;" alt="Mapa de Fundo">
+          <svg id="map-svg" class="map-svg" viewBox="0 0 2400 1600"></svg>
+        </div>
+
+        <!-- Rosa dos ventos decorativa -->
+        <div class="compass-rose">
+          <svg viewBox="0 0 100 100" fill="none">
+            <circle cx="50" cy="50" r="46" stroke="#7b3b3a" stroke-width="1.5" stroke-dasharray="2 3"/>
+            <polygon points="50,6 55,45 50,50 45,45" fill="#7b3b3a"/>
+            <polygon points="50,6 50,50 45,45" fill="#a9822e"/>
+            <polygon points="50,94 55,55 50,50 45,55" fill="#57626b"/>
+            <polygon points="6,50 45,45 50,50 45,55" fill="#57626b"/>
+            <polygon points="94,50 55,45 50,50 55,55" fill="#57626b"/>
+            <circle cx="50" cy="50" r="4" fill="#1c2029"/>
+            <text x="50" y="22" font-family="'Fraunces', serif" font-size="12" font-weight="700" fill="#7b3b3a" text-anchor="middle">N</text>
+          </svg>
+        </div>
+
+        <div class="map-empty-overlay" id="map-empty-overlay">
+          <div class="glyph" style="width:56px; height:56px; border-radius:12px; background:var(--card); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; color:var(--wine);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M8.5 4L3.5 6v14l5-2 7 2 5-2V4l-5 2-7-2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8.5 4v14M15.5 6v14" stroke="currentColor" stroke-width="1.5"/></svg>
+          </div>
+          <h2 style="margin:0; font-size:1.3rem;">Nenhum mapa criado ainda</h2>
+          <p style="margin:0; color:var(--slate); max-width:380px;">Crie o primeiro mapa para começar a desenhar os continentes, reinos, cidades e rotas do seu mundo.</p>
+          <button class="btn btn-primary" id="map-empty-create-btn" style="margin-top:10px;">Criar primeiro mapa</button>
+        </div>
       </div>
     </section>
 
-    <!-- ---- Raças ---- -->
+    <!-- ---- Ficha (Drawer) de Elemento do Mapa ---- -->
+    <div class="drawer-overlay" id="map-element-drawer-overlay">
+      <aside class="drawer" id="map-element-drawer" style="width: 440px;">
+        <div class="drawer-head">
+          <button class="icon-btn" id="map-element-drawer-close" aria-label="Fechar"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+          <div class="drawer-head-actions">
+            <button class="icon-btn danger" id="map-element-drawer-delete" title="Excluir este local do mapa"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 4h9M6 4V2.5h3V4M4.5 4l.6 8.5a1 1 0 0 0 1 1h3.8a1 1 0 0 0 1-1L11.5 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+        <div class="drawer-body" id="map-element-drawer-body">
+          <form id="map-element-form">
+            <div class="form-field" style="margin-bottom:12px;">
+              <label for="el-nome">Nome do local / território *</label>
+              <input type="text" id="el-nome" required placeholder="Ex: Reino de Eldoria, Valdor, Floresta Sombria">
+            </div>
+
+            <div class="form-grid" style="margin-bottom:12px;">
+              <div class="form-field">
+                <label for="el-categoria">Tipo / Categoria</label>
+                <select id="el-categoria">
+                  <option value="continente">Continente</option>
+                  <option value="pais">País / Reino</option>
+                  <option value="estado">Estado / Província</option>
+                  <option value="floresta">Floresta / Bioma</option>
+                  <option value="lago">Lago / Mar</option>
+                  <option value="capital">Capital</option>
+                  <option value="cidade">Cidade</option>
+                  <option value="vila">Vila / Povoado</option>
+                  <option value="castelo">Castelo / Fortaleza</option>
+                  <option value="montanha">Montanha</option>
+                  <option value="porto">Porto</option>
+                  <option value="ruinas">Ruínas</option>
+                  <option value="estrada">Estrada</option>
+                  <option value="rio">Rio</option>
+                  <option value="maritima">Rota Marítima</option>
+                  <option value="fronteira">Fronteira</option>
+                  <option value="rotulo">Rótulo Livre</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label for="el-raca">Povo / Raça Predominante</label>
+                <select id="el-raca"></select>
+              </div>
+            </div>
+
+            <div class="form-grid" style="margin-bottom:12px;">
+              <div class="form-field">
+                <label for="el-populacao">População estimada</label>
+                <input type="text" id="el-populacao" placeholder="Ex: 50.000 habitantes">
+              </div>
+              <div class="form-field">
+                <label for="el-governo">Governo / Soberania</label>
+                <input type="text" id="el-governo" placeholder="Ex: Monarquia, Conselho de Magos">
+              </div>
+            </div>
+
+            <div class="form-field full" style="margin-bottom:12px;">
+              <label for="el-descricao">Lore, História &amp; Detalhes</label>
+              <textarea id="el-descricao" rows="4" placeholder="O que acontece neste local? Fatos marcantes, clima, geografia..."></textarea>
+            </div>
+
+            <div class="form-grid" style="margin-bottom:12px;">
+              <div class="form-field">
+                <label for="el-cor-preenchimento">Cor principal</label>
+                <input type="color" id="el-cor-preenchimento" value="#d4c5a9" style="height:38px; padding:2px 6px; cursor:pointer;">
+              </div>
+              <div class="form-field">
+                <label for="el-cor-borda">Cor da borda</label>
+                <input type="color" id="el-cor-borda" value="#7b3b3a" style="height:38px; padding:2px 6px; cursor:pointer;">
+              </div>
+            </div>
+
+            <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:8px;">
+              <button type="button" class="btn btn-primary" id="map-element-save-btn">Salvar alterações</button>
+            </div>
+          </form>
+        </div>
+      </aside>
+    </div>
+
+    <!-- ---- Modal criar/editar Mapa ---- -->
+    <div class="overlay" id="map-form-overlay">
+      <div class="modal" style="max-width:540px;">
+        <div class="modal-head">
+          <h2 id="map-form-title">Novo mapa</h2>
+          <button class="icon-btn" id="map-form-close" aria-label="Fechar"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        </div>
+        <div class="modal-body">
+          <form id="map-form">
+            <div class="form-grid">
+              <div class="form-field full">
+                <label for="map-name-input">Nome do mapa *</label>
+                <input type="text" id="map-name-input" required placeholder="Ex: Mapa Mundi, Continente de Valdor, Reino do Sul">
+              </div>
+              <div class="form-field full">
+                <label for="map-desc-input">Descrição</label>
+                <textarea id="map-desc-input" rows="3" placeholder="Contexto ou objetivo deste mapa no seu livro"></textarea>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-foot">
+          <button class="btn btn-ghost" id="map-form-cancel">Cancelar</button>
+          <button class="btn btn-primary" id="map-form-save">Salvar mapa</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Raças e Sub-raças ---- -->
     <section class="view" id="view-racas">
-      <div class="placeholder">
-        <div class="glyph"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2.5l8 4.6v9.8L12 21.5l-8-4.6V7.1l8-4.6z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 2.5v19M4 7.1l8 4.6 8-4.6" stroke="currentColor" stroke-width="1.3"/></svg></div>
-        <h2>Raças e sub-raças</h2>
-        <p>Defina os povos do seu universo, suas características e como se organizam em sub-raças.</p>
-        <span class="tag">Próxima etapa</span>
+      <div class="race-toolbar">
+        <div class="search-wrap race-search">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#1c2029" stroke-width="1.4"/><path d="M10.3 10.3L13.5 13.5" stroke="#1c2029" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <input type="search" id="race-search" placeholder="Pesquisar raça, sub-raça ou traços…">
+        </div>
+        <div class="race-toolbar-actions">
+          <button class="btn btn-primary" id="race-new-btn">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            Nova raça
+          </button>
+        </div>
+      </div>
+
+      <div class="race-grid-wrap">
+        <div class="race-grid" id="race-grid"></div>
       </div>
     </section>
+
+    <!-- ---- Ficha (drawer) de raça ---- -->
+    <div class="drawer-overlay" id="race-drawer-overlay">
+      <aside class="drawer" id="race-drawer" style="width: 480px;">
+        <div class="drawer-head">
+          <button class="icon-btn" id="race-drawer-close" aria-label="Fechar"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+          <div class="drawer-head-actions">
+            <button class="btn btn-ghost" id="race-drawer-add-subrace">+ Sub-raça</button>
+            <button class="btn btn-ghost" id="race-drawer-edit">Editar</button>
+            <button class="icon-btn danger" id="race-drawer-delete" title="Excluir"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 4h9M6 4V2.5h3V4M4.5 4l.6 8.5a1 1 0 0 0 1 1h3.8a1 1 0 0 0 1-1L11.5 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+        <div class="drawer-body" id="race-drawer-body"><!-- preenchido via JS --></div>
+      </aside>
+    </div>
+
+    <!-- ---- Modal criar/editar raça ---- -->
+    <div class="overlay" id="race-form-overlay">
+      <div class="modal" style="max-width:720px;">
+        <div class="modal-head">
+          <h2 id="race-form-title">Nova raça</h2>
+          <button class="icon-btn" id="race-form-close" aria-label="Fechar"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        </div>
+
+        <div class="char-tabs" id="race-tabs">
+          <button class="char-tab active" data-tab="geral">Geral &amp; Origem</button>
+          <button class="char-tab" data-tab="fisiologia">Fisiologia &amp; Traços</button>
+          <button class="char-tab" data-tab="sociedade">Sociedade &amp; Cultura</button>
+        </div>
+
+        <div class="modal-body">
+          <form id="race-form">
+            <!-- GERAL -->
+            <div class="char-tab-panel active" data-panel="geral">
+              <div class="form-grid">
+                <div class="form-field full">
+                  <label>Emblema / Imagem</label>
+                  <div class="photo-uploads">
+                    <div class="photo-upload-item">
+                      <div class="cover-preview" id="race-img-preview" style="width:80px;height:80px;border-radius:10px;">imagem</div>
+                      <div class="upload-buttons">
+                        <button type="button" class="btn btn-ghost" id="race-img-btn">Escolher imagem</button>
+                        <button type="button" class="btn btn-ghost" id="race-img-remove">Remover</button>
+                        <input type="file" id="race-img-input" accept="image/*" hidden>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-field full"><label for="race-nome">Nome da raça *</label><input type="text" id="race-nome" required placeholder="Ex: Elfo, Anão, Draconato"></div>
+                <div class="form-field full"><label for="race-descricao">Descrição resumida</label><textarea id="race-descricao" rows="2" placeholder="Uma breve sinopse de quem é esta raça no seu mundo"></textarea></div>
+                <div class="form-field full"><label for="race-origem">Origem &amp; História</label><textarea id="race-origem" rows="3" placeholder="Mitos de criação, ancestrais, como surgiram ou se estabeleceram"></textarea></div>
+                <div class="form-field full"><label for="race-idioma">Idioma / Dialetos</label><input type="text" id="race-idioma" placeholder="Ex: Élfico clássico, dialetos da floresta"></div>
+              </div>
+            </div>
+
+            <!-- FISIOLOGIA -->
+            <div class="char-tab-panel" data-panel="fisiologia">
+              <div class="form-grid">
+                <div class="form-field"><label for="race-longevidade">Expectativa de vida / Longevidade</label><input type="text" id="race-longevidade" placeholder="Ex: 700 a 1000 anos, imortal"></div>
+                <div class="form-field"><label for="race-altura-media">Altura média</label><input type="text" id="race-altura-media" placeholder="Ex: 1,70 m a 1,90 m"></div>
+                <div class="form-field"><label for="race-peso-medio">Peso médio</label><input type="text" id="race-peso-medio" placeholder="Ex: 55 kg a 75 kg"></div>
+                <div class="form-field"><label for="race-porte">Porte / Tipo</label><input type="text" id="race-porte" placeholder="Ex: Esguio, Robusto, Minúsculo"></div>
+                <div class="form-field full"><label for="race-tracos-fisicos">Características físicas distintivas</label><textarea id="race-tracos-fisicos" rows="3" placeholder="Orelhas pontiagudas, olhos bioluminescentes, escamas, constituição física"></textarea></div>
+                <div class="form-field full"><label for="race-habilidades">Habilidades raciais / Aptidões</label><textarea id="race-habilidades" rows="3" placeholder="Visão no escuro, resistência ao fogo, afinidade mágica natural"></textarea></div>
+              </div>
+            </div>
+
+            <!-- SOCIEDADE -->
+            <div class="char-tab-panel" data-panel="sociedade">
+              <div class="form-grid">
+                <div class="form-field full"><label for="race-cultura">Cultura, crenças &amp; organização social</label><textarea id="race-cultura" rows="3" placeholder="Costumes, religião, deuses patronos, governo, arte"></textarea></div>
+                <div class="form-field full"><label for="race-relacoes">Relações com outras raças</label><textarea id="race-relacoes" rows="2" placeholder="Alianças históricas, rivalidades antigas, tratados"></textarea></div>
+                <div class="form-field full"><label for="race-observacoes">Notas &amp; Curiosidades</label><textarea id="race-observacoes" rows="2" placeholder="Tradições secretas, tabus, peculiaridades"></textarea></div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-foot">
+          <button class="btn btn-ghost" id="race-form-cancel">Cancelar</button>
+          <button class="btn btn-primary" id="race-form-save">Salvar raça</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Modal criar/editar sub-raça ---- -->
+    <div class="overlay" id="subrace-form-overlay">
+      <div class="modal" style="max-width:580px;">
+        <div class="modal-head">
+          <h2 id="subrace-form-title">Nova sub-raça</h2>
+          <button class="icon-btn" id="subrace-form-close" aria-label="Fechar"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        </div>
+        <div class="modal-body">
+          <form id="subrace-form">
+            <div class="form-grid">
+              <div class="form-field full">
+                <label for="subrace-parent-select">Raça principal *</label>
+                <select id="subrace-parent-select" required></select>
+              </div>
+              <div class="form-field full">
+                <label for="subrace-nome">Nome da sub-raça *</label>
+                <input type="text" id="subrace-nome" required placeholder="Ex: Elfo da Floresta, Alto Elfo, Anão da Colina">
+              </div>
+              <div class="form-field full">
+                <label for="subrace-descricao">Descrição / Lore</label>
+                <textarea id="subrace-descricao" rows="2" placeholder="O que define esta sub-raça em relação à raça mãe"></textarea>
+              </div>
+              <div class="form-field">
+                <label for="subrace-habitat">Hábitat / Região típica</label>
+                <input type="text" id="subrace-habitat" placeholder="Ex: Bosques ancestrais, Montanhas gélidas">
+              </div>
+              <div class="form-field">
+                <label for="subrace-tracos">Diferenças físicas / traços</label>
+                <input type="text" id="subrace-tracos" placeholder="Ex: Pele escura, olhos prateados">
+              </div>
+              <div class="form-field full">
+                <label for="subrace-habilidades">Habilidades exclusivas / modificadores</label>
+                <textarea id="subrace-habilidades" rows="2" placeholder="Camuflagem na vegetação, afinidade com arco"></textarea>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-foot">
+          <button class="btn btn-ghost" id="subrace-form-cancel">Cancelar</button>
+          <button class="btn btn-primary" id="subrace-form-save">Salvar sub-raça</button>
+        </div>
+      </div>
+    </div>
 
     <!-- ---- Configurações ---- -->
     <section class="view" id="view-config">
@@ -1055,11 +1713,9 @@
   let viewMode = 'editor'; // 'editor' | 'livro'
   let spreadIndex = 0; // for livro mode pagination (simplified: splits by scenes list, 2 per spread)
 
-  // Salva o conteúdo do projeto (livro + personagens) no navegador.
-  // "characters" só é declarado mais abaixo, mas como esta função só roda
-  // quando chamada (nunca na hora da definição), a variável já existe em tempo de uso.
+  // Salva o conteúdo do projeto (livro + personagens + raças + mapas) no navegador.
   function persistProject(){
-    alfaSaveProjectData(projectId, { book, characters });
+    alfaSaveProjectData(projectId, { book, characters, races, maps });
     alfaTouchProject(projectId);
   }
   const persistProjectDebounced = alfaDebounce(persistProject, 500);
@@ -1880,13 +2536,1476 @@
   document.querySelector('.nav-item[data-view="genealogia"]').addEventListener('click', renderGenealogy);
 
   const _origRenderCharGrid = renderCharGrid;
-  renderCharGrid = function(){ _origRenderCharGrid(); renderGenealogy(); };
+  renderCharGrid = function(){
+    _origRenderCharGrid();
+    renderGenealogy();
+    if (document.getElementById('view-racas').classList.contains('active')) renderRaceGrid();
+  };
+
+  // ================= RAÇAS E SUB-RAÇAS =================
+
+  let races = (savedProjectData && savedProjectData.races) ? savedProjectData.races : [];
+
+  let raceEditingId = null;
+  let raceViewingId = null;
+  let racePendingImg = null;
+  let subraceEditingId = null;
+  let subraceParentRaceId = null;
+
+  const raceGrid = document.getElementById('race-grid');
+  const raceSearch = document.getElementById('race-search');
+  const raceDrawerOverlay = document.getElementById('race-drawer-overlay');
+  const raceFormOverlay = document.getElementById('race-form-overlay');
+  const subraceFormOverlay = document.getElementById('subrace-form-overlay');
+
+  const raceFields = [
+    'nome', 'descricao', 'origem', 'idioma',
+    'longevidade', 'altura-media', 'peso-medio', 'porte',
+    'tracos-fisicos', 'habilidades',
+    'cultura', 'relacoes', 'observacoes'
+  ];
+
+  function raceFieldEl(name){ return document.getElementById('race-' + name); }
+
+  function getRaceCharacters(raceName, subraces){
+    if (!raceName) return [];
+    const rNameLower = raceName.toLowerCase().trim();
+    const subNames = (subraces || []).map(s => s.nome.toLowerCase().trim());
+    return characters.filter(c => {
+      const cr = (c.raca || '').toLowerCase().trim();
+      if (!cr) return false;
+      return cr === rNameLower || cr.includes(rNameLower) || subNames.some(sn => cr.includes(sn));
+    });
+  }
+
+  function renderRaceGrid(){
+    const q = raceSearch.value.trim().toLowerCase();
+    const list = races.filter(r => {
+      if (!q) return true;
+      const inRace = r.nome.toLowerCase().includes(q) ||
+                     (r.descricao || '').toLowerCase().includes(q) ||
+                     (r.tracosFisicos || '').toLowerCase().includes(q) ||
+                     (r.habilidades || '').toLowerCase().includes(q);
+      const inSub = (r.subracas || []).some(s =>
+        s.nome.toLowerCase().includes(q) ||
+        (s.descricao || '').toLowerCase().includes(q) ||
+        (s.habitat || '').toLowerCase().includes(q)
+      );
+      return inRace || inSub;
+    });
+
+    raceGrid.innerHTML = "";
+
+    if (races.length === 0){
+      raceGrid.innerHTML = `
+        <div class="race-empty">
+          <h2>Nenhuma raça cadastrada</h2>
+          <p>Crie as raças, espécies e povos que habitam o seu universo ficcional.</p>
+          <button class="btn btn-primary" id="race-empty-new-btn" style="margin-top:14px;">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            Criar primeira raça
+          </button>
+        </div>
+      `;
+      const btn = document.getElementById('race-empty-new-btn');
+      if (btn) btn.addEventListener('click', () => openRaceForm(null));
+      return;
+    }
+
+    if (list.length === 0){
+      raceGrid.innerHTML = `<div class="race-empty"><h2>Nenhum resultado encontrado</h2><p>Tente pesquisar por outros termos ou características.</p></div>`;
+      return;
+    }
+
+    list.forEach(r => {
+      const card = document.createElement('div');
+      card.className = 'race-card';
+
+      const subs = r.subracas || [];
+      const charCount = getRaceCharacters(r.nome, subs).length;
+      const metaTags = [r.longevidade, r.porte, r.idioma].filter(Boolean);
+
+      const subChipsHtml = subs.length
+        ? subs.slice(0, 3).map(s => `<span class="subrace-chip">${escapeHtml(s.nome)}</span>`).join('') +
+          (subs.length > 3 ? `<span class="subrace-chip" style="font-weight:600; color:var(--wine);">+${subs.length - 3}</span>` : '')
+        : `<span class="subrace-chip-empty">Sem sub-raças</span>`;
+
+      card.innerHTML = `
+        <div class="race-card-actions">
+          <button class="icon-btn" data-action="add-sub" title="Adicionar sub-raça"><svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+          <button class="icon-btn" data-action="edit" title="Editar raça"><svg width="13" height="13" viewBox="0 0 15 15" fill="none"><path d="M9.5 2.5l3 3L4 14H1v-3l8.5-8.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></button>
+          <button class="icon-btn danger" data-action="delete" title="Excluir raça"><svg width="13" height="13" viewBox="0 0 15 15" fill="none"><path d="M3 4h9M6 4V2.5h3V4M4.5 4l.6 8.5a1 1 0 0 0 1 1h3.8a1 1 0 0 0 1-1L11.5 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+
+        <div class="race-card-top">
+          <div class="race-avatar" style="${r.imagem ? `background-image:url('${r.imagem}')` : ''}">${r.imagem ? '' : initials(r.nome)}</div>
+          <div class="race-card-header-info">
+            <h3 class="race-name">${escapeHtml(r.nome)}</h3>
+            <div class="race-meta-tags">
+              ${metaTags.map(m => `<span class="race-meta-tag">${escapeHtml(m)}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+
+        ${r.descricao ? `<p class="race-desc">${escapeHtml(r.descricao)}</p>` : ''}
+
+        <div class="subraces-container">
+          <div class="subraces-header">
+            <span>Sub-raças (${subs.length})</span>
+          </div>
+          <div class="subraces-chips">
+            ${subChipsHtml}
+          </div>
+        </div>
+
+        <div class="race-card-footer">
+          <div class="race-char-count">
+            <svg width="13" height="13" viewBox="0 0 17 17" fill="none" style="opacity:.6;"><circle cx="8.5" cy="5.5" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M2.8 14.2c1-2.6 3.2-4 5.7-4s4.7 1.4 5.7 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            <span>${charCount} personagem${charCount === 1 ? '' : 's'}</span>
+          </div>
+          <span style="font-size:.74rem; font-weight:600; color:var(--wine); opacity:.9;">Ver ficha &rarr;</span>
+        </div>
+      `;
+
+      card.addEventListener('click', () => openRaceDrawer(r.id));
+      card.querySelector('[data-action="add-sub"]').addEventListener('click', (e) => { e.stopPropagation(); openSubraceForm(r.id, null); });
+      card.querySelector('[data-action="edit"]').addEventListener('click', (e) => { e.stopPropagation(); openRaceForm(r.id); });
+      card.querySelector('[data-action="delete"]').addEventListener('click', (e) => { e.stopPropagation(); deleteRace(r.id); });
+
+      raceGrid.appendChild(card);
+    });
+  }
+
+  function deleteRace(id){
+    const r = races.find(x => x.id === id);
+    if (!r) return;
+    const subsCount = (r.subracas || []).length;
+    const subMsg = subsCount > 0 ? ` e suas ${subsCount} sub-raça(s)` : '';
+    appConfirm(`Excluir a raça "${r.nome}"${subMsg}? Essa ação não pode ser desfeita.`, () => {
+      races = races.filter(x => x.id !== id);
+      closeRaceDrawer();
+      renderRaceGrid();
+      populateCharRaceDatalist();
+      persistProject();
+    });
+  }
+
+  // ---------- Drawer de Raça ----------
+
+  function openRaceDrawer(id){
+    const r = races.find(x => x.id === id);
+    if (!r) return;
+    raceViewingId = id;
+
+    const subs = r.subracas || [];
+    const relatedChars = getRaceCharacters(r.nome, subs);
+
+    function section(title, value){
+      if (!value) return '';
+      return `<div class="drawer-section"><h4>${title}</h4><p>${escapeHtml(value)}</p></div>`;
+    }
+
+    const subCardsHtml = subs.length
+      ? subs.map(s => `
+          <div class="subrace-drawer-card">
+            <div class="subrace-drawer-card-head">
+              <h5 class="subrace-drawer-title">${escapeHtml(s.nome)}</h5>
+              <div class="subrace-drawer-actions">
+                <button class="icon-btn" data-subaction="edit" data-subid="${s.id}" title="Editar sub-raça"><svg width="13" height="13" viewBox="0 0 15 15" fill="none"><path d="M9.5 2.5l3 3L4 14H1v-3l8.5-8.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></button>
+                <button class="icon-btn danger" data-subaction="delete" data-subid="${s.id}" title="Excluir sub-raça"><svg width="13" height="13" viewBox="0 0 15 15" fill="none"><path d="M3 4h9M6 4V2.5h3V4M4.5 4l.6 8.5a1 1 0 0 0 1 1h3.8a1 1 0 0 0 1-1L11.5 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              </div>
+            </div>
+            ${s.descricao ? `<p class="subrace-drawer-detail">${escapeHtml(s.descricao)}</p>` : ''}
+            ${s.tracos ? `<p class="subrace-drawer-detail"><strong>Traços:</strong> ${escapeHtml(s.tracos)}</p>` : ''}
+            ${s.habilidades ? `<p class="subrace-drawer-detail"><strong>Habilidades:</strong> ${escapeHtml(s.habilidades)}</p>` : ''}
+            <div class="subrace-drawer-meta">
+              ${s.habitat ? `<span>Hábitat: ${escapeHtml(s.habitat)}</span>` : ''}
+            </div>
+          </div>
+        `).join('')
+      : `<p style="color:var(--slate); font-size:.85rem; font-style:italic;">Nenhuma sub-raça cadastrada para este povo.</p>`;
+
+    const charsHtml = relatedChars.length
+      ? `<div class="race-chars-list">
+          ${relatedChars.map(c => `
+            <div class="race-char-chip" data-charid="${c.id}" title="Abrir ficha de ${escapeHtml(c.nome)}">
+              <div class="race-char-chip-photo" style="${c.fotoPerfil ? `background-image:url('${c.fotoPerfil}')` : ''}">${c.fotoPerfil ? '' : initials(c.nome)}</div>
+              <span>${escapeHtml(c.nome)}</span>
+            </div>
+          `).join('')}
+        </div>`
+      : `<p style="color:var(--slate); font-size:.85rem;">Nenhum personagem associado a esta raça ainda.</p>`;
+
+    document.getElementById('race-drawer-body').innerHTML = `
+      <div class="drawer-photos">
+        <div class="drawer-photo-round" style="border-radius:12px; ${r.imagem ? `background-image:url('${r.imagem}')` : ''}">
+          ${r.imagem ? '' : `<span style="font-size:1.8rem; font-family:'Fraunces',serif; color:var(--slate); display:flex; align-items:center; justify-content:center; height:100%;">${initials(r.nome)}</span>`}
+        </div>
+      </div>
+      <h2 class="drawer-name">${escapeHtml(r.nome)}</h2>
+      <p class="drawer-sub">${[r.porte, r.idioma].filter(Boolean).map(escapeHtml).join(' · ') || 'Povo ficcional'}</p>
+
+      ${section('Visão Geral & Descrição', r.descricao)}
+      ${section('Origem & História', r.origem)}
+
+      <div class="drawer-section">
+        <h4>Fisiologia & Dados</h4>
+        <div class="drawer-field-grid">
+          ${r.longevidade ? `<div><span class="drawer-field-label">Longevidade</span><span class="drawer-field-value">${escapeHtml(r.longevidade)}</span></div>` : ''}
+          ${r.alturaMedia ? `<div><span class="drawer-field-label">Altura média</span><span class="drawer-field-value">${escapeHtml(r.alturaMedia)}</span></div>` : ''}
+          ${r.pesoMedio ? `<div><span class="drawer-field-label">Peso médio</span><span class="drawer-field-value">${escapeHtml(r.pesoMedio)}</span></div>` : ''}
+          ${r.porte ? `<div><span class="drawer-field-label">Porte</span><span class="drawer-field-value">${escapeHtml(r.porte)}</span></div>` : ''}
+          ${r.idioma ? `<div><span class="drawer-field-label">Idioma</span><span class="drawer-field-value">${escapeHtml(r.idioma)}</span></div>` : ''}
+        </div>
+      </div>
+
+      ${section('Características Físicas', r.tracosFisicos)}
+      ${section('Habilidades Raciais & Aptidões', r.habilidades)}
+      ${section('Cultura & Sociedade', r.cultura)}
+      ${section('Relações Interraciais', r.relacoes)}
+      ${section('Notas & Curiosidades', r.observacoes)}
+
+      <div class="drawer-section">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+          <h4 style="margin:0;">Sub-raças (${subs.length})</h4>
+          <button class="btn btn-ghost" id="subrace-drawer-add-btn" style="padding:4px 10px; font-size:.78rem;">+ Nova sub-raça</button>
+        </div>
+        ${subCardsHtml}
+      </div>
+
+      <div class="drawer-section">
+        <h4>Personagens (${relatedChars.length})</h4>
+        ${charsHtml}
+      </div>
+    `;
+
+    // Handlers dentro do drawer
+    const bodyEl = document.getElementById('race-drawer-body');
+    const addSubBtn = document.getElementById('subrace-drawer-add-btn');
+    if (addSubBtn) addSubBtn.addEventListener('click', () => openSubraceForm(r.id, null));
+
+    bodyEl.querySelectorAll('[data-subaction="edit"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openSubraceForm(r.id, btn.dataset.subid);
+      });
+    });
+
+    bodyEl.querySelectorAll('[data-subaction="delete"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        deleteSubrace(r.id, btn.dataset.subid);
+      });
+    });
+
+    bodyEl.querySelectorAll('.race-char-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const charId = chip.dataset.charid;
+        closeRaceDrawer();
+        document.querySelector('.nav-item[data-view="personagens"]').click();
+        openCharDrawer(charId);
+      });
+    });
+
+    raceDrawerOverlay.classList.add('open');
+  }
+
+  function closeRaceDrawer(){
+    raceDrawerOverlay.classList.remove('open');
+    raceViewingId = null;
+  }
+
+  document.getElementById('race-drawer-close').addEventListener('click', closeRaceDrawer);
+  raceDrawerOverlay.addEventListener('click', (e) => { if (e.target === raceDrawerOverlay) closeRaceDrawer(); });
+  document.getElementById('race-drawer-add-subrace').addEventListener('click', () => { if (raceViewingId) openSubraceForm(raceViewingId, null); });
+  document.getElementById('race-drawer-edit').addEventListener('click', () => { const id = raceViewingId; closeRaceDrawer(); openRaceForm(id); });
+  document.getElementById('race-drawer-delete').addEventListener('click', () => { if (raceViewingId) deleteRace(raceViewingId); });
+
+  // ---------- Form de Raça (Criar / Editar) ----------
+
+  function resetRaceForm(){
+    raceFields.forEach(f => {
+      const el = raceFieldEl(f);
+      if (el) el.value = "";
+    });
+    racePendingImg = null;
+    updatePhotoPreview('race-img-preview', null, 'imagem');
+    switchRaceTab('geral');
+  }
+
+  function openRaceForm(id){
+    raceEditingId = id || null;
+    resetRaceForm();
+
+    if (id){
+      const r = races.find(x => x.id === id);
+      if (r){
+        raceFields.forEach(f => {
+          const key = f.replace(/-([a-z])/g, (_, ch) => ch.toUpperCase());
+          const el = raceFieldEl(f);
+          if (el) el.value = r[key] || "";
+        });
+        racePendingImg = r.imagem || null;
+        updatePhotoPreview('race-img-preview', racePendingImg, 'imagem');
+        document.getElementById('race-form-title').textContent = "Editar raça";
+      }
+    } else {
+      document.getElementById('race-form-title').textContent = "Nova raça";
+    }
+
+    raceFormOverlay.classList.add('open');
+    setTimeout(() => raceFieldEl('nome').focus(), 50);
+  }
+
+  function closeRaceForm(){
+    raceFormOverlay.classList.remove('open');
+    raceEditingId = null;
+  }
+
+  document.getElementById('race-new-btn').addEventListener('click', () => openRaceForm(null));
+  document.getElementById('race-form-close').addEventListener('click', closeRaceForm);
+  document.getElementById('race-form-cancel').addEventListener('click', closeRaceForm);
+  raceFormOverlay.addEventListener('click', (e) => { if (e.target === raceFormOverlay) closeRaceForm(); });
+
+  document.getElementById('race-img-btn').addEventListener('click', () => document.getElementById('race-img-input').click());
+  document.getElementById('race-img-remove').addEventListener('click', () => {
+    racePendingImg = null;
+    updatePhotoPreview('race-img-preview', null, 'imagem');
+  });
+
+  document.getElementById('race-img-input').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      racePendingImg = ev.target.result;
+      updatePhotoPreview('race-img-preview', racePendingImg, 'imagem');
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function switchRaceTab(tab){
+    document.querySelectorAll('#race-tabs .char-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    document.querySelectorAll('#race-form .char-tab-panel').forEach(p => p.classList.toggle('active', p.dataset.panel === tab));
+  }
+  document.querySelectorAll('#race-tabs .char-tab').forEach(btn => btn.addEventListener('click', () => switchRaceTab(btn.dataset.tab)));
+
+  document.getElementById('race-form-save').addEventListener('click', () => {
+    const nome = raceFieldEl('nome').value.trim();
+    if (!nome){
+      raceFieldEl('nome').focus();
+      switchRaceTab('geral');
+      return;
+    }
+
+    const data = { nome, imagem: racePendingImg };
+    raceFields.forEach(f => {
+      if (f === 'nome') return;
+      const key = f.replace(/-([a-z])/g, (_, ch) => ch.toUpperCase());
+      data[key] = raceFieldEl(f).value.trim();
+    });
+
+    if (raceEditingId){
+      const r = races.find(x => x.id === raceEditingId);
+      Object.assign(r, data);
+    } else {
+      races.unshift({ id: crypto.randomUUID(), subracas: [], ...data });
+    }
+
+    closeRaceForm();
+    renderRaceGrid();
+    populateCharRaceDatalist();
+    if (raceViewingId) openRaceDrawer(raceViewingId);
+    persistProject();
+  });
+
+  raceSearch.addEventListener('input', renderRaceGrid);
+
+  // ---------- Form de Sub-raça (Criar / Editar) ----------
+
+  function populateSubraceParentSelect(selectedRaceId){
+    const sel = document.getElementById('subrace-parent-select');
+    sel.innerHTML = races.map(r => `<option value="${r.id}" ${r.id === selectedRaceId ? 'selected' : ''}>${escapeHtml(r.nome)}</option>`).join('');
+  }
+
+  function openSubraceForm(parentRaceId, subraceId){
+    if (races.length === 0){
+      appNotice('Você precisa criar ao menos uma raça antes de cadastrar uma sub-raça.');
+      return;
+    }
+
+    subraceParentRaceId = parentRaceId || (races[0] ? races[0].id : null);
+    subraceEditingId = subraceId || null;
+
+    populateSubraceParentSelect(subraceParentRaceId);
+
+    const nomeEl = document.getElementById('subrace-nome');
+    const descEl = document.getElementById('subrace-descricao');
+    const habitatEl = document.getElementById('subrace-habitat');
+    const tracosEl = document.getElementById('subrace-tracos');
+    const habEl = document.getElementById('subrace-habilidades');
+
+    if (subraceId && parentRaceId){
+      const parentRace = races.find(r => r.id === parentRaceId);
+      const sub = (parentRace ? parentRace.subracas : []).find(s => s.id === subraceId);
+      if (sub){
+        nomeEl.value = sub.nome || '';
+        descEl.value = sub.descricao || '';
+        habitatEl.value = sub.habitat || '';
+        tracosEl.value = sub.tracos || '';
+        habEl.value = sub.habilidades || '';
+        document.getElementById('subrace-form-title').textContent = "Editar sub-raça";
+      }
+    } else {
+      nomeEl.value = "";
+      descEl.value = "";
+      habitatEl.value = "";
+      tracosEl.value = "";
+      habEl.value = "";
+      document.getElementById('subrace-form-title').textContent = "Nova sub-raça";
+    }
+
+    subraceFormOverlay.classList.add('open');
+    setTimeout(() => nomeEl.focus(), 50);
+  }
+
+  function closeSubraceForm(){
+    subraceFormOverlay.classList.remove('open');
+    subraceEditingId = null;
+    subraceParentRaceId = null;
+  }
+
+  document.getElementById('subrace-form-close').addEventListener('click', closeSubraceForm);
+  document.getElementById('subrace-form-cancel').addEventListener('click', closeSubraceForm);
+  subraceFormOverlay.addEventListener('click', (e) => { if (e.target === subraceFormOverlay) closeSubraceForm(); });
+
+  document.getElementById('subrace-form-save').addEventListener('click', () => {
+    const parentId = document.getElementById('subrace-parent-select').value;
+    const parentRace = races.find(r => r.id === parentId);
+    if (!parentRace){
+      appNotice('Selecione uma raça principal válida.');
+      return;
+    }
+
+    const nome = document.getElementById('subrace-nome').value.trim();
+    if (!nome){
+      document.getElementById('subrace-nome').focus();
+      return;
+    }
+
+    const desc = document.getElementById('subrace-descricao').value.trim();
+    const habitat = document.getElementById('subrace-habitat').value.trim();
+    const tracos = document.getElementById('subrace-tracos').value.trim();
+    const hab = document.getElementById('subrace-habilidades').value.trim();
+
+    parentRace.subracas = parentRace.subracas || [];
+
+    if (subraceEditingId){
+      let currentParent = races.find(r => (r.subracas || []).some(s => s.id === subraceEditingId));
+      if (currentParent && currentParent.id !== parentId){
+        currentParent.subracas = currentParent.subracas.filter(s => s.id !== subraceEditingId);
+        parentRace.subracas.push({ id: subraceEditingId, nome, descricao: desc, habitat, tracos, habilidades: hab });
+      } else {
+        const sub = parentRace.subracas.find(s => s.id === subraceEditingId);
+        if (sub){
+          Object.assign(sub, { nome, descricao: desc, habitat, tracos, habilidades: hab });
+        }
+      }
+    } else {
+      parentRace.subracas.push({
+        id: crypto.randomUUID(),
+        nome,
+        descricao: desc,
+        habitat,
+        tracos,
+        habilidades: hab
+      });
+    }
+
+    closeSubraceForm();
+    renderRaceGrid();
+    populateCharRaceDatalist();
+    if (raceViewingId) openRaceDrawer(raceViewingId);
+    persistProject();
+  });
+
+  function deleteSubrace(parentRaceId, subraceId){
+    const parent = races.find(r => r.id === parentRaceId);
+    if (!parent || !parent.subracas) return;
+    const sub = parent.subracas.find(s => s.id === subraceId);
+    if (!sub) return;
+
+    appConfirm(`Excluir a sub-raça "${sub.nome}"?`, () => {
+      parent.subracas = parent.subracas.filter(s => s.id !== subraceId);
+      renderRaceGrid();
+      populateCharRaceDatalist();
+      if (raceViewingId) openRaceDrawer(raceViewingId);
+      persistProject();
+    });
+  }
+
+  // ---------- Integração de Raças com Personagens ----------
+
+  function populateCharRaceDatalist(){
+    const dl = document.getElementById('char-raca-list');
+    if (!dl) return;
+    const options = [];
+    races.forEach(r => {
+      options.push(r.nome);
+      (r.subracas || []).forEach(s => {
+        options.push(`${r.nome} (${s.nome})`);
+        options.push(s.nome);
+      });
+    });
+    const unique = [...new Set(options)];
+    dl.innerHTML = unique.map(opt => `<option value="${escapeHtml(opt)}">`).join('');
+  }
+
+  // Re-renderiza raças ao clicar no menu lateral
+  document.querySelector('.nav-item[data-view="racas"]').addEventListener('click', () => {
+    renderRaceGrid();
+  });
+
+  // ================= MAPAS E CARTOGRAFIA =================
+
+  let maps = (savedProjectData && savedProjectData.maps) ? savedProjectData.maps : [];
+  let activeMapId = maps.length ? maps[0].id : null;
+
+  let currentMapTool = 'select'; // 'select' | 'area' | 'freehand' | 'ponto' | 'linha' | 'texto'
+  let selectedMapElementId = null;
+
+  let mapZoom = 1, mapPanX = 0, mapPanY = 0;
+  let mapDragging = false, mapDragStart = {x:0, y:0}, mapPanStart = {x:0, y:0};
+
+  let drawingPoints = []; // pontos temporários ao desenhar área ou linha clássica
+  let activePointerPos = null;
+
+  let freehandDrawing = false;
+  let freehandPoints = []; // pontos temporários ao desenhar à mão livre
+
+  let visibleLayers = {
+    continente: true,
+    pais: true,
+    estado: true,
+    cidades: true,
+    rotas: true,
+    rotulos: true
+  };
+
+  const mapViewport = document.getElementById('map-viewport');
+  const mapCanvas = document.getElementById('map-canvas');
+  const mapSvg = document.getElementById('map-svg');
+  const mapBgImage = document.getElementById('map-bg-image');
+  const mapSelect = document.getElementById('map-select');
+  const mapEmptyOverlay = document.getElementById('map-empty-overlay');
+  const mapElementDrawerOverlay = document.getElementById('map-element-drawer-overlay');
+  const mapFormOverlay = document.getElementById('map-form-overlay');
+
+  const AREA_PRESET_STYLES = {
+    continente: { corPreenchimento: '#dcd1ba', corBorda: '#5e2c2b', espessura: 2.5, opacidade: 0.95 },
+    pais: { corPreenchimento: '#d9c2a3', corBorda: '#7b3b3a', espessura: 2, opacidade: 0.8 },
+    estado: { corPreenchimento: '#eedebd', corBorda: '#a9822e', espessura: 1.5, opacidade: 0.7, dash: '4 2' },
+    floresta: { corPreenchimento: '#b9cbb0', corBorda: '#4a5740', espessura: 1.5, opacidade: 0.85 },
+    lago: { corPreenchimento: '#a6c1d1', corBorda: '#3b5a70', espessura: 1.5, opacidade: 0.9 }
+  };
+
+  const PIN_PRESET_ICONS = {
+    capital: { cor: '#7b3b3a', size: 9 },
+    cidade: { cor: '#1c2029', size: 6 },
+    vila: { cor: '#57626b', size: 4.5 },
+    castelo: { cor: '#5e2c2b', size: 8 },
+    montanha: { cor: '#57626b', size: 8 },
+    porto: { cor: '#3b5a70', size: 6.5 },
+    ruinas: { cor: '#93542e', size: 6 }
+  };
+
+  const LINE_PRESET_STYLES = {
+    estrada: { cor: '#a9822e', espessura: 2.2, dash: '5 3' },
+    rio: { cor: '#4a708b', espessura: 2.8, dash: '' },
+    maritima: { cor: '#3b5a70', espessura: 1.6, dash: '6 4' },
+    fronteira: { cor: '#7b3b3a', espessura: 2.2, dash: '8 3 2 3' }
+  };
+
+  function getActiveMap(){
+    return maps.find(m => m.id === activeMapId) || null;
+  }
+
+  function applyMapTransform(){
+    mapCanvas.style.transform = `translate(${mapPanX}px, ${mapPanY}px) scale(${mapZoom})`;
+    document.getElementById('map-zoom-label').textContent = Math.round(mapZoom * 100) + '%';
+  }
+
+  function getSvgCoordinates(e){
+    const rect = mapSvg.getBoundingClientRect();
+    const x = (e.clientX - rect.left) * (2400 / rect.width);
+    const y = (e.clientY - rect.top) * (1600 / rect.height);
+    return { x: Math.round(x), y: Math.round(y) };
+  }
+
+  // Interpolação Catmull-Rom para curvas Bézier suaves e naturais
+  function pointsToSmoothPath(pts, closed = false){
+    if (!pts || pts.length < 2) return '';
+    if (pts.length === 2){
+      return `M ${pts[0].x} ${pts[0].y} L ${pts[1].x} ${pts[1].y}${closed ? ' Z' : ''}`;
+    }
+
+    let d = `M ${pts[0].x} ${pts[0].y}`;
+    const n = pts.length;
+    const count = closed ? n : n - 1;
+
+    for (let i = 0; i < count; i++){
+      const p0 = closed ? pts[(i - 1 + n) % n] : (i === 0 ? pts[0] : pts[i - 1]);
+      const p1 = pts[i];
+      const p2 = closed ? pts[(i + 1) % n] : pts[i + 1];
+      const p3 = closed ? pts[(i + 2) % n] : (i + 2 < n ? pts[i + 2] : p2);
+
+      const cp1x = p1.x + (p2.x - p0.x) / 6;
+      const cp1y = p1.y + (p2.y - p0.y) / 6;
+      const cp2x = p2.x - (p3.x - p1.x) / 6;
+      const cp2y = p2.y - (p3.y - p1.y) / 6;
+
+      d += ` C ${Math.round(cp1x)} ${Math.round(cp1y)}, ${Math.round(cp2x)} ${Math.round(cp2y)}, ${p2.x} ${p2.y}`;
+    }
+
+    if (closed) d += ' Z';
+    return d;
+  }
+
+  // ---------- Renderização do Mapa ----------
+
+  function renderActiveMap(){
+    const map = getActiveMap();
+
+    // Atualiza o select de mapas
+    mapSelect.innerHTML = maps.length
+      ? maps.map(m => `<option value="${m.id}" ${m.id === activeMapId ? 'selected' : ''}>${escapeHtml(m.nome)}</option>`).join('')
+      : `<option value="">Nenhum mapa</option>`;
+
+    if (!map){
+      mapEmptyOverlay.classList.remove('hide');
+      mapSvg.innerHTML = "";
+      mapBgImage.style.display = "none";
+      return;
+    }
+
+    mapEmptyOverlay.classList.add('hide');
+
+    // Imagem de fundo
+    if (map.bgImage){
+      mapBgImage.src = map.bgImage;
+      mapBgImage.style.display = "block";
+    } else {
+      mapBgImage.style.display = "none";
+    }
+
+    // Ordenação dos elementos para desenho em camadas (Layering)
+    const elements = map.elements || [];
+    const areas = elements.filter(el => el.tipo === 'area');
+    const lines = elements.filter(el => el.tipo === 'linha');
+    const pins = elements.filter(el => el.tipo === 'ponto');
+    const texts = elements.filter(el => el.tipo === 'texto');
+
+    let svgHtml = "";
+
+    // 1. Áreas (Continentes -> Países -> Estados -> Outros)
+    areas.forEach(el => {
+      if (el.categoria === 'continente' && !visibleLayers.continente) return;
+      if (el.categoria === 'pais' && !visibleLayers.pais) return;
+      if (el.categoria === 'estado' && !visibleLayers.estado) return;
+
+      const isSelected = el.id === selectedMapElementId;
+      const dash = el.dash ? `stroke-dasharray="${el.dash}"` : '';
+      const opacity = el.opacidade ?? 0.85;
+
+      if (el.pathData || el.curvo){
+        const d = el.pathData || pointsToSmoothPath(el.pontos, true);
+        svgHtml += `
+          <path d="${d}"
+            fill="${el.corPreenchimento || '#d4c5a9'}"
+            fill-opacity="${opacity}"
+            stroke="${isSelected ? '#7b3b3a' : (el.corBorda || '#5e2c2b')}"
+            stroke-width="${isSelected ? 3.5 : (el.espessura || 2)}"
+            ${dash}
+            class="map-area-shape ${isSelected ? 'selected' : ''}"
+            data-element-id="${el.id}"
+          />
+        `;
+      } else {
+        const pts = el.pontos.map(p => `${p.x},${p.y}`).join(' ');
+        svgHtml += `
+          <polygon points="${pts}"
+            fill="${el.corPreenchimento || '#d4c5a9'}"
+            fill-opacity="${opacity}"
+            stroke="${isSelected ? '#7b3b3a' : (el.corBorda || '#5e2c2b')}"
+            stroke-width="${isSelected ? 3.5 : (el.espessura || 2)}"
+            ${dash}
+            class="map-area-shape ${isSelected ? 'selected' : ''}"
+            data-element-id="${el.id}"
+          />
+        `;
+      }
+
+      // Rótulo central da área se tiver nome
+      if (el.nome && el.pontos && el.pontos.length >= 3 && visibleLayers.rotulos){
+        const cx = Math.round(el.pontos.reduce((acc, p) => acc + p.x, 0) / el.pontos.length);
+        const cy = Math.round(el.pontos.reduce((acc, p) => acc + p.y, 0) / el.pontos.length);
+        const fontSize = el.categoria === 'continente' ? 22 : (el.categoria === 'pais' ? 16 : 13);
+        const fontColor = el.categoria === 'continente' ? '#5e2c2b' : '#1c2029';
+        svgHtml += `
+          <text x="${cx}" y="${cy}" font-family="'Fraunces', serif" font-size="${fontSize}" font-weight="600"
+            letter-spacing="0.06em" fill="${fontColor}" text-anchor="middle" pointer-events="none"
+            style="text-shadow: 0 1px 3px rgba(255,255,255,0.9), 0 0 5px rgba(255,255,255,0.8); text-transform:uppercase;">
+            ${escapeHtml(el.nome)}
+          </text>
+        `;
+      }
+    });
+
+    // 2. Linhas (Rotas & Rios & Fronteiras)
+    if (visibleLayers.rotas){
+      lines.forEach(el => {
+        if (!el.pontos || el.pontos.length < 2) return;
+        const isSelected = el.id === selectedMapElementId;
+        const dash = el.dash ? `stroke-dasharray="${el.dash}"` : (el.categoria === 'estrada' ? 'stroke-dasharray="5 3"' : (el.categoria === 'fronteira' ? 'stroke-dasharray="8 3 2 3"' : ''));
+        const d = el.pathData || (el.curvo ? pointsToSmoothPath(el.pontos, false) : ('M ' + el.pontos.map(p => `${p.x} ${p.y}`).join(' L ')));
+
+        svgHtml += `
+          <path d="${d}"
+            fill="none"
+            stroke="${isSelected ? '#7b3b3a' : (el.cor || '#a9822e')}"
+            stroke-width="${isSelected ? 4 : (el.espessura || 2.2)}"
+            ${dash}
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="map-line-path ${isSelected ? 'selected' : ''}"
+            data-element-id="${el.id}"
+          />
+        `;
+      });
+    }
+
+    // 3. Pontos (Cidades, Capitais, Castelos)
+    if (visibleLayers.cidades){
+      pins.forEach(el => {
+        const isSelected = el.id === selectedMapElementId;
+        const cor = el.cor || '#7b3b3a';
+        let markerSvg = '';
+
+        if (el.categoria === 'capital'){
+          markerSvg = `
+            <circle cx="${el.x}" cy="${el.y}" r="9" fill="${cor}" stroke="#fff" stroke-width="2"/>
+            <circle cx="${el.x}" cy="${el.y}" r="4" fill="#fff"/>
+            <polygon points="${el.x},${el.y-7} ${el.x+2},${el.y-2} ${el.x+7},${el.y-2} ${el.x+3},${el.y+1} ${el.x+5},${el.y+6} ${el.x},${el.y+3} ${el.x-5},${el.y+6} ${el.x-3},${el.y+1} ${el.x-7},${el.y-2} ${el.x-2},${el.y-2}" fill="#fff" transform="scale(0.7) translate(${el.x*0.43}, ${el.y*0.43})"/>
+          `;
+        } else if (el.categoria === 'castelo'){
+          markerSvg = `
+            <rect x="${el.x-7}" y="${el.y-7}" width="14" height="14" rx="2" fill="${cor}" stroke="#fff" stroke-width="1.8"/>
+            <polygon points="${el.x-5},${el.y-7} ${el.x-5},${el.y-10} ${el.x-2},${el.y-8} ${el.x-2},${el.y-7}" fill="${cor}"/>
+            <polygon points="${el.x+2},${el.y-7} ${el.x+2},${el.y-8} ${el.x+5},${el.y-10} ${el.x+5},${el.y-7}" fill="${cor}"/>
+          `;
+        } else if (el.categoria === 'montanha'){
+          markerSvg = `
+            <polygon points="${el.x-9},${el.y+6} ${el.x},${el.y-8} ${el.x+9},${el.y+6}" fill="${cor}" stroke="#fff" stroke-width="1.6"/>
+            <polygon points="${el.x-3},${el.y-3} ${el.x},${el.y-8} ${el.x+3},${el.y-3}" fill="#fff"/>
+          `;
+        } else if (el.categoria === 'vila'){
+          markerSvg = `
+            <circle cx="${el.x}" cy="${el.y}" r="4.5" fill="${cor}" stroke="#fff" stroke-width="1.5"/>
+          `;
+        } else if (el.categoria === 'porto'){
+          markerSvg = `
+            <circle cx="${el.x}" cy="${el.y}" r="6.5" fill="${cor}" stroke="#fff" stroke-width="1.5"/>
+            <circle cx="${el.x}" cy="${el.y}" r="2" fill="#fff"/>
+          `;
+        } else if (el.categoria === 'ruinas'){
+          markerSvg = `
+            <rect x="${el.x-5}" y="${el.y-5}" width="10" height="10" fill="none" stroke="${cor}" stroke-width="2"/>
+            <line x1="${el.x-4}" y1="${el.y-4}" x2="${el.x+4}" y2="${el.y+4}" stroke="${cor}" stroke-width="1.5"/>
+          `;
+        } else {
+          markerSvg = `
+            <circle cx="${el.x}" cy="${el.y}" r="6.5" fill="${cor}" stroke="#fff" stroke-width="1.8"/>
+            <circle cx="${el.x}" cy="${el.y}" r="2.5" fill="#fff"/>
+          `;
+        }
+
+        svgHtml += `
+          <g class="map-pin-group ${isSelected ? 'selected' : ''}" data-element-id="${el.id}">
+            ${markerSvg}
+            ${el.nome && visibleLayers.rotulos ? `
+              <text x="${el.x}" y="${el.y + 16}" text-anchor="middle" class="map-pin-label">${escapeHtml(el.nome)}</text>
+            ` : ''}
+          </g>
+        `;
+      });
+    }
+
+    // 4. Rótulos de Texto Livres
+    if (visibleLayers.rotulos){
+      texts.forEach(el => {
+        const isSelected = el.id === selectedMapElementId;
+        const fontSize = el.tamanho || 16;
+        const rot = el.rotacao || 0;
+        const fontStyle = (el.estilo === 'italic') ? 'font-style:italic;' : '';
+
+        svgHtml += `
+          <text x="${el.x}" y="${el.y}"
+            font-size="${fontSize}"
+            fill="${isSelected ? '#7b3b3a' : (el.cor || '#57626b')}"
+            font-weight="600"
+            letter-spacing="0.08em"
+            transform="rotate(${rot} ${el.x} ${el.y})"
+            class="map-text-element ${isSelected ? 'selected' : ''}"
+            style="${fontStyle}"
+            data-element-id="${el.id}">
+            ${escapeHtml(el.texto || 'Rótulo')}
+          </text>
+        `;
+      });
+    }
+
+    // 5. Desenho em andamento com polígonos/linhas retas
+    if (drawingPoints.length > 0){
+      if (currentMapTool === 'area'){
+        const ptsStr = drawingPoints.map(p => `${p.x},${p.y}`).join(' ');
+        svgHtml += `<polyline points="${ptsStr}" fill="none" stroke="#7b3b3a" stroke-width="2" stroke-dasharray="4 4" />`;
+        if (activePointerPos){
+          const last = drawingPoints[drawingPoints.length - 1];
+          svgHtml += `<line x1="${last.x}" y1="${last.y}" x2="${activePointerPos.x}" y2="${activePointerPos.y}" class="map-guide-line" />`;
+          const first = drawingPoints[0];
+          svgHtml += `<line x1="${activePointerPos.x}" y1="${activePointerPos.y}" x2="${first.x}" y2="${first.y}" stroke="#7b3b3a" stroke-width="1" stroke-dasharray="2 2" opacity="0.6"/>`;
+        }
+      } else if (currentMapTool === 'linha'){
+        const ptsStr = drawingPoints.map(p => `${p.x},${p.y}`).join(' ');
+        svgHtml += `<polyline points="${ptsStr}" fill="none" stroke="#a9822e" stroke-width="2.5" stroke-dasharray="4 4" />`;
+        if (activePointerPos){
+          const last = drawingPoints[drawingPoints.length - 1];
+          svgHtml += `<line x1="${last.x}" y1="${last.y}" x2="${activePointerPos.x}" y2="${activePointerPos.y}" class="map-guide-line" />`;
+        }
+      }
+
+      drawingPoints.forEach((p, idx) => {
+        svgHtml += `<circle cx="${p.x}" cy="${p.y}" r="${idx === 0 ? 6 : 4}" class="map-vertex-handle" />`;
+      });
+    }
+
+    // 6. Desenho em andamento com Mão Livre (Freehand)
+    if (freehandDrawing && freehandPoints.length >= 2){
+      const presetKey = document.getElementById('tool-preset-freehand').value;
+      const isArea = presetKey.includes('curvo') && !presetKey.startsWith('rio_') && !presetKey.startsWith('estrada_') && !presetKey.startsWith('fronteira_');
+      const d = pointsToSmoothPath(freehandPoints, isArea);
+
+      if (isArea){
+        svgHtml += `<path d="${d}" fill="rgba(123,59,58,0.2)" stroke="#7b3b3a" stroke-width="2.5" stroke-dasharray="4 3" stroke-linecap="round" stroke-linejoin="round"/>`;
+      } else {
+        const color = presetKey.startsWith('rio') ? '#4a708b' : (presetKey.startsWith('estrada') ? '#a9822e' : '#7b3b3a');
+        const dash = presetKey.startsWith('fronteira') ? 'stroke-dasharray="6 3"' : (presetKey.startsWith('estrada') ? 'stroke-dasharray="4 2"' : '');
+        svgHtml += `<path d="${d}" fill="none" stroke="${color}" stroke-width="2.8" ${dash} stroke-linecap="round" stroke-linejoin="round"/>`;
+      }
+    }
+
+    mapSvg.innerHTML = svgHtml;
+
+    // Vincula handlers de clique aos elementos SVG
+    mapSvg.querySelectorAll('[data-element-id]').forEach(elem => {
+      elem.addEventListener('click', (e) => {
+        if (currentMapTool !== 'select') return;
+        e.stopPropagation();
+        const id = elem.dataset.elementId;
+        selectMapElement(id);
+      });
+    });
+  }
+
+  // ---------- Seleção e Drawer de Elemento ----------
+
+  function selectMapElement(id){
+    selectedMapElementId = id;
+    renderActiveMap();
+
+    const map = getActiveMap();
+    if (!map) return;
+    const el = map.elements.find(x => x.id === id);
+    if (!el) return;
+
+    openMapElementDrawer(el);
+  }
+
+  function openMapElementDrawer(el){
+    const form = document.getElementById('map-element-form');
+    const nomeEl = document.getElementById('el-nome');
+    const catEl = document.getElementById('el-categoria');
+    const racaEl = document.getElementById('el-raca');
+    const popEl = document.getElementById('el-populacao');
+    const govEl = document.getElementById('el-governo');
+    const descEl = document.getElementById('el-descricao');
+    const corFillEl = document.getElementById('el-cor-preenchimento');
+    const corStrokeEl = document.getElementById('el-cor-borda');
+
+    // Popula select de raças com as raças do projeto
+    racaEl.innerHTML = `<option value="">(Nenhuma raça específica)</option>` +
+      races.map(r => `<option value="${escapeHtml(r.nome)}">${escapeHtml(r.nome)}</option>`).join('');
+
+    nomeEl.value = el.nome || el.texto || '';
+    catEl.value = el.categoria || (el.tipo === 'area' ? 'continente' : (el.tipo === 'ponto' ? 'cidade' : 'estrada'));
+    racaEl.value = el.racaPredominante || '';
+    popEl.value = el.populacao || '';
+    govEl.value = el.governo || '';
+    descEl.value = el.descricao || '';
+    corFillEl.value = el.corPreenchimento || el.cor || '#d4c5a9';
+    corStrokeEl.value = el.corBorda || el.cor || '#7b3b3a';
+
+    mapElementDrawerOverlay.classList.add('open');
+  }
+
+  function closeMapElementDrawer(){
+    mapElementDrawerOverlay.classList.remove('open');
+    selectedMapElementId = null;
+    renderActiveMap();
+  }
+
+  document.getElementById('map-element-drawer-close').addEventListener('click', closeMapElementDrawer);
+  mapElementDrawerOverlay.addEventListener('click', (e) => {
+    if (e.target === mapElementDrawerOverlay) closeMapElementDrawer();
+  });
+
+  document.getElementById('map-element-save-btn').addEventListener('click', () => {
+    const map = getActiveMap();
+    if (!map || !selectedMapElementId) return;
+    const el = map.elements.find(x => x.id === selectedMapElementId);
+    if (!el) return;
+
+    const nome = document.getElementById('el-nome').value.trim();
+    if (!nome){
+      document.getElementById('el-nome').focus();
+      return;
+    }
+
+    el.nome = nome;
+    if (el.tipo === 'texto') el.texto = nome;
+    el.categoria = document.getElementById('el-categoria').value;
+    el.racaPredominante = document.getElementById('el-raca').value;
+    el.populacao = document.getElementById('el-populacao').value.trim();
+    el.governo = document.getElementById('el-governo').value.trim();
+    el.descricao = document.getElementById('el-descricao').value.trim();
+    el.corPreenchimento = document.getElementById('el-cor-preenchimento').value;
+    el.corBorda = document.getElementById('el-cor-borda').value;
+    el.cor = document.getElementById('el-cor-borda').value;
+
+    closeMapElementDrawer();
+    persistProject();
+  });
+
+  document.getElementById('map-element-drawer-delete').addEventListener('click', () => {
+    const map = getActiveMap();
+    if (!map || !selectedMapElementId) return;
+    const el = map.elements.find(x => x.id === selectedMapElementId);
+    if (!el) return;
+
+    appConfirm(`Excluir "${el.nome || el.texto || 'este elemento'}" do mapa?`, () => {
+      map.elements = map.elements.filter(x => x.id !== selectedMapElementId);
+      closeMapElementDrawer();
+      persistProject();
+    });
+  });
+
+  // ---------- Ferramentas e Desenho ----------
+
+  function setMapTool(tool){
+    currentMapTool = tool;
+    drawingPoints = [];
+    freehandPoints = [];
+    freehandDrawing = false;
+    activePointerPos = null;
+
+    document.querySelectorAll('.map-tool-btn[data-map-tool]').forEach(b => {
+      b.classList.toggle('active', b.dataset.mapTool === tool);
+    });
+
+    mapViewport.classList.toggle('mode-draw', tool !== 'select');
+    renderActiveMap();
+  }
+
+  document.querySelectorAll('.map-tool-btn[data-map-tool]').forEach(btn => {
+    btn.addEventListener('click', () => setMapTool(btn.dataset.mapTool));
+  });
+
+  // Finaliza criação de área poligonal
+  function finishAreaDrawing(){
+    if (drawingPoints.length < 3) { drawingPoints = []; renderActiveMap(); return; }
+    const map = getActiveMap();
+    if (!map) return;
+
+    const presetKey = document.getElementById('tool-preset-area').value;
+    const presetStyle = AREA_PRESET_STYLES[presetKey] || AREA_PRESET_STYLES.continente;
+
+    const newArea = {
+      id: crypto.randomUUID(),
+      tipo: 'area',
+      categoria: presetKey,
+      nome: presetKey.charAt(0).toUpperCase() + presetKey.slice(1) + ' ' + (map.elements.filter(x => x.tipo === 'area').length + 1),
+      descricao: '',
+      pontos: [...drawingPoints],
+      corPreenchimento: presetStyle.corPreenchimento,
+      corBorda: presetStyle.corBorda,
+      espessura: presetStyle.espessura,
+      opacidade: presetStyle.opacidade,
+      dash: presetStyle.dash || ''
+    };
+
+    map.elements = map.elements || [];
+    map.elements.push(newArea);
+    drawingPoints = [];
+    activePointerPos = null;
+    setMapTool('select');
+    selectMapElement(newArea.id);
+    persistProject();
+  }
+
+  // Finaliza traçado de linha
+  function finishLineDrawing(){
+    if (drawingPoints.length < 2) { drawingPoints = []; renderActiveMap(); return; }
+    const map = getActiveMap();
+    if (!map) return;
+
+    const presetKey = document.getElementById('tool-preset-linha').value;
+    const presetStyle = LINE_PRESET_STYLES[presetKey] || LINE_PRESET_STYLES.estrada;
+
+    const newLine = {
+      id: crypto.randomUUID(),
+      tipo: 'linha',
+      categoria: presetKey,
+      nome: presetKey.charAt(0).toUpperCase() + presetKey.slice(1) + ' ' + (map.elements.filter(x => x.tipo === 'linha').length + 1),
+      descricao: '',
+      pontos: [...drawingPoints],
+      cor: presetStyle.cor,
+      espessura: presetStyle.espessura,
+      dash: presetStyle.dash
+    };
+
+    map.elements = map.elements || [];
+    map.elements.push(newLine);
+    drawingPoints = [];
+    activePointerPos = null;
+    setMapTool('select');
+    selectMapElement(newLine.id);
+    persistProject();
+  }
+
+  // Finaliza desenho com mão livre (Curvas suaves)
+  function finishFreehandDrawing(){
+    if (freehandPoints.length < 2){
+      freehandPoints = [];
+      renderActiveMap();
+      return;
+    }
+
+    const map = getActiveMap();
+    if (!map) return;
+
+    const presetKey = document.getElementById('tool-preset-freehand').value;
+    const isArea = presetKey.includes('curvo') && !presetKey.startsWith('rio') && !presetKey.startsWith('estrada') && !presetKey.startsWith('fronteira');
+
+    if (isArea){
+      const cat = presetKey.replace('_curvo', '');
+      const presetStyle = AREA_PRESET_STYLES[cat] || AREA_PRESET_STYLES.continente;
+      const pathData = pointsToSmoothPath(freehandPoints, true);
+
+      const newArea = {
+        id: crypto.randomUUID(),
+        tipo: 'area',
+        categoria: cat,
+        curvo: true,
+        pathData: pathData,
+        nome: cat.charAt(0).toUpperCase() + cat.slice(1) + ' ' + (map.elements.filter(x => x.tipo === 'area').length + 1),
+        descricao: '',
+        pontos: [...freehandPoints],
+        corPreenchimento: presetStyle.corPreenchimento,
+        corBorda: presetStyle.corBorda,
+        espessura: presetStyle.espessura,
+        opacidade: presetStyle.opacidade,
+        dash: presetStyle.dash || ''
+      };
+
+      map.elements = map.elements || [];
+      map.elements.push(newArea);
+      freehandPoints = [];
+      setMapTool('select');
+      selectMapElement(newArea.id);
+      persistProject();
+    } else {
+      const cat = presetKey.replace('_curva', '').replace('_curvo', '');
+      const presetStyle = LINE_PRESET_STYLES[cat] || LINE_PRESET_STYLES.fronteira;
+      const pathData = pointsToSmoothPath(freehandPoints, false);
+
+      const newLine = {
+        id: crypto.randomUUID(),
+        tipo: 'linha',
+        categoria: cat,
+        curvo: true,
+        pathData: pathData,
+        nome: (cat === 'fronteira' ? 'Divisa' : (cat === 'rio' ? 'Rio' : 'Estrada')) + ' ' + (map.elements.filter(x => x.tipo === 'linha').length + 1),
+        descricao: '',
+        pontos: [...freehandPoints],
+        cor: presetStyle.cor,
+        espessura: presetStyle.espessura,
+        dash: presetStyle.dash || ''
+      };
+
+      map.elements = map.elements || [];
+      map.elements.push(newLine);
+      freehandPoints = [];
+      setMapTool('select');
+      selectMapElement(newLine.id);
+      persistProject();
+    }
+  }
+
+  // ---------- Eventos do Canvas e Viewport ----------
+
+  mapViewport.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.compass-rose') || e.target.closest('#map-empty-overlay')) return;
+
+    if (currentMapTool === 'select'){
+      mapDragging = true;
+      mapViewport.classList.add('grabbing');
+      mapDragStart = { x: e.clientX, y: e.clientY };
+      mapPanStart = { x: mapPanX, y: mapPanY };
+      return;
+    }
+
+    const coords = getSvgCoordinates(e);
+
+    if (currentMapTool === 'freehand'){
+      freehandDrawing = true;
+      freehandPoints = [coords];
+      renderActiveMap();
+    } else if (currentMapTool === 'area'){
+      if (drawingPoints.length >= 3){
+        const first = drawingPoints[0];
+        const dist = Math.hypot(coords.x - first.x, coords.y - first.y);
+        if (dist < 25){
+          finishAreaDrawing();
+          return;
+        }
+      }
+      drawingPoints.push(coords);
+      renderActiveMap();
+    } else if (currentMapTool === 'linha'){
+      drawingPoints.push(coords);
+      renderActiveMap();
+    } else if (currentMapTool === 'ponto'){
+      const map = getActiveMap();
+      if (!map) return;
+      const presetKey = document.getElementById('tool-preset-ponto').value;
+      const presetPin = PIN_PRESET_ICONS[presetKey] || PIN_PRESET_ICONS.cidade;
+
+      const newPin = {
+        id: crypto.randomUUID(),
+        tipo: 'ponto',
+        categoria: presetKey,
+        nome: presetKey.charAt(0).toUpperCase() + presetKey.slice(1) + ' ' + (map.elements.filter(x => x.tipo === 'ponto').length + 1),
+        descricao: '',
+        x: coords.x,
+        y: coords.y,
+        cor: presetPin.cor
+      };
+
+      map.elements = map.elements || [];
+      map.elements.push(newPin);
+      setMapTool('select');
+      selectMapElement(newPin.id);
+      persistProject();
+    } else if (currentMapTool === 'texto'){
+      const map = getActiveMap();
+      if (!map) return;
+
+      const newText = {
+        id: crypto.randomUUID(),
+        tipo: 'texto',
+        categoria: 'rotulo',
+        texto: 'Novo Rótulo',
+        x: coords.x,
+        y: coords.y,
+        tamanho: 18,
+        cor: '#57626b',
+        rotacao: 0
+      };
+
+      map.elements = map.elements || [];
+      map.elements.push(newText);
+      setMapTool('select');
+      selectMapElement(newText.id);
+      persistProject();
+    }
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (mapDragging){
+      mapPanX = mapPanStart.x + (e.clientX - mapDragStart.x);
+      mapPanY = mapPanStart.y + (e.clientY - mapDragStart.y);
+      applyMapTransform();
+    } else if (freehandDrawing){
+      const coords = getSvgCoordinates(e);
+      const last = freehandPoints[freehandPoints.length - 1];
+      if (!last || Math.hypot(coords.x - last.x, coords.y - last.y) >= 5){
+        freehandPoints.push(coords);
+        renderActiveMap();
+      }
+    } else if (drawingPoints.length > 0 && (currentMapTool === 'area' || currentMapTool === 'linha')){
+      activePointerPos = getSvgCoordinates(e);
+      renderActiveMap();
+    }
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (mapDragging){
+      mapDragging = false;
+      mapViewport.classList.remove('grabbing');
+    }
+    if (freehandDrawing){
+      freehandDrawing = false;
+      finishFreehandDrawing();
+    }
+  });
+
+  mapViewport.addEventListener('dblclick', (e) => {
+    e.preventDefault();
+    if (currentMapTool === 'area') finishAreaDrawing();
+    if (currentMapTool === 'linha') finishLineDrawing();
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter'){
+      if (currentMapTool === 'area') finishAreaDrawing();
+      if (currentMapTool === 'linha') finishLineDrawing();
+    } else if (e.key === 'Escape'){
+      drawingPoints = [];
+      freehandPoints = [];
+      freehandDrawing = false;
+      activePointerPos = null;
+      setMapTool('select');
+    }
+  });
+
+  // Zoom com roda do mouse
+  mapViewport.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.08 : 0.08;
+    mapZoom = Math.min(3.5, Math.max(0.25, mapZoom + delta));
+    applyMapTransform();
+  }, { passive: false });
+
+  document.getElementById('map-zoom-in').addEventListener('click', () => {
+    mapZoom = Math.min(3.5, mapZoom + 0.15);
+    applyMapTransform();
+  });
+  document.getElementById('map-zoom-out').addEventListener('click', () => {
+    mapZoom = Math.max(0.25, mapZoom - 0.15);
+    applyMapTransform();
+  });
+  document.getElementById('map-reset-view').addEventListener('click', () => {
+    mapZoom = 1; mapPanX = 0; mapPanY = 0;
+    applyMapTransform();
+  });
+
+  // Popover de Camadas
+  const layersToggleBtn = document.getElementById('map-layers-toggle');
+  const layersPopup = document.getElementById('map-layers-popup');
+
+  layersToggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    layersPopup.classList.toggle('open');
+  });
+  document.addEventListener('click', (e) => {
+    if (!layersPopup.contains(e.target) && e.target !== layersToggleBtn){
+      layersPopup.classList.remove('open');
+    }
+  });
+
+  ['continente','pais','estado','cidades','rotas','rotulos'].forEach(layerKey => {
+    const cb = document.getElementById(`layer-show-${layerKey}`);
+    if (cb){
+      cb.addEventListener('change', () => {
+        visibleLayers[layerKey] = cb.checked;
+        renderActiveMap();
+      });
+    }
+  });
+
+  // ---------- Gestão de Mapas (Criar / Editar / Excluir / Selecionar) ----------
+
+  mapSelect.addEventListener('change', () => {
+    activeMapId = mapSelect.value;
+    selectedMapElementId = null;
+    renderActiveMap();
+  });
+
+  let mapEditingId = null;
+
+  function openMapForm(id){
+    mapEditingId = id || null;
+    const nameEl = document.getElementById('map-name-input');
+    const descEl = document.getElementById('map-desc-input');
+
+    if (id){
+      const map = maps.find(m => m.id === id);
+      if (map){
+        nameEl.value = map.nome || '';
+        descEl.value = map.descricao || '';
+        document.getElementById('map-form-title').textContent = "Editar mapa";
+      }
+    } else {
+      nameEl.value = maps.length === 0 ? "Mapa Mundi" : `Mapa ${maps.length + 1}`;
+      descEl.value = "";
+      document.getElementById('map-form-title').textContent = "Novo mapa";
+    }
+
+    mapFormOverlay.classList.add('open');
+    setTimeout(() => nameEl.focus(), 50);
+  }
+
+  function closeMapForm(){
+    mapFormOverlay.classList.remove('open');
+    mapEditingId = null;
+  }
+
+  document.getElementById('map-new-btn').addEventListener('click', () => openMapForm(null));
+  document.getElementById('map-empty-create-btn').addEventListener('click', () => openMapForm(null));
+  document.getElementById('map-edit-meta-btn').addEventListener('click', () => {
+    if (activeMapId) openMapForm(activeMapId);
+  });
+  document.getElementById('map-form-close').addEventListener('click', closeMapForm);
+  document.getElementById('map-form-cancel').addEventListener('click', closeMapForm);
+  mapFormOverlay.addEventListener('click', (e) => {
+    if (e.target === mapFormOverlay) closeMapForm();
+  });
+
+  document.getElementById('map-form-save').addEventListener('click', () => {
+    const name = document.getElementById('map-name-input').value.trim();
+    if (!name){
+      document.getElementById('map-name-input').focus();
+      return;
+    }
+    const desc = document.getElementById('map-desc-input').value.trim();
+
+    if (mapEditingId){
+      const map = maps.find(m => m.id === mapEditingId);
+      if (map){ map.nome = name; map.descricao = desc; }
+    } else {
+      const newMap = {
+        id: crypto.randomUUID(),
+        nome: name,
+        descricao: desc,
+        bgImage: null,
+        elements: []
+      };
+      maps.push(newMap);
+      activeMapId = newMap.id;
+    }
+
+    closeMapForm();
+    renderActiveMap();
+    persistProject();
+  });
+
+  document.getElementById('map-delete-btn').addEventListener('click', () => {
+    const map = getActiveMap();
+    if (!map) return;
+
+    appConfirm(`Excluir o mapa "${map.nome}" e todos os seus elementos? Essa ação não pode ser desfeita.`, () => {
+      maps = maps.filter(m => m.id !== activeMapId);
+      activeMapId = maps.length ? maps[0].id : null;
+      renderActiveMap();
+      persistProject();
+    });
+  });
+
+  // Imagem de fundo
+  document.getElementById('map-bg-btn').addEventListener('click', () => {
+    if (!activeMapId){
+      appNotice('Crie ou selecione um mapa primeiro.');
+      return;
+    }
+    document.getElementById('map-bg-input').click();
+  });
+
+  document.getElementById('map-bg-input').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const map = getActiveMap();
+    if (!map) return;
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      map.bgImage = ev.target.result;
+      renderActiveMap();
+      persistProject();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Exportar mapa em PNG
+  document.getElementById('map-export-btn').addEventListener('click', () => {
+    const map = getActiveMap();
+    if (!map){
+      appNotice('Crie um mapa antes de exportar.');
+      return;
+    }
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 2400;
+    canvas.height = 1600;
+    const ctx = canvas.getContext('2d');
+
+    // Fundo pergaminho
+    ctx.fillStyle = "#f7f2e4";
+    ctx.fillRect(0, 0, 2400, 1600);
+
+    function exportWithSvg(){
+      const svgData = new XMLSerializer().serializeToString(mapSvg);
+      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+      const URL = window.URL || window.webkitURL || window;
+      const blobURL = URL.createObjectURL(svgBlob);
+
+      const svgImg = new Image();
+      svgImg.onload = () => {
+        ctx.drawImage(svgImg, 0, 0);
+        URL.revokeObjectURL(blobURL);
+
+        const link = document.createElement('a');
+        link.download = `${map.nome.toLowerCase().replace(/\s+/g, '_')}_mapa.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      };
+      svgImg.src = blobURL;
+    }
+
+    if (map.bgImage){
+      const bg = new Image();
+      bg.onload = () => {
+        ctx.drawImage(bg, 0, 0, 2400, 1600);
+        exportWithSvg();
+      };
+      bg.src = map.bgImage;
+    } else {
+      exportWithSvg();
+    }
+  });
+
+  // Re-renderiza mapa ao clicar na aba Mapas do menu lateral
+  document.querySelector('.nav-item[data-view="mapas"]').addEventListener('click', () => {
+    renderActiveMap();
+  });
 
   // ---------- Init ----------
   renderTree();
   renderEditor();
   renderCharGrid();
   renderGenealogy();
+  renderRaceGrid();
+  populateCharRaceDatalist();
+  renderActiveMap();
 
 })();
 </script>
