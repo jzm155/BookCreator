@@ -303,13 +303,35 @@
   .editable ul, .editable ol{ margin: 0 0 1em; padding-left: 1.4em; }
 
   /* livro (spread) mode */
-  .spread-outer{ display:flex; justify-content:center; align-items:flex-start; gap: 0; }
+  .spread-outer{
+    display:flex; justify-content:center; align-items:flex-start; gap: 0;
+    perspective: 1400px;
+  }
   .spread{
     display:flex;
     background: var(--card);
     box-shadow: 0 22px 46px -20px rgba(28,32,41,.5);
     border-radius: 3px;
     overflow:hidden;
+    transform-style: preserve-3d;
+  }
+  .spread-outer.page-turn-next .spread{
+    transform-origin: right center;
+    animation: page-turn-next .52s cubic-bezier(.22,.61,.36,1);
+  }
+  .spread-outer.page-turn-prev .spread{
+    transform-origin: left center;
+    animation: page-turn-prev .52s cubic-bezier(.22,.61,.36,1);
+  }
+  @keyframes page-turn-next{
+    0%{ transform: rotateY(-78deg) translateX(8%); opacity:.62; }
+    68%{ transform: rotateY(7deg) translateX(-1%); opacity:1; }
+    100%{ transform: rotateY(0) translateX(0); opacity:1; }
+  }
+  @keyframes page-turn-prev{
+    0%{ transform: rotateY(78deg) translateX(-8%); opacity:.62; }
+    68%{ transform: rotateY(-7deg) translateX(1%); opacity:1; }
+    100%{ transform: rotateY(0) translateX(0); opacity:1; }
   }
   .spread-page{
     width: 380px;
@@ -354,7 +376,9 @@
     .spread-page.left{ border-right:none; border-bottom:1px solid var(--line); }
   }
 
-  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{ transition:none !important; animation:none !important; }
+  }
 
   /* ============ Personagens ============ */
 
@@ -1038,7 +1062,7 @@
       </div>
 
       <div class="status-bar">
-        <span id="status-scene">Nenhuma cena selecionada</span>
+        <span id="status-scene">Nenhuma página selecionada</span>
         <span id="status-count">0 palavras · 0 caracteres</span>
       </div>
     </section>
@@ -1796,11 +1820,17 @@
   // ================= LIVRO =================
 
   let book = (savedProjectData && savedProjectData.book) ? savedProjectData.book : { chapters: [] };
+  book.chapters.forEach(chapter => {
+    chapter.scenes.forEach((scene, index) => {
+      if (/^Cena \d+$/.test(scene.title)) scene.title = `Página ${index + 1}`;
+    });
+  });
 
   // ao restaurar, abre a primeira cena disponível (se houver alguma)
   let currentSceneId = (book.chapters[0] && book.chapters[0].scenes[0]) ? book.chapters[0].scenes[0].id : null;
   let viewMode = 'editor'; // 'editor' | 'livro'
   let spreadIndex = 0; // for livro mode pagination (simplified: splits by scenes list, 2 per spread)
+  let pageTurnDirection = null;
 
   // Salva o conteúdo do projeto (livro + personagens + raças + mapas) no navegador.
   function persistProject(){
@@ -1850,7 +1880,7 @@
         <svg class="chevron" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 2l4 3.5L2 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <input class="chapter-title" value="${escapeAttr(ch.title)}" data-chapter="${ch.id}">
         <div class="row-actions">
-          <button data-action="add-scene" title="Nova cena">
+          <button data-action="add-scene" title="Nova página">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
           </button>
           <button data-action="delete-chapter" title="Excluir capítulo">
@@ -1877,7 +1907,7 @@
           <svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="flex-shrink:0;opacity:.7;"><path d="M2 2h5.5L9 3.5V9H2V2z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>
           <input class="scene-title" value="${escapeAttr(sc.title)}" data-scene="${sc.id}">
           <div class="row-actions">
-            <button data-action="delete-scene" title="Excluir cena">
+            <button data-action="delete-scene" title="Excluir página">
               <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 3.2h7M4.6 3.2V2h2.8v1.2M3.6 3.2l.5 6.6a.8.8 0 00.8.7h2.2a.8.8 0 00.8-.7l.5-6.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
           </div>
@@ -1907,7 +1937,7 @@
 
   function addChapter(){
     const ch = { id: crypto.randomUUID(), title: `Capítulo ${book.chapters.length + 1}`, collapsed:false,
-      scenes: [{ id: crypto.randomUUID(), title: "Cena 1", content: "<p></p>" }] };
+      scenes: [{ id: crypto.randomUUID(), title: "Página 1", content: "<p></p>" }] };
     book.chapters.push(ch);
     currentSceneId = ch.scenes[0].id;
     renderTree();
@@ -1917,7 +1947,7 @@
 
   function addScene(chapterId){
     const ch = book.chapters.find(c => c.id === chapterId);
-    const sc = { id: crypto.randomUUID(), title: `Cena ${ch.scenes.length + 1}`, content: "<p></p>" };
+    const sc = { id: crypto.randomUUID(), title: `Página ${ch.scenes.length + 1}`, content: "<p></p>" };
     ch.scenes.push(sc);
     ch.collapsed = false;
     currentSceneId = sc.id;
@@ -1928,7 +1958,7 @@
 
   function deleteChapter(chapterId){
     const ch = book.chapters.find(c => c.id === chapterId);
-    appConfirm(`Excluir "${ch.title}" e todas as suas cenas? Essa ação não pode ser desfeita.`, () => {
+    appConfirm(`Excluir "${ch.title}" e todas as suas páginas? Essa ação não pode ser desfeita.`, () => {
       const idx = book.chapters.findIndex(c => c.id === chapterId);
       const wasActive = book.chapters[idx].scenes.some(s => s.id === currentSceneId);
       book.chapters.splice(idx, 1);
@@ -1945,7 +1975,7 @@
   function deleteScene(chapterId, sceneId){
     const ch = book.chapters.find(c => c.id === chapterId);
     if (ch.scenes.length === 1){
-      appNotice('O capítulo precisa ter ao menos uma cena. Exclua o capítulo inteiro se necessário.');
+      appNotice('O capítulo precisa ter ao menos uma página. Exclua o capítulo inteiro se necessário.');
       return;
     }
     const sc = ch.scenes.find(s => s.id === sceneId);
@@ -1980,7 +2010,7 @@
     }
 
     const found = findScene(currentSceneId);
-    if (!found){ editorWrap.innerHTML = `<div class="editor-empty"><p>Selecione uma cena.</p></div>`; return; }
+    if (!found){ editorWrap.innerHTML = `<div class="editor-empty"><p>Selecione uma página.</p></div>`; return; }
     const { chapter, scene } = found;
 
     if (viewMode === 'editor'){
@@ -1998,9 +2028,11 @@
       const curIdx = all.findIndex(x => x.scene.id === currentSceneId);
       const leftEntry = all[curIdx];
       const rightEntry = all[curIdx + 1] || null;
+      const turnDirection = pageTurnDirection;
+      pageTurnDirection = null;
 
       const outer = document.createElement('div');
-      outer.className = 'spread-outer';
+      outer.className = `spread-outer${turnDirection ? ` page-turn-${turnDirection}` : ''}`;
       outer.innerHTML = `
         <div>
           <div class="spread">
@@ -2018,11 +2050,11 @@
             </div>
           </div>
           <div class="spread-controls">
-            <button id="prev-spread" ${curIdx <= 0 ? 'disabled' : ''}>
+            <button id="prev-spread" ${curIdx < 2 ? 'disabled' : ''}>
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M7.5 2.5L3.5 6l4 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
             <span>Página ${curIdx + 1}${rightEntry ? '–' + (curIdx + 2) : ''} de ${all.length}</span>
-            <button id="next-spread" ${curIdx >= all.length - 1 ? 'disabled' : ''}>
+            <button id="next-spread" ${curIdx + 2 >= all.length ? 'disabled' : ''}>
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5l4 3.5-4 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
           </div>
@@ -2035,8 +2067,22 @@
 
       const prevBtn = document.getElementById('prev-spread');
       const nextBtn = document.getElementById('next-spread');
-      if (prevBtn) prevBtn.addEventListener('click', () => { if (curIdx > 0){ currentSceneId = all[curIdx - 1].scene.id; renderTree(); renderEditor(); } });
-      if (nextBtn) nextBtn.addEventListener('click', () => { if (curIdx < all.length - 1){ currentSceneId = all[curIdx + 1].scene.id; renderTree(); renderEditor(); } });
+      if (prevBtn) prevBtn.addEventListener('click', () => {
+        if (curIdx >= 2){
+          pageTurnDirection = 'prev';
+          currentSceneId = all[curIdx - 2].scene.id;
+          renderTree();
+          renderEditor();
+        }
+      });
+      if (nextBtn) nextBtn.addEventListener('click', () => {
+        if (curIdx + 2 < all.length){
+          pageTurnDirection = 'next';
+          currentSceneId = all[curIdx + 2].scene.id;
+          renderTree();
+          renderEditor();
+        }
+      });
     }
 
     renderStatus();
@@ -2062,7 +2108,7 @@
 
   function renderStatus(){
     const found = currentSceneId ? findScene(currentSceneId) : null;
-    if (!found){ statusScene.textContent = "Nenhuma cena selecionada"; statusCount.textContent = "0 palavras · 0 caracteres"; return; }
+    if (!found){ statusScene.textContent = "Nenhuma página selecionada"; statusCount.textContent = "0 palavras · 0 caracteres"; return; }
     statusScene.textContent = `${found.chapter.title} — ${found.scene.title}`;
     const text = found.scene.content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
     const words = text ? text.split(' ').length : 0;
