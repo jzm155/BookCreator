@@ -192,6 +192,24 @@
 
   .book-body{ flex:1; display:flex; min-height:0; }
 
+  /* No modo Livro, a área deve se comportar como uma pré-visualização de leitura. */
+  #view-livro.book-preview-mode .fmt-group,
+  #view-livro.book-preview-mode .tree-panel,
+  #view-livro.book-preview-mode .status-bar{
+    display:none;
+  }
+  #view-livro.book-preview-mode .book-toolbar{
+    justify-content:flex-end;
+    border-bottom:0;
+    background:transparent;
+  }
+  #view-livro.book-preview-mode .book-body{
+    background:var(--paper);
+  }
+  #view-livro.book-preview-mode .editor-wrap{
+    width:100%;
+  }
+
   /* ---- chapter tree panel ---- */
   .tree-panel{
     width: 250px;
@@ -309,6 +327,16 @@
   }
   .book-stage{
     position:relative;
+  }
+  .book-pages{ position:relative; }
+  .book-pages .spread{ display:none; }
+  .book-pages .spread.active{
+    display:flex;
+    animation:book-page-in .16s ease-out;
+  }
+  @keyframes book-page-in{
+    from{ opacity:.7; transform:translateX(8px); }
+    to{ opacity:1; transform:translateX(0); }
   }
   .spread{
     display:flex;
@@ -2021,6 +2049,11 @@
   function selectScene(id){
     currentSceneId = id;
     renderTree();
+    if (viewMode === 'livro'){
+      const all = flatSceneList();
+      const index = all.findIndex(x => x.scene.id === id);
+      if (index >= 0 && showBookSpread(Math.floor(index / 2), false)) return;
+    }
     renderEditor();
   }
 
@@ -2029,6 +2062,7 @@
   // ---------- Editor rendering ----------
 
   function renderEditor(){
+    activeEditable = null;
     editorWrap.innerHTML = "";
 
     if (!currentSceneId){
@@ -2051,6 +2085,9 @@
       editorWrap.appendChild(page);
       bindEditable(document.getElementById('editable-area'), scene);
     } else {
+      renderBookView();
+      renderStatus();
+      return;
       // livro mode: the active sheet flips around the book's spine.
       const all = flatSceneList();
       const curIdx = all.findIndex(x => x.scene.id === currentSceneId);
@@ -2064,13 +2101,13 @@
           <div class="spread">
             <div class="spread-page left">
               <div class="scene-heading" style="font-size:1.1rem;">${escapeHtml(leftEntry.chapter.title)} — ${escapeHtml(leftEntry.scene.title)}</div>
-              <div class="editable" contenteditable="true" id="editable-left">${leftEntry.scene.content}</div>
+              <div class="editable" id="editable-left">${leftEntry.scene.content}</div>
               <div class="page-num">${curIdx + 1}</div>
             </div>
             <div class="spread-page right">
               ${rightEntry ? `
                 <div class="scene-heading" style="font-size:1.1rem;">${escapeHtml(rightEntry.chapter.title)} — ${escapeHtml(rightEntry.scene.title)}</div>
-                <div class="editable" contenteditable="true" id="editable-right">${rightEntry.scene.content}</div>
+                <div class="editable" id="editable-right">${rightEntry.scene.content}</div>
                 <div class="page-num">${curIdx + 2}</div>
               ` : `<div style="color:var(--slate); font-size:.85rem; padding-top:8px;">Fim do conteúdo escrito até aqui.</div>`}
             </div>
@@ -2087,9 +2124,6 @@
         </div>
       `;
       editorWrap.appendChild(outer);
-
-      bindEditable(document.getElementById('editable-left'), leftEntry.scene);
-      if (rightEntry) bindEditable(document.getElementById('editable-right'), rightEntry.scene);
 
       const prevBtn = document.getElementById('prev-spread');
       const nextBtn = document.getElementById('next-spread');
@@ -2108,56 +2142,119 @@
     renderStatus();
   }
 
-  function turnBookPage(direction, nextSceneId){
+  function renderBookView(){
     const all = flatSceneList();
-    const currentIndex = all.findIndex(x => x.scene.id === currentSceneId);
-    const targetIndex = all.findIndex(x => x.scene.id === nextSceneId);
-    if (currentIndex < 0 || targetIndex < 0) return;
-
-    const stage = editorWrap.querySelector('.book-stage');
-    const currentSpread = stage && stage.querySelector('.spread');
-    if (!stage || !currentSpread) return;
-    const controls = stage.parentElement.querySelectorAll('.spread-controls button');
-    controls.forEach(button => { button.disabled = true; });
-
-    const isNext = direction === 'next';
-    const frontEntry = all[isNext ? currentIndex + 1 : currentIndex];
-    const backEntry = all[isNext ? targetIndex : targetIndex + 1];
-    if (!frontEntry || !backEntry) return;
-
-    const flipPage = document.createElement('div');
-    flipPage.className = `flip-page${isNext ? '' : ' prev'}`;
-    flipPage.innerHTML = `
-      <div class="flip-face front">
-        <div class="spread-page ${isNext ? 'right' : 'left'}">
-          <div class="scene-heading" style="font-size:1.1rem;">${escapeHtml(frontEntry.chapter.title)} — ${escapeHtml(frontEntry.scene.title)}</div>
-          <div class="editable">${frontEntry.scene.content}</div>
-          <div class="page-num">${all.indexOf(frontEntry) + 1}</div>
-        </div>
-      </div>
-      <div class="flip-face back">
-        <div class="spread-page ${isNext ? 'left' : 'right'}">
-          <div class="scene-heading" style="font-size:1.1rem;">${escapeHtml(backEntry.chapter.title)} — ${escapeHtml(backEntry.scene.title)}</div>
-          <div class="editable">${backEntry.scene.content}</div>
-          <div class="page-num">${all.indexOf(backEntry) + 1}</div>
-        </div>
+    const spreadCount = Math.ceil(all.length / 2);
+    const selectedIndex = Math.max(0, all.findIndex(x => x.scene.id === currentSceneId));
+    spreadIndex = Math.floor(selectedIndex / 2);
+    const outer = document.createElement('div');
+    outer.className = 'spread-outer';
+    outer.innerHTML = `
+      <div class="book-stage"><div class="book-pages"></div></div>
+      <div class="spread-controls">
+        <button id="prev-spread" aria-label="Página anterior">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M7.5 2.5L3.5 6l4 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </button>
+        <span id="spread-position"></span>
+        <button id="next-spread" aria-label="Próxima página">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5l4 3.5-4 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </button>
       </div>
     `;
-    stage.insertBefore(flipPage, currentSpread);
+    editorWrap.appendChild(outer);
 
-    let completed = false;
-    const finishTurn = () => {
-      if (completed) return;
-      completed = true;
-      currentSceneId = nextSceneId;
-      renderTree();
-      renderEditor();
-    };
-    flipPage.addEventListener('transitionend', (event) => {
-      if (event.propertyName === 'transform') finishTurn();
-    }, { once:true });
-    requestAnimationFrame(() => flipPage.classList.add('flipped'));
-    setTimeout(finishTurn, 950);
+    const pages = outer.querySelector('.book-pages');
+    for (let i = 0; i < spreadCount; i++){
+      const leftEntry = all[i * 2];
+      const rightEntry = all[i * 2 + 1] || null;
+      const spread = document.createElement('div');
+      spread.className = 'spread' + (i === spreadIndex ? ' active' : '');
+      spread.innerHTML = `
+        <div class="spread-page left">
+          <div class="scene-heading" style="font-size:1.1rem;">${escapeHtml(leftEntry.chapter.title)} — ${escapeHtml(leftEntry.scene.title)}</div>
+          <div class="editable">${leftEntry.scene.content}</div>
+          <div class="page-num">${i * 2 + 1}</div>
+        </div>
+        <div class="spread-page right">
+          ${rightEntry ? `
+            <div class="scene-heading" style="font-size:1.1rem;">${escapeHtml(rightEntry.chapter.title)} — ${escapeHtml(rightEntry.scene.title)}</div>
+            <div class="editable">${rightEntry.scene.content}</div>
+            <div class="page-num">${i * 2 + 2}</div>
+          ` : `<div style="color:var(--slate); font-size:.85rem; padding-top:8px;">Fim do conteúdo escrito até aqui.</div>`}
+        </div>
+      `;
+      pages.appendChild(spread);
+    }
+    outer.querySelector('#prev-spread').addEventListener('click', () => showBookSpread(spreadIndex - 1, true, true));
+    outer.querySelector('#next-spread').addEventListener('click', () => showBookSpread(spreadIndex + 1, true, true));
+    updateBookControls(outer, all);
+  }
+
+  function showBookSpread(index, syncTree, animate){
+    const pages = editorWrap.querySelectorAll('.book-pages .spread');
+    if (!pages.length || index < 0 || index >= pages.length) return false;
+    if (editorWrap.dataset.turning) return true;
+    const all = flatSceneList();
+
+    if (animate && index !== spreadIndex && !editorWrap.dataset.turning){
+      const currentPage = pages[spreadIndex];
+      const targetPage = pages[index];
+      const isNext = index > spreadIndex;
+      const currentFace = currentPage.querySelector(isNext ? '.spread-page.right' : '.spread-page.left');
+      const targetFace = targetPage.querySelector(isNext ? '.spread-page.left' : '.spread-page.right');
+      if (currentFace && targetFace){
+        const flipPage = document.createElement('div');
+        flipPage.className = `flip-page${isNext ? '' : ' prev'}`;
+        flipPage.innerHTML = `
+          <div class="flip-face front">${currentFace.outerHTML}</div>
+          <div class="flip-face back">${targetFace.outerHTML}</div>
+        `;
+        currentPage.parentElement.appendChild(flipPage);
+        editorWrap.dataset.turning = 'true';
+        editorWrap.querySelectorAll('.spread-controls button').forEach(button => { button.disabled = true; });
+        const finishTurn = () => {
+          if (!editorWrap.dataset.turning) return;
+          delete editorWrap.dataset.turning;
+          flipPage.remove();
+          spreadIndex = index;
+          pages.forEach((page, pageIndex) => page.classList.toggle('active', pageIndex === index));
+          const nextScene = all[index * 2];
+          if (nextScene) currentSceneId = nextScene.scene.id;
+          if (syncTree) renderTree();
+          updateBookControls(editorWrap, all);
+          renderStatus();
+        };
+        flipPage.addEventListener('transitionend', (event) => {
+          if (event.propertyName === 'transform') finishTurn();
+        }, { once:true });
+        requestAnimationFrame(() => flipPage.classList.add('flipped'));
+        setTimeout(finishTurn, 950);
+        return true;
+      }
+    }
+
+    spreadIndex = index;
+    pages.forEach((page, pageIndex) => page.classList.toggle('active', pageIndex === index));
+    const nextScene = all[index * 2];
+    if (nextScene){
+      currentSceneId = nextScene.scene.id;
+      if (syncTree) renderTree();
+    }
+    updateBookControls(editorWrap, all);
+    renderStatus();
+    return true;
+  }
+
+  function updateBookControls(root, all){
+    const pageCount = Math.ceil(all.length / 2);
+    const firstPage = spreadIndex * 2 + 1;
+    const secondPage = all[spreadIndex * 2 + 1] ? `–${spreadIndex * 2 + 2}` : '';
+    const position = root.querySelector('#spread-position');
+    const prev = root.querySelector('#prev-spread');
+    const next = root.querySelector('#next-spread');
+    if (position) position.textContent = `Página ${firstPage}${secondPage} de ${all.length}`;
+    if (prev) prev.disabled = spreadIndex === 0;
+    if (next) next.disabled = spreadIndex >= pageCount - 1;
   }
 
   function bindEditable(el, scene){
@@ -2240,11 +2337,16 @@
 
   // ---------- View mode toggle ----------
 
+  function applyBookViewMode(){
+    document.getElementById('view-livro').classList.toggle('book-preview-mode', viewMode === 'livro');
+  }
+
   document.querySelectorAll('.view-toggle button').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       viewMode = btn.dataset.mode;
+      applyBookViewMode();
       renderEditor();
     });
   });
