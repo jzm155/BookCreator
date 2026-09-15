@@ -613,17 +613,31 @@
   .form-field.full{ grid-column: 1/-1; }
   label{ font-size:.78rem; font-weight:600; color: var(--ink-soft); }
 
-  input[type="text"], textarea, select{
+  input[type="text"], input[type="date"], textarea, select{
     font-family:'Inter', sans-serif; font-size:.9rem; color: var(--ink);
     padding:10px 12px; border-radius:7px; border:1px solid var(--line);
     background: var(--card); outline:none; width:100%; resize:vertical;
+  }
+  input[type="date"]{
+    height:39px;
+    color-scheme: light;
+    cursor:pointer;
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator{
+    opacity:.65;
+    cursor:pointer;
+    padding:2px;
+  }
+  #char-genero{
+    padding-right:32px;
+    background: var(--card) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7"><path d="M1 1l4 4 4-4" stroke="%2357626b" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 12px center;
   }
   select{
     padding-right: 32px;
     background: var(--card) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7"><path d="M1 1l4 4 4-4" stroke="%2357626b" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 12px center;
     appearance: none; -webkit-appearance: none; cursor: pointer;
   }
-  input[type="text"]:focus, textarea:focus, select:focus{ border-color: var(--wine); box-shadow: 0 0 0 3px rgba(123,59,58,.12); }
+  input[type="text"]:focus, input[type="date"]:focus, textarea:focus, select:focus{ border-color: var(--wine); box-shadow: 0 0 0 3px rgba(123,59,58,.12); }
 
   .hint{ font-size:.72rem; color: var(--slate); margin-top:6px; }
 
@@ -1198,12 +1212,18 @@
                 </div>
 
                 <div class="form-field"><label for="char-nome">Nome *</label><input type="text" id="char-nome" required placeholder="Como ele(a) é chamado(a)"></div>
-                <div class="form-field"><label for="char-nome-completo">Nome completo</label><input type="text" id="char-nome-completo"></div>
-
                 <div class="form-field"><label for="char-apelido">Apelido</label><input type="text" id="char-apelido"></div>
-                <div class="form-field"><label for="char-nascimento">Data de nascimento</label><input type="text" id="char-nascimento" placeholder="Ex: 12 de março, ano 340"></div>
+                <div class="form-field"><label for="char-nascimento">Data de nascimento</label><input type="date" id="char-nascimento"></div>
 
-                <div class="form-field"><label for="char-genero">Gênero</label><input type="text" id="char-genero"></div>
+                <div class="form-field">
+                  <label for="char-genero">Gênero</label>
+                  <input type="text" id="char-genero" list="char-genero-list" placeholder="Digite ou selecione">
+                  <datalist id="char-genero-list">
+                    <option value="Masculino"></option>
+                    <option value="Feminino"></option>
+                    <option value="Outro"></option>
+                  </datalist>
+                </div>
                 <div class="form-field">
                   <label for="char-raca">Raça</label>
                   <input type="text" id="char-raca" list="char-raca-list" placeholder="Ex: Elfo ou Elfo da Floresta">
@@ -2506,7 +2526,6 @@
       <div class="drawer-section">
         <h4>Dados</h4>
         <div class="drawer-field-grid">
-          ${c.nomeCompleto ? `<div><span class="drawer-field-label">Nome completo</span><span class="drawer-field-value">${escapeHtml(c.nomeCompleto)}</span></div>` : ''}
           ${c.nascimento ? `<div><span class="drawer-field-label">Nascimento</span><span class="drawer-field-value">${escapeHtml(c.nascimento)}</span></div>` : ''}
           ${c.genero ? `<div><span class="drawer-field-label">Gênero</span><span class="drawer-field-value">${escapeHtml(c.genero)}</span></div>` : ''}
           ${c.altura ? `<div><span class="drawer-field-label">Altura</span><span class="drawer-field-value">${escapeHtml(c.altura)}</span></div>` : ''}
@@ -2569,7 +2588,7 @@
 
   // ---------- Form (criar/editar) ----------
 
-  const charFields = ['nome','nome-completo','apelido','nascimento','genero','raca','descricao','biografia',
+  const charFields = ['nome','apelido','nascimento','genero','raca','descricao','biografia',
     'aparencia','altura','peso','profissao','local-nascimento','local-atual',
     'personalidade','objetivos','medos','gostos','desgostos','curiosidades','observacoes'];
 
