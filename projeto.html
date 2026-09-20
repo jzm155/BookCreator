@@ -728,6 +728,8 @@
     font-style:italic;
   }
   .gen-node:hover .gen-node-photo{ box-shadow: 0 0 0 2px var(--wine), 0 8px 18px -6px rgba(28,32,41,.55); }
+  .gen-node-photo.male{ box-shadow: 0 0 0 3px #4d7fe8, 0 0 0 6px rgba(77,127,232,.18), 0 8px 18px -6px rgba(28,32,41,.55); }
+  .gen-node-photo.female{ box-shadow: 0 0 0 3px #d9b536, 0 0 0 6px rgba(217,181,54,.18), 0 8px 18px -6px rgba(28,32,41,.55); }
   .gen-node-name{
     font-size:.76rem; font-weight:600; color: var(--ink); text-align:center;
     background: rgba(244,239,227,.94); padding: 3px 8px; border-radius:6px;
@@ -2389,29 +2391,70 @@
     return (name||"?").trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
   }
 
+  function normalizeRelationType(type){
+    return String(type || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim()
+      .toLowerCase();
+  }
+
+  function getLegacyParentIdFromRelations(relationList, relationType){
+    if (!Array.isArray(relationList)) return null;
+    const target = normalizeRelationType(relationType);
+    const match = relationList.find(r => {
+      const relType = normalizeRelationType(r && (r.type || r.relation || r.label));
+      return relType === target || relType === 'pai' && target === 'father' || relType === 'father' && target === 'pai' || relType === 'mae' && target === 'mother' || relType === 'mother' && target === 'mae';
+    });
+    return match && match.charId ? match.charId : null;
+  }
+
   // Helper para obter pai e mãe de um personagem (compatível com legado)
   function getCharParents(charId){
     const c = characters.find(x => x.id === charId);
     if (!c) return { pai: null, mae: null };
+
     let pai = c.paiId ? characters.find(x => x.id === c.paiId) : null;
     let mae = c.maeId ? characters.find(x => x.id === c.maeId) : null;
-    if (!pai && Array.isArray(c.relations)){
-      const rPai = c.relations.find(r => r.type === 'Pai');
-      if (rPai) pai = characters.find(x => x.id === rPai.charId);
+
+    if (!pai){
+      const legacyPaiId = getLegacyParentIdFromRelations(c.relations, 'Pai');
+      if (legacyPaiId) pai = characters.find(x => x.id === legacyPaiId);
     }
-    if (!mae && Array.isArray(c.relations)){
-      const rMae = c.relations.find(r => r.type === 'Mãe');
-      if (rMae) mae = characters.find(x => x.id === rMae.charId);
+    if (!mae){
+      const legacyMaeId = getLegacyParentIdFromRelations(c.relations, 'Mãe');
+      if (legacyMaeId) mae = characters.find(x => x.id === legacyMaeId);
     }
+
     return { pai: pai || null, mae: mae || null };
   }
 
   // Helper para obter todos os filhos de um personagem
   function getCharChildren(charId){
-    return characters.filter(c => {
+    const childIds = new Set();
+
+    characters.forEach(c => {
+      if (c.id === charId) return;
+
       const { pai, mae } = getCharParents(c.id);
-      return (pai && pai.id === charId) || (mae && mae.id === charId);
+      if ((pai && pai.id === charId) || (mae && mae.id === charId)){
+        childIds.add(c.id);
+      }
+
+      if (Array.isArray(c.relations)){
+        const listedParents = c.relations.filter(r => {
+          if (!r || !r.charId) return false;
+          const relType = normalizeRelationType(r.type || r.relation || r.label);
+          return relType === 'pai' || relType === 'mae' || relType === 'mãe' || relType === 'father' || relType === 'mother';
+        });
+
+        listedParents.forEach(r => {
+          if (r.charId === charId) childIds.add(c.id);
+        });
+      }
     });
+
+    return [...childIds].map(id => characters.find(x => x.id === id)).filter(Boolean);
   }
 
   // Helper para obter irmãos de um personagem
@@ -2973,8 +3016,6 @@
 
     const positions = {}; // id -> { x, y }
     const familyLinks = []; // Conexões familiares para desenho SVG
-    const unknownNodes = [];
-    const unknownLinks = [];
     let currentXOffset = 0;
 
     components.forEach(comp => {
@@ -2988,33 +3029,78 @@
         return !hasPaiInComp && !hasMaeInComp;
       });
 
-      // Agrupa raízes em unidades familiares (casais ou indivíduos isolados)
+      // Agrupa raízes em unidades familiares (casais ou indivíduos isolados).
+      // A regra anterior quebrava quando havia avô + pai + mãe + filhos porque
+      // a mãe ficava isolada como raiz separada do restante da família.
+      function getLinkedFamilyMembers(startId){
+        const ids = new Set([startId]);
+        const queue = [startId];
+
+        while (queue.length){
+          const currentId = queue.shift();
+          const current = comp.find(c => c.id === currentId);
+          if (!current) continue;
+
+          const { pai, mae } = getCharParents(currentId);
+          [pai, mae].filter(Boolean).forEach(parent => {
+            if (compIds.has(parent.id) && !hidden.has(parent.id) && !ids.has(parent.id)) {
+              ids.add(parent.id);
+              queue.push(parent.id);
+            }
+          });
+
+          getCharChildren(currentId).forEach(child => {
+            if (!compIds.has(child.id) || hidden.has(child.id) || ids.has(child.id)) return;
+            ids.add(child.id);
+            queue.push(child.id);
+
+            const { pai: childPai, mae: childMae } = getCharParents(child.id);
+            const otherParent = childPai && childPai.id === currentId ? childMae : childPai;
+            if (otherParent && compIds.has(otherParent.id) && !hidden.has(otherParent.id) && !ids.has(otherParent.id)){
+              ids.add(otherParent.id);
+              queue.push(otherParent.id);
+            }
+          });
+        }
+
+        return [...ids].map(id => comp.find(c => c.id === id)).filter(Boolean);
+      }
+
+      function getNodeSpouse(nodeId){
+        const children = getCharChildren(nodeId).filter(child => compIds.has(child.id) && !hidden.has(child.id));
+        for (const child of children){
+          const { pai, mae } = getCharParents(child.id);
+          const otherParent = (pai && pai.id === nodeId) ? mae : pai;
+          if (otherParent && compIds.has(otherParent.id) && !hidden.has(otherParent.id)){
+            return otherParent;
+          }
+        }
+        return null;
+      }
+
       const placedRoots = new Set();
       const rootUnits = [];
 
       roots.forEach(r => {
         if (placedRoots.has(r.id)) return;
-        const kids = getCharChildren(r.id).filter(k => compIds.has(k.id) && !hidden.has(k.id));
-        let partner = null;
-        if (kids.length > 0){
-          for (const k of kids){
-            const { pai, mae } = getCharParents(k.id);
-            const other = (pai && pai.id === r.id) ? mae : pai;
-            if (other && compIds.has(other.id) && roots.some(x => x.id === other.id) && !placedRoots.has(other.id)){
-              partner = other;
-              break;
-            }
-          }
+        const familyMembers = getLinkedFamilyMembers(r.id);
+        const familyIds = new Set(familyMembers.map(c => c.id));
+
+        familyMembers.forEach(member => placedRoots.add(member.id));
+
+        const rootNode = familyMembers.reduce((best, current) => {
+          const bestLevel = best ? levels[best.id] : Number.POSITIVE_INFINITY;
+          return levels[current.id] < bestLevel ? current : best;
+        }, familyMembers[0]);
+
+        const rootChildren = getCharChildren(rootNode.id).filter(child => familyIds.has(child.id) && !hidden.has(child.id));
+        const rootSpouse = getNodeSpouse(rootNode.id);
+        const baseParents = [rootNode];
+        if (rootSpouse && familyIds.has(rootSpouse.id) && !baseParents.some(p => p.id === rootSpouse.id)){
+          baseParents.push(rootSpouse);
         }
 
-        if (partner){
-          placedRoots.add(r.id);
-          placedRoots.add(partner.id);
-          rootUnits.push({ parents: [r, partner], children: kids });
-        } else {
-          placedRoots.add(r.id);
-          rootUnits.push({ parents: [r], children: kids });
-        }
+        rootUnits.push({ parents: baseParents, children: rootChildren });
       });
 
       // Função recursiva para calcular largura de subárvores
@@ -3083,7 +3169,12 @@
             const childWidth = child._calculatedWidth;
             const childMidX = startChildX + childWidth / 2;
             const grandKids = getCharChildren(child.id).filter(k => compIds.has(k.id) && !hidden.has(k.id));
-            layoutUnit({ parents: [child], children: grandKids }, childMidX);
+            const childSpouse = getNodeSpouse(child.id);
+            const childParents = [child];
+            if (childSpouse && compIds.has(childSpouse.id) && !hidden.has(childSpouse.id) && !childParents.some(p => p.id === childSpouse.id)){
+              childParents.push(childSpouse);
+            }
+            layoutUnit({ parents: childParents, children: grandKids }, childMidX);
             startChildX += childWidth + GEN_SIBLING_GAP;
           });
         }
@@ -3106,50 +3197,6 @@
       });
 
       currentXOffset += compWidth + 160;
-    });
-
-    // Exibe um nó visual para cada pai ou mãe que ainda não foi informado.
-    visibleChars.forEach(c => {
-      const childPos = positions[c.id];
-      if (!childPos) return;
-
-      const { pai, mae } = getCharParents(c.id);
-      const missingParents = [
-        { relation: 'pai', parent: pai, offset: -GEN_COUPLE_GAP / 2 },
-        { relation: 'mãe', parent: mae, offset: GEN_COUPLE_GAP / 2 }
-      ].filter(item => !item.parent);
-
-      missingParents.forEach(item => {
-        const id = `unknown-${c.id}-${item.relation}`;
-        positions[id] = {
-          x: childPos.x + item.offset,
-          y: childPos.y - GEN_LEVEL_Y
-        };
-        unknownNodes.push({ id, childId: c.id, relation: item.relation });
-        unknownLinks.push({ parentId: id, childId: c.id });
-      });
-    });
-
-    // Mantém nós desconhecidos distintos quando duas ramificações geram o
-    // mesmo ponto horizontal (por exemplo, o pai ausente de dois irmãos).
-    const unknownByLevel = new Map();
-    unknownNodes.forEach(unknown => {
-      const pos = positions[unknown.id];
-      const levelKey = Math.round(pos.y);
-      if (!unknownByLevel.has(levelKey)) unknownByLevel.set(levelKey, []);
-      unknownByLevel.get(levelKey).push(unknown.id);
-    });
-
-    const minNodeGap = GEN_NODE_WIDTH + GEN_SIBLING_GAP;
-    unknownByLevel.forEach(ids => {
-      ids.sort((a, b) => positions[a].x - positions[b].x);
-      for (let i = 1; i < ids.length; i++){
-        const previous = positions[ids[i - 1]];
-        const current = positions[ids[i]];
-        if (current.x - previous.x < minNodeGap){
-          current.x = previous.x + minNodeGap;
-        }
-      }
     });
 
     Object.keys(genNodeOffsets).forEach(id => {
@@ -3179,48 +3226,32 @@
       });
     }
 
-    // --- Renderiza conexões SVG hierárquicas ---
+    // --- Renderiza conexões SVG simples, que seguem o movimento dos nós ---
     let svgHtml = "";
     familyLinks.forEach(fl => {
       const isCouple = fl.parents.length > 1;
       const childPositions = fl.children.map(cid => positions[cid]).filter(Boolean);
       if (childPositions.length === 0) return;
 
-      const yFork = fl.midY + GEN_LEVEL_Y / 2;
+      const yFork = fl.midY + 36;
 
       if (isCouple){
         const p1 = positions[fl.parents[0]];
         const p2 = positions[fl.parents[1]];
         if (p1 && p2){
-          // Linha de união entre pai e mãe
           svgHtml += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" class="gen-line-couple" />`;
           svgHtml += `<circle cx="${fl.midX}" cy="${fl.midY}" r="4" class="gen-junction-dot" />`;
         }
       }
 
-      // Haste vertical descendo dos pais até o nível de bifurcação
-      const topStemY = isCouple ? fl.midY : fl.midY + 36;
-      svgHtml += `<path d="M ${fl.midX} ${topStemY} L ${fl.midX} ${yFork}" class="gen-line" />`;
+      const stemStartY = isCouple ? fl.midY : fl.midY + 18;
+      svgHtml += `<path d="M ${fl.midX} ${stemStartY} L ${fl.midX} ${yFork}" class="gen-line" />`;
 
-      // Barra horizontal que abrange todos os filhos
-      const minChildX = Math.min(...childPositions.map(p => p.x));
-      const maxChildX = Math.max(...childPositions.map(p => p.x));
-      if (minChildX !== maxChildX){
-        svgHtml += `<path d="M ${minChildX} ${yFork} L ${maxChildX} ${yFork}" class="gen-line" />`;
-      }
-
-      // Linhas verticais descendo para o topo de cada filho
       childPositions.forEach(cp => {
-        svgHtml += `<path d="M ${cp.x} ${yFork} L ${cp.x} ${cp.y - 36}" class="gen-line" />`;
+        const elbowY = Math.max(yFork, cp.y - 56);
+        svgHtml += `<path d="M ${fl.midX} ${yFork} L ${fl.midX} ${elbowY} L ${cp.x} ${elbowY} L ${cp.x} ${cp.y - 36}" class="gen-line" />`;
       });
     });
-    unknownLinks.forEach(link => {
-      const parentPos = positions[link.parentId];
-      const childPos = positions[link.childId];
-      if (!parentPos || !childPos) return;
-      svgHtml += `<path d="M ${parentPos.x} ${parentPos.y + 36} L ${childPos.x} ${childPos.y - 36}" class="gen-line" />`;
-    });
-
     genSvg.innerHTML = svgHtml;
 
     // --- Renderiza nós dos personagens ---
@@ -3237,9 +3268,11 @@
       const kids = getCharChildren(c.id);
       const hasChildren = kids.length > 0;
       const isCollapsed = collapsedIds.has(c.id);
+      const genero = String(c.genero || '').trim().toLowerCase();
+      const genderClass = genero.includes('femin') || genero.includes('mulher') || genero.includes('fem') ? 'female' : genero.includes('masc') || genero.includes('homem') || genero.includes('macho') ? 'male' : '';
 
       node.innerHTML = `
-        <div class="gen-node-photo" style="${c.fotoPerfil ? `background-image:url('${c.fotoPerfil}')` : ''}">${c.fotoPerfil ? '' : initials(c.nome)}</div>
+        <div class="gen-node-photo ${genderClass}" style="${c.fotoPerfil ? `background-image:url('${c.fotoPerfil}')` : ''}">${c.fotoPerfil ? '' : initials(c.nome)}</div>
         <div class="gen-node-name" title="${escapeHtml(c.nome)}">${escapeHtml(c.nome)}</div>
         ${hasChildren ? `<div class="gen-node-toggle" data-id="${c.id}" title="${isCollapsed ? 'Expandir filhos' : 'Recolher filhos'}">${isCollapsed ? '+' : '−'}</div>` : ''}
       `;
@@ -3261,22 +3294,6 @@
         });
       }
 
-      genNodesEl.appendChild(node);
-    });
-
-    unknownNodes.forEach(unknown => {
-      const pos = positions[unknown.id];
-      if (!pos) return;
-
-      const node = document.createElement('div');
-      node.className = 'gen-node gen-node-unknown';
-      node.style.left = pos.x + 'px';
-      node.style.top = pos.y + 'px';
-      node.innerHTML = `
-        <div class="gen-node-photo">?</div>
-        <div class="gen-node-name" title="Desconhecido">Desconhecido</div>
-      `;
-      enableGenNodeDragging(node, unknown.id);
       genNodesEl.appendChild(node);
     });
 
