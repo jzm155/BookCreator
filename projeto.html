@@ -2406,7 +2406,7 @@
       const relType = normalizeRelationType(r && (r.type || r.relation || r.label));
       return relType === target || relType === 'pai' && target === 'father' || relType === 'father' && target === 'pai' || relType === 'mae' && target === 'mother' || relType === 'mother' && target === 'mae';
     });
-    return match && match.charId ? match.charId : null;
+    return match && (match.charId || match.characterId || match.personId || match.targetId) || null;
   }
 
   // Helper para obter pai e mãe de um personagem (compatível com legado)
@@ -3029,43 +3029,6 @@
         return !hasPaiInComp && !hasMaeInComp;
       });
 
-      // Agrupa raízes em unidades familiares (casais ou indivíduos isolados).
-      // A regra anterior quebrava quando havia avô + pai + mãe + filhos porque
-      // a mãe ficava isolada como raiz separada do restante da família.
-      function getLinkedFamilyMembers(startId){
-        const ids = new Set([startId]);
-        const queue = [startId];
-
-        while (queue.length){
-          const currentId = queue.shift();
-          const current = comp.find(c => c.id === currentId);
-          if (!current) continue;
-
-          const { pai, mae } = getCharParents(currentId);
-          [pai, mae].filter(Boolean).forEach(parent => {
-            if (compIds.has(parent.id) && !hidden.has(parent.id) && !ids.has(parent.id)) {
-              ids.add(parent.id);
-              queue.push(parent.id);
-            }
-          });
-
-          getCharChildren(currentId).forEach(child => {
-            if (!compIds.has(child.id) || hidden.has(child.id) || ids.has(child.id)) return;
-            ids.add(child.id);
-            queue.push(child.id);
-
-            const { pai: childPai, mae: childMae } = getCharParents(child.id);
-            const otherParent = childPai && childPai.id === currentId ? childMae : childPai;
-            if (otherParent && compIds.has(otherParent.id) && !hidden.has(otherParent.id) && !ids.has(otherParent.id)){
-              ids.add(otherParent.id);
-              queue.push(otherParent.id);
-            }
-          });
-        }
-
-        return [...ids].map(id => comp.find(c => c.id === id)).filter(Boolean);
-      }
-
       function getNodeSpouse(nodeId){
         const children = getCharChildren(nodeId).filter(child => compIds.has(child.id) && !hidden.has(child.id));
         for (const child of children){
@@ -3078,29 +3041,52 @@
         return null;
       }
 
+      function canPlaceSpouseWithChild(child, spouse){
+        if (!spouse || !compIds.has(spouse.id) || hidden.has(spouse.id)) return false;
+        const spouseParents = getCharParents(spouse.id);
+        return !spouseParents.pai && !spouseParents.mae;
+      }
+
+      // Um filho pode ter sido associado somente ao pai ou somente à mãe.
+      // A unidade familiar precisa considerar os dois lados para não perder
+      // ramos quando o outro progenitor é quem possui a relação cadastrada.
+      function getChildrenForParents(parents){
+        const childIds = new Set();
+        parents.forEach(parent => {
+          if (!parent) return;
+          getCharChildren(parent.id).forEach(child => {
+            if (!compIds.has(child.id) || hidden.has(child.id)) return;
+            const childParents = getCharParents(child.id);
+            const otherParent = childParents.pai && childParents.pai.id === parent.id
+              ? childParents.mae
+              : childParents.pai;
+            const isSharedParent = parents.length === 1 && otherParent && compIds.has(otherParent.id);
+            if (isSharedParent && parent.id > otherParent.id) return;
+            childIds.add(child.id);
+          });
+        });
+        return [...childIds]
+          .map(id => comp.find(c => c.id === id))
+          .filter(Boolean)
+          .sort((a, b) => (positions[a.id] ? positions[a.id].x : 0) - (positions[b.id] ? positions[b.id].x : 0));
+      }
+
       const placedRoots = new Set();
       const rootUnits = [];
 
       roots.forEach(r => {
         if (placedRoots.has(r.id)) return;
-        const familyMembers = getLinkedFamilyMembers(r.id);
-        const familyIds = new Set(familyMembers.map(c => c.id));
-
-        familyMembers.forEach(member => placedRoots.add(member.id));
-
-        const rootNode = familyMembers.reduce((best, current) => {
-          const bestLevel = best ? levels[best.id] : Number.POSITIVE_INFINITY;
-          return levels[current.id] < bestLevel ? current : best;
-        }, familyMembers[0]);
-
-        const rootChildren = getCharChildren(rootNode.id).filter(child => familyIds.has(child.id) && !hidden.has(child.id));
-        const rootSpouse = getNodeSpouse(rootNode.id);
-        const baseParents = [rootNode];
-        if (rootSpouse && familyIds.has(rootSpouse.id) && !baseParents.some(p => p.id === rootSpouse.id)){
+        const rootSpouse = getNodeSpouse(r.id);
+        const baseParents = [r];
+        if (rootSpouse && !placedRoots.has(rootSpouse.id) && !baseParents.some(p => p.id === rootSpouse.id)){
           baseParents.push(rootSpouse);
         }
 
-        rootUnits.push({ parents: baseParents, children: rootChildren });
+        // Marca somente as raízes desta unidade. Os descendentes serão
+        // posicionados recursivamente e não podem impedir outras raízes do
+        // mesmo componente de serem desenhadas.
+        baseParents.forEach(parent => placedRoots.add(parent.id));
+        rootUnits.push({ parents: baseParents, children: getChildrenForParents(baseParents) });
       });
 
       // Função recursiva para calcular largura de subárvores
@@ -3114,8 +3100,13 @@
         // Calcula a largura de cada filho
         let childrenWidth = 0;
         unit.children.forEach((child, idx) => {
-          const grandKids = getCharChildren(child.id).filter(k => compIds.has(k.id) && !hidden.has(k.id));
-          const childUnit = { parents: [child], children: grandKids };
+          const childSpouse = getNodeSpouse(child.id);
+          const childParents = [child];
+          if (canPlaceSpouseWithChild(child, childSpouse) && !childParents.some(p => p.id === childSpouse.id)){
+            childParents.push(childSpouse);
+          }
+          const grandKids = getChildrenForParents(childParents);
+          const childUnit = { parents: childParents, children: grandKids };
           const w = getSubtreeWidth(childUnit);
           child._calculatedWidth = w;
           childrenWidth += w;
@@ -3138,8 +3129,8 @@
           const p2X = midX + GEN_COUPLE_GAP / 2;
           const y2 = levels[p2.id] * GEN_LEVEL_Y;
 
-          positions[p1.id] = { x: p1X, y: y1 };
-          positions[p2.id] = { x: p2X, y: y2 };
+          if (!positions[p1.id]) positions[p1.id] = { x: p1X, y: y1 };
+          if (!positions[p2.id]) positions[p2.id] = { x: p2X, y: y2 };
 
           if (unit.children && unit.children.length > 0){
             familyLinks.push({
@@ -3150,7 +3141,7 @@
             });
           }
         } else {
-          positions[p1.id] = { x: midX, y: y1 };
+          if (!positions[p1.id]) positions[p1.id] = { x: midX, y: y1 };
           if (unit.children && unit.children.length > 0){
             familyLinks.push({
               parents: [p1.id],
@@ -3168,12 +3159,12 @@
           unit.children.forEach(child => {
             const childWidth = child._calculatedWidth;
             const childMidX = startChildX + childWidth / 2;
-            const grandKids = getCharChildren(child.id).filter(k => compIds.has(k.id) && !hidden.has(k.id));
             const childSpouse = getNodeSpouse(child.id);
             const childParents = [child];
-            if (childSpouse && compIds.has(childSpouse.id) && !hidden.has(childSpouse.id) && !childParents.some(p => p.id === childSpouse.id)){
+            if (canPlaceSpouseWithChild(child, childSpouse) && !positions[childSpouse.id] && !childParents.some(p => p.id === childSpouse.id)){
               childParents.push(childSpouse);
             }
+            const grandKids = getChildrenForParents(childParents);
             layoutUnit({ parents: childParents, children: grandKids }, childMidX);
             startChildX += childWidth + GEN_SIBLING_GAP;
           });
@@ -3197,6 +3188,32 @@
       });
 
       currentXOffset += compWidth + 160;
+    });
+
+    // Cônjuges que pertencem a ramos diferentes continuam sendo um único nó.
+    // Aproxima-os na mesma geração, escolhendo o lado com mais espaço livre.
+    const positionedCouples = new Set();
+    visibleChars.forEach(character => {
+      const spouse = findVisibleSpouse(character.id);
+      if (!spouse || !positions[character.id] || !positions[spouse.id]) return;
+      const coupleKey = [character.id, spouse.id].sort().join("|");
+      if (positionedCouples.has(coupleKey) || levels[character.id] !== levels[spouse.id]) return;
+      positionedCouples.add(coupleKey);
+
+      if (Math.abs(positions[character.id].x - positions[spouse.id].x) <= GEN_COUPLE_GAP * 1.5) return;
+
+      const anchor = positions[character.id].x >= positions[spouse.id].x ? character : spouse;
+      const moving = anchor.id === character.id ? spouse : character;
+      const occupied = visibleChars
+        .filter(other => other.id !== anchor.id && other.id !== moving.id && positions[other.id] && levels[other.id] === levels[anchor.id])
+        .map(other => positions[other.id].x);
+      const anchorX = positions[anchor.id].x;
+      const candidates = [anchorX - GEN_COUPLE_GAP, anchorX + GEN_COUPLE_GAP];
+      const clearance = candidate => occupied.length
+        ? Math.min(...occupied.map(x => Math.abs(candidate - x)))
+        : Number.POSITIVE_INFINITY;
+      const targetX = clearance(candidates[1]) > clearance(candidates[0]) ? candidates[1] : candidates[0];
+      positions[moving.id].x = targetX;
     });
 
     Object.keys(genNodeOffsets).forEach(id => {
@@ -3228,29 +3245,54 @@
 
     // --- Renderiza conexões SVG simples, que seguem o movimento dos nós ---
     let svgHtml = "";
+    const renderedCouples = new Set();
+    function findVisibleSpouse(nodeId){
+      const children = getCharChildren(nodeId).filter(child => visibleChars.some(c => c.id === child.id));
+      for (const child of children){
+        const { pai, mae } = getCharParents(child.id);
+        const otherParent = (pai && pai.id === nodeId) ? mae : pai;
+        if (otherParent && visibleChars.some(c => c.id === otherParent.id)) return otherParent;
+      }
+      return null;
+    }
     familyLinks.forEach(fl => {
       const isCouple = fl.parents.length > 1;
       const childPositions = fl.children.map(cid => positions[cid]).filter(Boolean);
       if (childPositions.length === 0) return;
 
-      const yFork = fl.midY + 36;
+      const parentPositions = fl.parents.map(pid => positions[pid]).filter(Boolean);
+      if (parentPositions.length === 0) return;
+      const linkMidX = parentPositions.reduce((sum, p) => sum + p.x, 0) / parentPositions.length;
+      const linkMidY = Math.max(...parentPositions.map(p => p.y));
+      const yFork = linkMidY + 36;
 
       if (isCouple){
         const p1 = positions[fl.parents[0]];
         const p2 = positions[fl.parents[1]];
         if (p1 && p2){
+          renderedCouples.add([fl.parents[0], fl.parents[1]].sort().join("|"));
           svgHtml += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" class="gen-line-couple" />`;
-          svgHtml += `<circle cx="${fl.midX}" cy="${fl.midY}" r="4" class="gen-junction-dot" />`;
+          svgHtml += `<circle cx="${linkMidX}" cy="${linkMidY}" r="4" class="gen-junction-dot" />`;
         }
       }
 
-      const stemStartY = isCouple ? fl.midY : fl.midY + 18;
-      svgHtml += `<path d="M ${fl.midX} ${stemStartY} L ${fl.midX} ${yFork}" class="gen-line" />`;
+      const stemStartY = isCouple ? linkMidY : linkMidY + 18;
+      svgHtml += `<path d="M ${linkMidX} ${stemStartY} L ${linkMidX} ${yFork}" class="gen-line" />`;
 
       childPositions.forEach(cp => {
         const elbowY = Math.max(yFork, cp.y - 56);
-        svgHtml += `<path d="M ${fl.midX} ${yFork} L ${fl.midX} ${elbowY} L ${cp.x} ${elbowY} L ${cp.x} ${cp.y - 36}" class="gen-line" />`;
+        svgHtml += `<path d="M ${linkMidX} ${yFork} L ${linkMidX} ${elbowY} L ${cp.x} ${elbowY} L ${cp.x} ${cp.y - 36}" class="gen-line" />`;
       });
+    });
+
+    // Cônjuges que também pertencem a outra família (por exemplo, Jiyu
+    // como filha e mãe) ainda precisam ter a relação conjugal visível.
+    visibleChars.forEach(c => {
+      const spouse = findVisibleSpouse(c.id);
+      const key = spouse ? [c.id, spouse.id].sort().join("|") : null;
+      if (!key || renderedCouples.has(key) || !positions[c.id] || !positions[spouse.id]) return;
+      renderedCouples.add(key);
+      svgHtml += `<line x1="${positions[c.id].x}" y1="${positions[c.id].y}" x2="${positions[spouse.id].x}" y2="${positions[spouse.id].y}" class="gen-line-couple" />`;
     });
     genSvg.innerHTML = svgHtml;
 

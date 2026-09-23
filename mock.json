@@ -1,0 +1,2026 @@
+{
+  "nome": "O Humilde Servo",
+  "titulo": "O Humilde Servo",
+  "autor": "Joaozinho",
+  "descricao": "",
+  "capa": null,
+  "status": "desenvolvimento",
+  "createdAt": "2026-09-12T00:17:52.586Z",
+  "updatedAt": "2026-09-21T03:06:23.565Z",
+  "content": {
+    "book": {
+      "chapters": [
+        {
+          "id": "748f7c4d-317b-4405-85fb-2d4d1e2d3edb",
+          "title": "Capítulo 1",
+          "collapsed": false,
+          "scenes": [
+            {
+              "id": "96594f46-aea7-47e6-b8a0-cdca3b72792f",
+              "title": "Página 1",
+              "content": "Em um lindo dia de sol, Shin"
+            },
+            {
+              "id": "e133119f-f2a5-4cab-9531-31fc6ff70a01",
+              "title": "Página 2",
+              "content": "<p></p>"
+            },
+            {
+              "id": "b6f2f6aa-8418-420f-9c92-1c2ce7735a6b",
+              "title": "Página 3",
+              "content": "<p></p>"
+            }
+          ]
+        }
+      ]
+    },
+    "characters": [
+      {
+        "id": "997320e0-f74c-407f-a6a4-4e895cdcc94b",
+        "nome": "Akame Gaia",
+        "fotoPerfil": null,
+        "fotoCorpo": null,
+        "paiId": null,
+        "maeId": null,
+        "relations": [],
+        "apelido": "",
+        "nascimento": "",
+        "genero": "Feminino",
+        "raca": "Elfo",
+        "descricao": "",
+        "biografia": "",
+        "aparencia": "",
+        "altura": "",
+        "peso": "",
+        "profissao": "",
+        "localNascimento": "",
+        "localAtual": "",
+        "personalidade": "",
+        "objetivos": "",
+        "medos": "",
+        "gostos": "",
+        "desgostos": "",
+        "curiosidades": "",
+        "observacoes": ""
+      },
+      {
+        "id": "ff7edfc9-3b75-4acd-a4ba-0e109bd9d33b",
+        "nome": "Kurone Asura",
+        "fotoPerfil": null,
+        "fotoCorpo": null,
+        "paiId": null,
+        "maeId": null,
+        "relations": [],
+        "apelido": "",
+        "nascimento": "",
+        "genero": "Feminino",
+        "raca": "Elfo",
+        "descricao": "",
+        "biografia": "",
+        "aparencia": "",
+        "altura": "",
+        "peso": "",
+        "profissao": "",
+        "localNascimento": "",
+        "localAtual": "",
+        "personalidade": "",
+        "objetivos": "",
+        "medos": "",
+        "gostos": "",
+        "desgostos": "",
+        "curiosidades": "",
+        "observacoes": ""
+      },
+      {
+        "id": "a9f8a542-bde7-4016-a1e1-f76cc3bc903f",
+        "nome": "Yami Asura",
+        "fotoPerfil": null,
+        "fotoCorpo": null,
+        "paiId": null,
+        "maeId": null,
+        "relations": [],
+        "apelido": "",
+        "nascimento": "",
+        "genero": "Masculino",
+        "raca": "Elfo",
+        "descricao": "",
+        "biografia": "",
+        "aparencia": "",
+        "altura": "",
+        "peso": "",
+        "profissao": "",
+        "localNascimento": "",
+        "localAtual": "",
+        "personalidade": "",
+        "objetivos": "",
+        "medos": "",
+        "gostos": "",
+        "desgostos": "",
+        "curiosidades": "",
+        "observacoes": ""
+      },
+      {
+        "id": "b68102b8-bbaf-4303-87e7-77fe5eb949b7",
+        "nome": "Arisu Deva",
+        "fotoPerfil": null,
+        "fotoCorpo": null,
+        "paiId": null,
+        "maeId": null,
+        "relations": [],
+        "apelido": "",
+        "nascimento": "",
+        "genero": "Feminino",
+        "raca": "Elfo",
+        "descricao": "",
+        "biografia": "",
+        "aparencia": "",
+        "altura": "",
+        "peso": "",
+        "profissao": "",
+        "localNascimento": "",
+        "localAtual": "",
+        "personalidade": "",
+        "objetivos": "",
+        "medos": "",
+        "gostos": "",
+        "desgostos": "",
+        "curiosidades": "",
+        "observacoes": ""
+      },
+      {
+        "id": "f907cae4-aafe-4ecc-bf34-d2a2dead4eea",
+        "nome": "Kazuki Deva",
+        "fotoPerfil": null,
+        "fotoCorpo": null,
+        "paiId": null,
+        "maeId": null,
+        "relations": [],
+        "apelido": "",
+        "nascimento": "",
+        "genero": "Masculino",
+        "raca": "Elfo",
+        "descricao": "",
+        "biografia": "",
+        "aparencia": "",
+        "altura": "",
+        "peso": "",
+        "profissao": "",
+        "localNascimento": "",
+        "localAtual": "",
+        "personalidade": "",
+        "objetivos": "",
+        "medos": "",
+        "gostos": "",
+        "desgostos": "",
+        "curiosidades": "",
+        "observacoes": ""
+      },
+      {
+        "id": "78dfa98c-c9b1-49c4-a8cf-ad6f8e78d8e0",
+        "nome": "Akira Deva",
+        "fotoPerfil": null,
+        "fotoCorpo": null,
+        "paiId": "f907cae4-aafe-4ecc-bf34-d2a2dead4eea",
+        "maeId": "b68102b8-bbaf-4303-87e7-77fe5eb949b7",
+        "relations": [],
+        "apelido": "",
+        "nascimento": "",
+        "genero": "Feminino",
+        "raca": "Elfo",
+        "descricao": "",
+        "biografia": "",
+        "aparencia": "",
+        "altura": "",
+        "peso": "",
+        "profissao": "",
+        "localNascimento": "",
+        "localAtual": "",
+        "personalidade": "",
+        "objetivos": "",
+        "medos": "",
+        "gostos": "",
+        "desgostos": "",
+        "curiosidades": "",
+        "observacoes": "",
+        "_calculatedWidth": 120
+      },
+      {
+        "id": "3c188dd2-3447-481d-9ab8-f015b7f1e776",
+        "nome": "Teruko Deva",
+        "fotoPerfil": null,
+        "fotoCorpo": null,
+        "paiId": "f907cae4-aafe-4ecc-bf34-d2a2dead4eea",
+        "maeId": "b68102b8-bbaf-4303-87e7-77fe5eb949b7",
+        "relations": [],
+        "apelido": "",
+        "nascimento": "",
+        "genero": "Masculino",
+        "raca": "Elfo",
+        "descricao": "",
+        "biografia": "",
+        "aparencia": "",
+        "altura": "",
+        "peso": "",
+        "profissao": "",
+        "localNascimento": "",
+        "localAtual": "",
+        "personalidade": "",
+        "objetivos": "",
+        "medos": "",
+        "gostos": "",
+        "desgostos": "",
+        "curiosidades": "",
+        "observacoes": "",
+        "_calculatedWidth": 120
+      },
+      {
+        "id": "7745391c-4c98-4b81-8a35-804e29882bb2",
+        "nome": "Koichi Deva",
+        "fotoPerfil": null,
+        "fotoCorpo": null,
+        "paiId": "f907cae4-aafe-4ecc-bf34-d2a2dead4eea",
+        "maeId": "b68102b8-bbaf-4303-87e7-77fe5eb949b7",
+        "relations": [],
+        "apelido": "",
+        "nascimento": "",
+        "genero": "Masculino",
+        "raca": "Elfo",
+        "descricao": "",
+        "biografia": "",
+        "aparencia": "",
+        "altura": "",
+        "peso": "",
+        "profissao": "",
+        "localNascimento": "",
+        "localAtual": "",
+        "personalidade": "",
+        "objetivos": "",
+        "medos": "",
+        "gostos": "",
+        "desgostos": "",
+        "curiosidades": "",
+        "observacoes": "",
+        "_calculatedWidth": 120
+      },
+      {
+        "id": "870d8054-4b72-4372-88b8-f85e3ecd5c24",
+        "nome": "Akemi Deva",
+        "fotoPerfil": null,
+        "fotoCorpo": null,
+        "paiId": "f907cae4-aafe-4ecc-bf34-d2a2dead4eea",
+        "maeId": "b68102b8-bbaf-4303-87e7-77fe5eb949b7",
+        "relations": [],
+        "apelido": "",
+        "nascimento": "",
+        "genero": "Feminino",
+        "raca": "Elfo",
+        "descricao": "",
+        "biografia": "",
+        "aparencia": "",
+        "altura": "",
+        "peso": "",
+        "profissao": "",
+        "localNascimento": "",
+        "localAtual": "",
+        "personalidade": "",
+        "objetivos": "",
+        "medos": "",
+        "gostos": "",
+        "desgostos": "",
+        "curiosidades": "",
+        "observacoes": "",
+        "_calculatedWidth": 120
+      },
+      {
+        "id": "1465b7e8-0302-4240-96d4-232eb72021b6",
+        "nome": "Haruo Asura",
+        "fotoPerfil": null,
+        "fotoCorpo": null,
+        "paiId": "a9f8a542-bde7-4016-a1e1-f76cc3bc903f",
+        "maeId": "ff7edfc9-3b75-4acd-a4ba-0e109bd9d33b",
+        "relations": [],
+        "apelido": "",
+        "nascimento": "",
+        "genero": "Masculino",
+        "raca": "Elfo",
+        "descricao": "",
+        "biografia": "",
+        "aparencia": "",
+        "altura": "",
+        "peso": "",
+        "profissao": "",
+        "localNascimento": "",
+        "localAtual": "",
+        "personalidade": "",
+        "objetivos": "",
+        "medos": "",
+        "gostos": "",
+        "desgostos": "",
+        "curiosidades": "",
+        "observacoes": "",
+        "_calculatedWidth": 120
+      },
+      {
+        "id": "8d859114-49ff-485c-a0b1-43968414941f",
+        "nome": "Kato Asura",
+        "fotoPerfil": null,
+        "fotoCorpo": null,
+        "paiId": "a9f8a542-bde7-4016-a1e1-f76cc3bc903f",
+        "maeId": "ff7edfc9-3b75-4acd-a4ba-0e109bd9d33b",
+        "relations": [],
+        "apelido": "",
+        "nascimento": "",
+        "genero": "Masculino",
+        "raca": "",
+        "descricao": "",
+        "biografia": "",
+        "aparencia": "",
+        "altura": "",
+        "peso": "",
+        "profissao": "",
+        "localNascimento": "",
+        "localAtual": "",
+        "personalidade": "",
+        "objetivos": "",
+        "medos": "",
+        "gostos": "",
+        "desgostos": "",
+        "curiosidades": "",
+        "observacoes": "",
+        "_calculatedWidth": 120
+      },
+      {
+        "id": "749da887-ad71-48db-a45f-21d3c945cda2",
+        "nome": "Onu Gaia",
+        "fotoPerfil": null,
+        "fotoCorpo": null,
+        "paiId": null,
+        "maeId": null,
+        "relations": [],
+        "apelido": "",
+        "nascimento": "",
+        "genero": "Masculino",
+        "raca": "Elfo",
+        "descricao": "",
+        "biografia": "",
+        "aparencia": "",
+        "altura": "",
+        "peso": "",
+        "profissao": "",
+        "localNascimento": "",
+        "localAtual": "",
+        "personalidade": "",
+        "objetivos": "",
+        "medos": "",
+        "gostos": "",
+        "desgostos": "",
+        "curiosidades": "",
+        "observacoes": ""
+      },
+      {
+        "id": "809bd04b-4e2d-4b20-b542-cc729362c442",
+        "nome": "Emi Deva",
+        "fotoPerfil": null,
+        "fotoCorpo": null,
+        "paiId": "d9f70560-3003-487c-8ab3-9e838d1af8e9",
+        "maeId": "46a6a17a-13b9-4045-af3b-507815e3ce70",
+        "relations": [],
+        "nomeCompleto": "",
+        "apelido": "",
+        "nascimento": "2003-10-23",
+        "genero": "Feminino",
+        "raca": "Elfo",
+        "descricao": "",
+        "biografia": "",
+        "aparencia": "",
+        "altura": "",
+        "peso": "",
+        "profissao": "",
+        "localNascimento": "",
+        "localAtual": "",
+        "personalidade": "",
+        "objetivos": "",
+        "medos": "",
+        "gostos": "",
+        "desgostos": "",
+        "curiosidades": "",
+        "observacoes": "",
+        "_calculatedWidth": 120
+      },
+      {
+        "id": "d9f70560-3003-487c-8ab3-9e838d1af8e9",
+        "nome": "Aki Deva",
+        "fotoPerfil": null,
+        "fotoCorpo": null,
+        "relations": [],
+        "nomeCompleto": "Yoshihiro",
+        "apelido": "",
+        "nascimento": "",
+        "genero": "Masculino",
+        "raca": "Elfo",
+        "descricao": "",
+        "biografia": "",
+        "aparencia": "",
+        "altura": "",
+        "peso": "",
+        "profissao": "",
+        "localNascimento": "",
+        "localAtual": "",
+        "personalidade": "",
+        "objetivos": "",
+        "medos": "",
+        "gostos": "",
+        "desgostos": "",
+        "curiosidades": "",
+        "observacoes": "",
+        "_calculatedWidth": 564,
+        "paiId": "f907cae4-aafe-4ecc-bf34-d2a2dead4eea",
+        "maeId": "b68102b8-bbaf-4303-87e7-77fe5eb949b7"
+      },
+      {
+        "id": "46a6a17a-13b9-4045-af3b-507815e3ce70",
+        "nome": "Jiyu Gaia",
+        "fotoPerfil": null,
+        "fotoCorpo": null,
+        "relations": [],
+        "nomeCompleto": "",
+        "apelido": "",
+        "nascimento": "",
+        "genero": "Feminino",
+        "raca": "Elfo",
+        "descricao": "",
+        "biografia": "",
+        "aparencia": "",
+        "altura": "",
+        "peso": "",
+        "profissao": "",
+        "localNascimento": "",
+        "localAtual": "",
+        "personalidade": "",
+        "objetivos": "",
+        "medos": "",
+        "gostos": "",
+        "desgostos": "",
+        "curiosidades": "",
+        "observacoes": "",
+        "_calculatedWidth": 564,
+        "paiId": "749da887-ad71-48db-a45f-21d3c945cda2",
+        "maeId": "997320e0-f74c-407f-a6a4-4e895cdcc94b"
+      },
+      {
+        "id": "b46416aa-e501-46b1-81f0-b26255019226",
+        "nome": "Aiko Deva",
+        "fotoPerfil": null,
+        "fotoCorpo": null,
+        "relations": [],
+        "nomeCompleto": "",
+        "apelido": "",
+        "nascimento": "1997-06-21",
+        "genero": "Feminino",
+        "raca": "Elfo",
+        "descricao": "",
+        "biografia": "",
+        "aparencia": "",
+        "altura": "",
+        "peso": "",
+        "profissao": "",
+        "localNascimento": "",
+        "localAtual": "",
+        "personalidade": "",
+        "objetivos": "",
+        "medos": "",
+        "gostos": "",
+        "desgostos": "",
+        "curiosidades": "",
+        "observacoes": "",
+        "paiId": "d9f70560-3003-487c-8ab3-9e838d1af8e9",
+        "maeId": "46a6a17a-13b9-4045-af3b-507815e3ce70",
+        "_calculatedWidth": 120
+      },
+      {
+        "id": "c5fad509-1fb8-4146-b28c-855c58323129",
+        "nome": "Miwa Deva",
+        "fotoPerfil": null,
+        "fotoCorpo": null,
+        "relations": [],
+        "nomeCompleto": "",
+        "apelido": "",
+        "nascimento": "2003-04-01",
+        "genero": "Feminino",
+        "raca": "Elfo",
+        "descricao": "",
+        "biografia": "",
+        "aparencia": "",
+        "altura": "",
+        "peso": "",
+        "profissao": "",
+        "localNascimento": "",
+        "localAtual": "",
+        "personalidade": "",
+        "objetivos": "",
+        "medos": "",
+        "gostos": "",
+        "desgostos": "",
+        "curiosidades": "",
+        "observacoes": "",
+        "paiId": "d9f70560-3003-487c-8ab3-9e838d1af8e9",
+        "maeId": "46a6a17a-13b9-4045-af3b-507815e3ce70",
+        "_calculatedWidth": 120
+      },
+      {
+        "id": "ea1c48bb-63eb-489d-b251-e3657dad8f7d",
+        "nome": "Tsukiko Deva",
+        "fotoPerfil": null,
+        "fotoCorpo": null,
+        "relations": [],
+        "nomeCompleto": "",
+        "apelido": "Tsu",
+        "nascimento": "2003-04-01",
+        "genero": "Feminino",
+        "raca": "Elfo",
+        "descricao": "",
+        "biografia": "",
+        "aparencia": "",
+        "altura": "",
+        "peso": "",
+        "profissao": "",
+        "localNascimento": "",
+        "localAtual": "",
+        "personalidade": "",
+        "objetivos": "",
+        "medos": "",
+        "gostos": "",
+        "desgostos": "",
+        "curiosidades": "",
+        "observacoes": "",
+        "paiId": "d9f70560-3003-487c-8ab3-9e838d1af8e9",
+        "maeId": "46a6a17a-13b9-4045-af3b-507815e3ce70",
+        "_calculatedWidth": 120
+      },
+      {
+        "id": "2b7e6440-4cd5-4a40-9c02-caa36fb7a076",
+        "nome": "Jun",
+        "fotoPerfil": null,
+        "fotoCorpo": null,
+        "relations": [],
+        "nomeCompleto": "Jun",
+        "apelido": "",
+        "nascimento": "01/09/2000",
+        "genero": "Masculino",
+        "raca": "Feras (Canino)",
+        "descricao": "",
+        "biografia": "",
+        "aparencia": "",
+        "altura": "1,69",
+        "peso": "60",
+        "profissao": "",
+        "localNascimento": "",
+        "localAtual": "",
+        "personalidade": "",
+        "objetivos": "",
+        "medos": "",
+        "gostos": "",
+        "desgostos": "",
+        "curiosidades": "",
+        "observacoes": "",
+        "paiId": null,
+        "maeId": null
+      }
+    ],
+    "races": [
+      {
+        "id": "58b91657-80da-4e01-b5b9-43f99101554c",
+        "subracas": [],
+        "nome": "Minotauro",
+        "imagem": null,
+        "superiorId": "6cc4e77a-454a-4bbd-8a07-3767b3773535",
+        "descricao": "",
+        "origem": "",
+        "idioma": "",
+        "longevidade": "",
+        "alturaMedia": "",
+        "pesoMedio": "",
+        "porte": "",
+        "tracosFisicos": "",
+        "habilidades": "",
+        "cultura": "",
+        "relacoes": "",
+        "observacoes": ""
+      },
+      {
+        "id": "18dbe786-25c8-4a28-9bf1-e6e8ae1c5f79",
+        "subracas": [],
+        "nome": "Aviário",
+        "imagem": null,
+        "superiorId": "6cc4e77a-454a-4bbd-8a07-3767b3773535",
+        "descricao": "",
+        "origem": "",
+        "idioma": "",
+        "longevidade": "",
+        "alturaMedia": "",
+        "pesoMedio": "",
+        "porte": "",
+        "tracosFisicos": "",
+        "habilidades": "",
+        "cultura": "",
+        "relacoes": "",
+        "observacoes": ""
+      },
+      {
+        "id": "63231315-b1dc-40ee-bfb2-72f0d9a07e81",
+        "subracas": [],
+        "nome": "Fang",
+        "imagem": null,
+        "superiorId": null,
+        "descricao": "",
+        "origem": "",
+        "idioma": "",
+        "longevidade": "",
+        "alturaMedia": "",
+        "pesoMedio": "",
+        "porte": "",
+        "tracosFisicos": "",
+        "habilidades": "",
+        "cultura": "",
+        "relacoes": "",
+        "observacoes": ""
+      },
+      {
+        "id": "2f1ebef5-a01c-470a-b193-7b3c109ce333",
+        "subracas": [],
+        "nome": "Canino",
+        "imagem": null,
+        "superiorId": "6cc4e77a-454a-4bbd-8a07-3767b3773535",
+        "descricao": "",
+        "origem": "",
+        "idioma": "",
+        "longevidade": "",
+        "alturaMedia": "",
+        "pesoMedio": "",
+        "porte": "",
+        "tracosFisicos": "",
+        "habilidades": "",
+        "cultura": "",
+        "relacoes": "",
+        "observacoes": ""
+      },
+      {
+        "id": "de0201fd-8bd9-4c08-af4a-b026122b9e16",
+        "subracas": [],
+        "nome": "Felino",
+        "imagem": null,
+        "superiorId": "6cc4e77a-454a-4bbd-8a07-3767b3773535",
+        "descricao": "",
+        "origem": "",
+        "idioma": "",
+        "longevidade": "",
+        "alturaMedia": "",
+        "pesoMedio": "",
+        "porte": "",
+        "tracosFisicos": "",
+        "habilidades": "",
+        "cultura": "",
+        "relacoes": "",
+        "observacoes": ""
+      },
+      {
+        "id": "85859344-4b85-4fa0-9ef2-eb5518192484",
+        "subracas": [],
+        "nome": "Orc",
+        "imagem": null,
+        "descricao": "",
+        "origem": "",
+        "idioma": "",
+        "longevidade": "",
+        "alturaMedia": "",
+        "pesoMedio": "",
+        "porte": "",
+        "tracosFisicos": "",
+        "habilidades": "",
+        "cultura": "",
+        "relacoes": "",
+        "observacoes": ""
+      },
+      {
+        "id": "568a2f4c-6e1a-4b56-9819-b1c9ffa1ec18",
+        "subracas": [],
+        "nome": "Gigante",
+        "imagem": null,
+        "descricao": "",
+        "origem": "",
+        "idioma": "",
+        "longevidade": "",
+        "alturaMedia": "",
+        "pesoMedio": "",
+        "porte": "",
+        "tracosFisicos": "",
+        "habilidades": "",
+        "cultura": "",
+        "relacoes": "",
+        "observacoes": ""
+      },
+      {
+        "id": "6cc4e77a-454a-4bbd-8a07-3767b3773535",
+        "subracas": [
+          {
+            "id": "0b1000a6-77fd-4812-a6cc-17a803768453",
+            "nome": "Minotauro",
+            "descricao": "",
+            "habitat": "",
+            "tracos": "",
+            "habilidades": ""
+          }
+        ],
+        "nome": "Feras",
+        "imagem": null,
+        "descricao": "",
+        "origem": "",
+        "idioma": "",
+        "longevidade": "",
+        "alturaMedia": "",
+        "pesoMedio": "",
+        "porte": "",
+        "tracosFisicos": "",
+        "habilidades": "",
+        "cultura": "",
+        "relacoes": "",
+        "observacoes": ""
+      },
+      {
+        "id": "247cd7c5-4fd1-4998-add4-df6ae668db3d",
+        "subracas": [],
+        "nome": "Elfo",
+        "imagem": null,
+        "descricao": "",
+        "origem": "",
+        "idioma": "",
+        "longevidade": "",
+        "alturaMedia": "",
+        "pesoMedio": "",
+        "porte": "",
+        "tracosFisicos": "",
+        "habilidades": "",
+        "cultura": "",
+        "relacoes": "",
+        "observacoes": ""
+      },
+      {
+        "id": "1a079280-5211-44b0-9ef6-00efe86213ce",
+        "subracas": [],
+        "nome": "Humano",
+        "imagem": null,
+        "descricao": "",
+        "origem": "",
+        "idioma": "",
+        "longevidade": "",
+        "alturaMedia": "",
+        "pesoMedio": "",
+        "porte": "",
+        "tracosFisicos": "",
+        "habilidades": "",
+        "cultura": "",
+        "relacoes": "",
+        "observacoes": ""
+      }
+    ],
+    "maps": [
+      {
+        "id": "94522c6f-9c4e-487f-9675-2dcde0c5916a",
+        "nome": "Mapa Mundi",
+        "descricao": "",
+        "bgImage": null,
+        "elements": [
+          {
+            "id": "96f5cc15-8182-4b8a-a8cd-ffbf99bfdaed",
+            "tipo": "area",
+            "categoria": "continente",
+            "curvo": true,
+            "pathData": "M 933 880 C 973 873, 936 880, 938 880 C 940 880, 939 880, 943 879 C 947 878, 955 876, 961 875 C 967 874, 972 873, 977 872 C 982 871, 987 871, 991 870 C 995 870, 999 869, 1003 869 C 1007 869, 1011 869, 1014 869 C 1017 869, 1021 869, 1023 869 C 1026 869, 1027 869, 1029 869 C 1031 869, 1034 869, 1037 869 C 1040 869, 1043 869, 1046 869 C 1049 869, 1051 869, 1054 869 C 1057 869, 1061 869, 1064 869 C 1067 869, 1068 869, 1070 869 C 1072 869, 1073 869, 1075 869 C 1077 869, 1079 869, 1081 869 C 1083 869, 1084 869, 1086 869 C 1088 869, 1089 869, 1091 869 C 1093 869, 1094 869, 1096 869 C 1098 869, 1102 869, 1104 869 C 1106 869, 1107 869, 1109 869 C 1111 869, 1112 869, 1114 869 C 1116 869, 1117 869, 1119 868 C 1121 868, 1124 867, 1128 866 C 1132 866, 1137 865, 1141 865 C 1145 865, 1150 865, 1154 864 C 1158 863, 1163 862, 1167 861 C 1171 860, 1176 860, 1180 859 C 1184 858, 1189 858, 1193 857 C 1197 856, 1200 855, 1204 854 C 1208 853, 1211 852, 1215 851 C 1219 850, 1222 851, 1226 850 C 1230 850, 1234 849, 1237 848 C 1241 847, 1244 847, 1247 846 C 1250 846, 1252 846, 1254 845 C 1256 844, 1259 842, 1261 841 C 1263 840, 1265 841, 1267 841 C 1269 841, 1271 840, 1273 840 C 1275 840, 1276 839, 1278 839 C 1280 839, 1281 838, 1283 838 C 1285 838, 1286 837, 1288 837 C 1290 837, 1291 836, 1293 836 C 1295 836, 1296 835, 1298 835 C 1300 835, 1303 835, 1305 834 C 1308 833, 1311 832, 1313 831 C 1315 830, 1316 830, 1318 830 C 1320 830, 1323 830, 1326 829 C 1329 829, 1333 828, 1335 827 C 1338 827, 1339 826, 1341 826 C 1343 826, 1347 826, 1349 825 C 1352 824, 1353 823, 1356 822 C 1359 821, 1362 822, 1365 821 C 1368 821, 1372 820, 1374 819 C 1376 819, 1377 818, 1379 818 C 1381 818, 1383 817, 1385 817 C 1387 817, 1388 816, 1390 816 C 1392 816, 1393 815, 1395 815 C 1397 815, 1402 814, 1404 814 C 1406 814, 1407 814, 1409 814 C 1411 814, 1412 815, 1415 814 C 1418 814, 1423 812, 1426 811 C 1429 810, 1431 810, 1433 810 C 1435 810, 1436 809, 1438 809 C 1440 809, 1443 808, 1445 808 C 1447 808, 1449 807, 1451 807 C 1453 807, 1454 806, 1456 806 C 1458 806, 1461 805, 1463 805 C 1465 805, 1467 805, 1469 805 C 1471 805, 1473 804, 1474 805 C 1475 806, 1475 808, 1475 810 C 1475 812, 1476 813, 1476 815 C 1476 817, 1476 818, 1476 820 C 1476 822, 1476 824, 1476 826 C 1476 828, 1476 829, 1476 831 C 1476 833, 1476 835, 1476 837 C 1476 839, 1476 840, 1476 842 C 1476 844, 1476 845, 1476 847 C 1476 849, 1475 853, 1475 855 C 1475 857, 1474 859, 1474 861 C 1474 863, 1474 865, 1473 866 C 1472 868, 1471 869, 1470 870 C 1469 872, 1469 873, 1468 875 C 1467 877, 1467 879, 1466 881 C 1465 883, 1465 886, 1464 887 C 1463 889, 1461 890, 1459 890 C 1457 891, 1454 890, 1451 890 C 1449 890, 1447 890, 1444 890 C 1442 890, 1438 890, 1436 890 C 1434 890, 1433 891, 1431 891 C 1429 891, 1428 892, 1426 892 C 1424 893, 1422 893, 1420 894 C 1418 895, 1416 896, 1414 896 C 1412 897, 1411 896, 1409 897 C 1407 898, 1402 899, 1400 900 C 1398 901, 1397 903, 1395 904 C 1393 905, 1391 905, 1389 906 C 1387 907, 1385 907, 1383 908 C 1381 909, 1378 910, 1375 911 C 1373 912, 1371 914, 1368 915 C 1365 916, 1362 916, 1359 917 C 1357 918, 1355 919, 1353 920 C 1351 921, 1348 920, 1346 921 C 1344 922, 1342 923, 1339 924 C 1336 925, 1333 926, 1330 927 C 1328 928, 1326 929, 1324 929 C 1322 930, 1321 929, 1318 930 C 1315 931, 1311 933, 1308 934 C 1305 935, 1303 935, 1300 936 C 1298 937, 1295 938, 1293 939 C 1291 940, 1289 940, 1287 941 C 1285 942, 1285 943, 1283 944 C 1281 945, 1279 946, 1277 946 C 1275 947, 1273 946, 1271 947 C 1269 948, 1267 949, 1265 950 C 1263 951, 1261 953, 1259 954 C 1257 955, 1253 956, 1251 957 C 1249 958, 1248 959, 1246 960 C 1244 961, 1243 961, 1241 962 C 1239 963, 1238 965, 1236 966 C 1234 967, 1232 969, 1230 970 C 1228 972, 1227 974, 1225 975 C 1224 976, 1223 977, 1221 978 C 1220 979, 1218 979, 1216 980 C 1214 981, 1213 983, 1211 984 C 1209 985, 1208 986, 1206 987 C 1204 988, 1203 988, 1201 989 C 1199 990, 1198 991, 1196 992 C 1194 993, 1193 994, 1191 995 C 1189 996, 1187 997, 1185 998 C 1183 999, 1180 1001, 1177 1002 C 1174 1003, 1172 1004, 1169 1005 C 1166 1006, 1164 1007, 1161 1008 C 1158 1010, 1152 1012, 1149 1014 C 1146 1016, 1146 1017, 1144 1018 C 1142 1019, 1139 1020, 1136 1021 C 1134 1022, 1132 1023, 1129 1024 C 1127 1025, 1123 1026, 1121 1027 C 1119 1028, 1117 1028, 1115 1029 C 1113 1030, 1111 1030, 1109 1031 C 1107 1032, 1106 1033, 1104 1034 C 1102 1035, 1100 1035, 1098 1036 C 1096 1037, 1095 1037, 1093 1038 C 1091 1039, 1088 1039, 1086 1040 C 1084 1041, 1082 1041, 1080 1042 C 1078 1043, 1076 1045, 1074 1046 C 1072 1047, 1071 1047, 1068 1048 C 1066 1049, 1062 1049, 1059 1050 C 1056 1051, 1053 1054, 1050 1055 C 1047 1056, 1044 1057, 1041 1058 C 1038 1059, 1035 1060, 1033 1061 C 1031 1062, 1030 1063, 1028 1064 C 1026 1065, 1025 1065, 1023 1065 C 1021 1065, 1020 1066, 1018 1066 C 1016 1066, 1015 1067, 1013 1067 C 1011 1068, 1008 1069, 1006 1069 C 1004 1070, 1002 1070, 1000 1070 C 998 1070, 997 1070, 995 1071 C 993 1072, 989 1073, 987 1074 C 985 1075, 983 1075, 981 1076 C 979 1077, 978 1078, 976 1079 C 974 1080, 973 1080, 971 1081 C 969 1082, 968 1083, 966 1084 C 964 1085, 963 1085, 961 1085 C 959 1085, 957 1086, 955 1086 C 953 1086, 952 1086, 950 1086 C 948 1086, 946 1086, 944 1086 C 942 1086, 941 1086, 939 1086 C 937 1086, 935 1086, 933 1086 C 931 1086, 929 1086, 927 1086 C 925 1086, 923 1086, 921 1086 C 919 1086, 918 1085, 916 1084 C 914 1083, 913 1083, 911 1082 C 909 1081, 907 1081, 905 1080 C 903 1079, 901 1079, 899 1078 C 897 1077, 896 1076, 895 1075 C 894 1074, 892 1073, 891 1072 C 890 1071, 888 1070, 887 1069 C 886 1068, 885 1066, 884 1065 C 883 1064, 881 1062, 880 1061 C 879 1060, 877 1059, 876 1057 C 875 1055, 874 1053, 873 1051 C 872 1049, 870 1047, 869 1045 C 868 1043, 867 1041, 866 1039 C 865 1037, 864 1037, 863 1035 C 862 1034, 861 1031, 859 1030 C 858 1029, 856 1029, 854 1028 C 852 1028, 851 1027, 849 1027 C 847 1027, 843 1026, 841 1026 C 839 1026, 838 1026, 836 1026 C 834 1026, 833 1026, 830 1026 C 828 1026, 823 1026, 821 1026 C 819 1026, 818 1026, 816 1026 C 814 1026, 812 1026, 810 1025 C 808 1024, 808 1023, 806 1022 C 804 1021, 802 1019, 800 1018 C 798 1017, 797 1017, 795 1016 C 793 1015, 792 1013, 790 1012 C 788 1011, 787 1011, 785 1010 C 783 1009, 781 1009, 779 1008 C 777 1008, 776 1008, 774 1007 C 772 1007, 770 1006, 768 1005 C 766 1005, 765 1005, 763 1004 C 761 1004, 759 1003, 757 1002 C 755 1001, 752 1000, 750 999 C 748 998, 747 997, 746 995 C 745 993, 744 991, 743 989 C 742 987, 741 986, 740 985 C 739 984, 739 982, 737 981 C 736 980, 733 979, 731 978 C 729 977, 727 977, 726 975 C 725 974, 724 971, 723 969 C 722 968, 720 968, 719 966 C 718 965, 717 962, 716 960 C 715 958, 714 958, 713 956 C 712 955, 711 953, 710 951 C 709 949, 709 948, 708 946 C 707 944, 706 942, 705 940 C 704 938, 702 937, 701 935 C 700 933, 700 932, 699 930 C 698 928, 658 933, 697 925 C 736 917, 893 888, 933 880 Z",
+            "nome": "Loncara",
+            "descricao": "",
+            "pontos": [
+              {
+                "x": 933,
+                "y": 880
+              },
+              {
+                "x": 938,
+                "y": 880
+              },
+              {
+                "x": 943,
+                "y": 879
+              },
+              {
+                "x": 961,
+                "y": 875
+              },
+              {
+                "x": 977,
+                "y": 872
+              },
+              {
+                "x": 991,
+                "y": 870
+              },
+              {
+                "x": 1003,
+                "y": 869
+              },
+              {
+                "x": 1014,
+                "y": 869
+              },
+              {
+                "x": 1023,
+                "y": 869
+              },
+              {
+                "x": 1029,
+                "y": 869
+              },
+              {
+                "x": 1037,
+                "y": 869
+              },
+              {
+                "x": 1046,
+                "y": 869
+              },
+              {
+                "x": 1054,
+                "y": 869
+              },
+              {
+                "x": 1064,
+                "y": 869
+              },
+              {
+                "x": 1070,
+                "y": 869
+              },
+              {
+                "x": 1075,
+                "y": 869
+              },
+              {
+                "x": 1081,
+                "y": 869
+              },
+              {
+                "x": 1086,
+                "y": 869
+              },
+              {
+                "x": 1091,
+                "y": 869
+              },
+              {
+                "x": 1096,
+                "y": 869
+              },
+              {
+                "x": 1104,
+                "y": 869
+              },
+              {
+                "x": 1109,
+                "y": 869
+              },
+              {
+                "x": 1114,
+                "y": 869
+              },
+              {
+                "x": 1119,
+                "y": 868
+              },
+              {
+                "x": 1128,
+                "y": 866
+              },
+              {
+                "x": 1141,
+                "y": 865
+              },
+              {
+                "x": 1154,
+                "y": 864
+              },
+              {
+                "x": 1167,
+                "y": 861
+              },
+              {
+                "x": 1180,
+                "y": 859
+              },
+              {
+                "x": 1193,
+                "y": 857
+              },
+              {
+                "x": 1204,
+                "y": 854
+              },
+              {
+                "x": 1215,
+                "y": 851
+              },
+              {
+                "x": 1226,
+                "y": 850
+              },
+              {
+                "x": 1237,
+                "y": 848
+              },
+              {
+                "x": 1247,
+                "y": 846
+              },
+              {
+                "x": 1254,
+                "y": 845
+              },
+              {
+                "x": 1261,
+                "y": 841
+              },
+              {
+                "x": 1267,
+                "y": 841
+              },
+              {
+                "x": 1273,
+                "y": 840
+              },
+              {
+                "x": 1278,
+                "y": 839
+              },
+              {
+                "x": 1283,
+                "y": 838
+              },
+              {
+                "x": 1288,
+                "y": 837
+              },
+              {
+                "x": 1293,
+                "y": 836
+              },
+              {
+                "x": 1298,
+                "y": 835
+              },
+              {
+                "x": 1305,
+                "y": 834
+              },
+              {
+                "x": 1313,
+                "y": 831
+              },
+              {
+                "x": 1318,
+                "y": 830
+              },
+              {
+                "x": 1326,
+                "y": 829
+              },
+              {
+                "x": 1335,
+                "y": 827
+              },
+              {
+                "x": 1341,
+                "y": 826
+              },
+              {
+                "x": 1349,
+                "y": 825
+              },
+              {
+                "x": 1356,
+                "y": 822
+              },
+              {
+                "x": 1365,
+                "y": 821
+              },
+              {
+                "x": 1374,
+                "y": 819
+              },
+              {
+                "x": 1379,
+                "y": 818
+              },
+              {
+                "x": 1385,
+                "y": 817
+              },
+              {
+                "x": 1390,
+                "y": 816
+              },
+              {
+                "x": 1395,
+                "y": 815
+              },
+              {
+                "x": 1404,
+                "y": 814
+              },
+              {
+                "x": 1409,
+                "y": 814
+              },
+              {
+                "x": 1415,
+                "y": 814
+              },
+              {
+                "x": 1426,
+                "y": 811
+              },
+              {
+                "x": 1433,
+                "y": 810
+              },
+              {
+                "x": 1438,
+                "y": 809
+              },
+              {
+                "x": 1445,
+                "y": 808
+              },
+              {
+                "x": 1451,
+                "y": 807
+              },
+              {
+                "x": 1456,
+                "y": 806
+              },
+              {
+                "x": 1463,
+                "y": 805
+              },
+              {
+                "x": 1469,
+                "y": 805
+              },
+              {
+                "x": 1474,
+                "y": 805
+              },
+              {
+                "x": 1475,
+                "y": 810
+              },
+              {
+                "x": 1476,
+                "y": 815
+              },
+              {
+                "x": 1476,
+                "y": 820
+              },
+              {
+                "x": 1476,
+                "y": 826
+              },
+              {
+                "x": 1476,
+                "y": 831
+              },
+              {
+                "x": 1476,
+                "y": 837
+              },
+              {
+                "x": 1476,
+                "y": 842
+              },
+              {
+                "x": 1476,
+                "y": 847
+              },
+              {
+                "x": 1475,
+                "y": 855
+              },
+              {
+                "x": 1474,
+                "y": 861
+              },
+              {
+                "x": 1473,
+                "y": 866
+              },
+              {
+                "x": 1470,
+                "y": 870
+              },
+              {
+                "x": 1468,
+                "y": 875
+              },
+              {
+                "x": 1466,
+                "y": 881
+              },
+              {
+                "x": 1464,
+                "y": 887
+              },
+              {
+                "x": 1459,
+                "y": 890
+              },
+              {
+                "x": 1451,
+                "y": 890
+              },
+              {
+                "x": 1444,
+                "y": 890
+              },
+              {
+                "x": 1436,
+                "y": 890
+              },
+              {
+                "x": 1431,
+                "y": 891
+              },
+              {
+                "x": 1426,
+                "y": 892
+              },
+              {
+                "x": 1420,
+                "y": 894
+              },
+              {
+                "x": 1414,
+                "y": 896
+              },
+              {
+                "x": 1409,
+                "y": 897
+              },
+              {
+                "x": 1400,
+                "y": 900
+              },
+              {
+                "x": 1395,
+                "y": 904
+              },
+              {
+                "x": 1389,
+                "y": 906
+              },
+              {
+                "x": 1383,
+                "y": 908
+              },
+              {
+                "x": 1375,
+                "y": 911
+              },
+              {
+                "x": 1368,
+                "y": 915
+              },
+              {
+                "x": 1359,
+                "y": 917
+              },
+              {
+                "x": 1353,
+                "y": 920
+              },
+              {
+                "x": 1346,
+                "y": 921
+              },
+              {
+                "x": 1339,
+                "y": 924
+              },
+              {
+                "x": 1330,
+                "y": 927
+              },
+              {
+                "x": 1324,
+                "y": 929
+              },
+              {
+                "x": 1318,
+                "y": 930
+              },
+              {
+                "x": 1308,
+                "y": 934
+              },
+              {
+                "x": 1300,
+                "y": 936
+              },
+              {
+                "x": 1293,
+                "y": 939
+              },
+              {
+                "x": 1287,
+                "y": 941
+              },
+              {
+                "x": 1283,
+                "y": 944
+              },
+              {
+                "x": 1277,
+                "y": 946
+              },
+              {
+                "x": 1271,
+                "y": 947
+              },
+              {
+                "x": 1265,
+                "y": 950
+              },
+              {
+                "x": 1259,
+                "y": 954
+              },
+              {
+                "x": 1251,
+                "y": 957
+              },
+              {
+                "x": 1246,
+                "y": 960
+              },
+              {
+                "x": 1241,
+                "y": 962
+              },
+              {
+                "x": 1236,
+                "y": 966
+              },
+              {
+                "x": 1230,
+                "y": 970
+              },
+              {
+                "x": 1225,
+                "y": 975
+              },
+              {
+                "x": 1221,
+                "y": 978
+              },
+              {
+                "x": 1216,
+                "y": 980
+              },
+              {
+                "x": 1211,
+                "y": 984
+              },
+              {
+                "x": 1206,
+                "y": 987
+              },
+              {
+                "x": 1201,
+                "y": 989
+              },
+              {
+                "x": 1196,
+                "y": 992
+              },
+              {
+                "x": 1191,
+                "y": 995
+              },
+              {
+                "x": 1185,
+                "y": 998
+              },
+              {
+                "x": 1177,
+                "y": 1002
+              },
+              {
+                "x": 1169,
+                "y": 1005
+              },
+              {
+                "x": 1161,
+                "y": 1008
+              },
+              {
+                "x": 1149,
+                "y": 1014
+              },
+              {
+                "x": 1144,
+                "y": 1018
+              },
+              {
+                "x": 1136,
+                "y": 1021
+              },
+              {
+                "x": 1129,
+                "y": 1024
+              },
+              {
+                "x": 1121,
+                "y": 1027
+              },
+              {
+                "x": 1115,
+                "y": 1029
+              },
+              {
+                "x": 1109,
+                "y": 1031
+              },
+              {
+                "x": 1104,
+                "y": 1034
+              },
+              {
+                "x": 1098,
+                "y": 1036
+              },
+              {
+                "x": 1093,
+                "y": 1038
+              },
+              {
+                "x": 1086,
+                "y": 1040
+              },
+              {
+                "x": 1080,
+                "y": 1042
+              },
+              {
+                "x": 1074,
+                "y": 1046
+              },
+              {
+                "x": 1068,
+                "y": 1048
+              },
+              {
+                "x": 1059,
+                "y": 1050
+              },
+              {
+                "x": 1050,
+                "y": 1055
+              },
+              {
+                "x": 1041,
+                "y": 1058
+              },
+              {
+                "x": 1033,
+                "y": 1061
+              },
+              {
+                "x": 1028,
+                "y": 1064
+              },
+              {
+                "x": 1023,
+                "y": 1065
+              },
+              {
+                "x": 1018,
+                "y": 1066
+              },
+              {
+                "x": 1013,
+                "y": 1067
+              },
+              {
+                "x": 1006,
+                "y": 1069
+              },
+              {
+                "x": 1000,
+                "y": 1070
+              },
+              {
+                "x": 995,
+                "y": 1071
+              },
+              {
+                "x": 987,
+                "y": 1074
+              },
+              {
+                "x": 981,
+                "y": 1076
+              },
+              {
+                "x": 976,
+                "y": 1079
+              },
+              {
+                "x": 971,
+                "y": 1081
+              },
+              {
+                "x": 966,
+                "y": 1084
+              },
+              {
+                "x": 961,
+                "y": 1085
+              },
+              {
+                "x": 955,
+                "y": 1086
+              },
+              {
+                "x": 950,
+                "y": 1086
+              },
+              {
+                "x": 944,
+                "y": 1086
+              },
+              {
+                "x": 939,
+                "y": 1086
+              },
+              {
+                "x": 933,
+                "y": 1086
+              },
+              {
+                "x": 927,
+                "y": 1086
+              },
+              {
+                "x": 921,
+                "y": 1086
+              },
+              {
+                "x": 916,
+                "y": 1084
+              },
+              {
+                "x": 911,
+                "y": 1082
+              },
+              {
+                "x": 905,
+                "y": 1080
+              },
+              {
+                "x": 899,
+                "y": 1078
+              },
+              {
+                "x": 895,
+                "y": 1075
+              },
+              {
+                "x": 891,
+                "y": 1072
+              },
+              {
+                "x": 887,
+                "y": 1069
+              },
+              {
+                "x": 884,
+                "y": 1065
+              },
+              {
+                "x": 880,
+                "y": 1061
+              },
+              {
+                "x": 876,
+                "y": 1057
+              },
+              {
+                "x": 873,
+                "y": 1051
+              },
+              {
+                "x": 869,
+                "y": 1045
+              },
+              {
+                "x": 866,
+                "y": 1039
+              },
+              {
+                "x": 863,
+                "y": 1035
+              },
+              {
+                "x": 859,
+                "y": 1030
+              },
+              {
+                "x": 854,
+                "y": 1028
+              },
+              {
+                "x": 849,
+                "y": 1027
+              },
+              {
+                "x": 841,
+                "y": 1026
+              },
+              {
+                "x": 836,
+                "y": 1026
+              },
+              {
+                "x": 830,
+                "y": 1026
+              },
+              {
+                "x": 821,
+                "y": 1026
+              },
+              {
+                "x": 816,
+                "y": 1026
+              },
+              {
+                "x": 810,
+                "y": 1025
+              },
+              {
+                "x": 806,
+                "y": 1022
+              },
+              {
+                "x": 800,
+                "y": 1018
+              },
+              {
+                "x": 795,
+                "y": 1016
+              },
+              {
+                "x": 790,
+                "y": 1012
+              },
+              {
+                "x": 785,
+                "y": 1010
+              },
+              {
+                "x": 779,
+                "y": 1008
+              },
+              {
+                "x": 774,
+                "y": 1007
+              },
+              {
+                "x": 768,
+                "y": 1005
+              },
+              {
+                "x": 763,
+                "y": 1004
+              },
+              {
+                "x": 757,
+                "y": 1002
+              },
+              {
+                "x": 750,
+                "y": 999
+              },
+              {
+                "x": 746,
+                "y": 995
+              },
+              {
+                "x": 743,
+                "y": 989
+              },
+              {
+                "x": 740,
+                "y": 985
+              },
+              {
+                "x": 737,
+                "y": 981
+              },
+              {
+                "x": 731,
+                "y": 978
+              },
+              {
+                "x": 726,
+                "y": 975
+              },
+              {
+                "x": 723,
+                "y": 969
+              },
+              {
+                "x": 719,
+                "y": 966
+              },
+              {
+                "x": 716,
+                "y": 960
+              },
+              {
+                "x": 713,
+                "y": 956
+              },
+              {
+                "x": 710,
+                "y": 951
+              },
+              {
+                "x": 708,
+                "y": 946
+              },
+              {
+                "x": 705,
+                "y": 940
+              },
+              {
+                "x": 701,
+                "y": 935
+              },
+              {
+                "x": 699,
+                "y": 930
+              },
+              {
+                "x": 697,
+                "y": 925
+              }
+            ],
+            "corPreenchimento": "#dcd1ba",
+            "corBorda": "#5e2c2b",
+            "espessura": 2.5,
+            "opacidade": 0.95,
+            "dash": "",
+            "racaPredominante": "",
+            "populacao": "",
+            "governo": "",
+            "cor": "#5e2c2b"
+          },
+          {
+            "id": "f411958d-e9c9-4a5f-bde3-8490d1b3859d",
+            "tipo": "ponto",
+            "categoria": "cidade",
+            "nome": "Alpha",
+            "descricao": "",
+            "x": 830,
+            "y": 943,
+            "cor": "#1c2029",
+            "racaPredominante": "",
+            "populacao": "",
+            "governo": "",
+            "corPreenchimento": "#1c2029",
+            "corBorda": "#1c2029"
+          },
+          {
+            "id": "1351ce1f-a16d-48ad-93eb-d180ea0350d1",
+            "tipo": "ponto",
+            "categoria": "capital",
+            "nome": "Loncapital",
+            "descricao": "",
+            "x": 967,
+            "y": 1010,
+            "cor": "#7b3b3a",
+            "racaPredominante": "",
+            "populacao": "",
+            "governo": "",
+            "corPreenchimento": "#7b3b3a",
+            "corBorda": "#7b3b3a"
+          },
+          {
+            "id": "18adf8b0-4d51-4587-b8a5-5e2a670a4b7f",
+            "tipo": "linha",
+            "categoria": "fronteira",
+            "curvo": true,
+            "pathData": "M 857 1027 C 857 1026, 857 1024, 857 1022 C 857 1020, 858 1018, 858 1016 C 858 1014, 859 1013, 859 1011 C 860 1009, 861 1007, 861 1005 C 861 1003, 861 1002, 861 1000 C 861 998, 863 996, 863 994 C 864 992, 864 991, 864 989 C 864 987, 864 986, 864 984 C 864 982, 866 980, 866 978 C 867 976, 867 974, 867 972 C 867 970, 867 969, 867 967 C 867 965, 867 961, 867 959 C 867 957, 867 956, 867 954 C 867 952, 867 951, 867 949 C 867 947, 869 945, 869 943 C 870 941, 870 938, 870 936 C 870 934, 871 932, 871 930 C 871 928, 871 927, 871 925 C 871 923, 871 921, 871 919 C 871 917, 871 916, 871 914 C 871 912, 871 910, 871 908 C 871 906, 871 905, 871 903 C 871 901, 871 899, 871 897 C 871 895, 871 893, 871 892",
+            "nome": "Divisa 1",
+            "descricao": "",
+            "pontos": [
+              {
+                "x": 857,
+                "y": 1027
+              },
+              {
+                "x": 857,
+                "y": 1022
+              },
+              {
+                "x": 858,
+                "y": 1016
+              },
+              {
+                "x": 859,
+                "y": 1011
+              },
+              {
+                "x": 861,
+                "y": 1005
+              },
+              {
+                "x": 861,
+                "y": 1000
+              },
+              {
+                "x": 863,
+                "y": 994
+              },
+              {
+                "x": 864,
+                "y": 989
+              },
+              {
+                "x": 864,
+                "y": 984
+              },
+              {
+                "x": 866,
+                "y": 978
+              },
+              {
+                "x": 867,
+                "y": 972
+              },
+              {
+                "x": 867,
+                "y": 967
+              },
+              {
+                "x": 867,
+                "y": 959
+              },
+              {
+                "x": 867,
+                "y": 954
+              },
+              {
+                "x": 867,
+                "y": 949
+              },
+              {
+                "x": 869,
+                "y": 943
+              },
+              {
+                "x": 870,
+                "y": 936
+              },
+              {
+                "x": 871,
+                "y": 930
+              },
+              {
+                "x": 871,
+                "y": 925
+              },
+              {
+                "x": 871,
+                "y": 919
+              },
+              {
+                "x": 871,
+                "y": 914
+              },
+              {
+                "x": 871,
+                "y": 908
+              },
+              {
+                "x": 871,
+                "y": 903
+              },
+              {
+                "x": 871,
+                "y": 897
+              },
+              {
+                "x": 871,
+                "y": 892
+              }
+            ],
+            "cor": "#7b3b3a",
+            "espessura": 2.2,
+            "dash": "8 3 2 3",
+            "racaPredominante": "",
+            "populacao": "",
+            "governo": "",
+            "corPreenchimento": "#7b3b3a",
+            "corBorda": "#7b3b3a"
+          },
+          {
+            "id": "e5585020-4708-4852-b158-4235c77b99ec",
+            "tipo": "linha",
+            "categoria": "fronteira",
+            "curvo": true,
+            "pathData": "M 1052 868 C 1052 869, 1051 871, 1051 873 C 1051 875, 1051 876, 1051 878 C 1051 880, 1051 881, 1051 883 C 1051 885, 1051 887, 1051 889 C 1051 891, 1051 892, 1051 894 C 1051 896, 1051 898, 1051 900 C 1051 902, 1051 903, 1051 905 C 1051 907, 1051 908, 1051 910 C 1051 912, 1051 913, 1051 915 C 1051 917, 1051 920, 1051 922 C 1051 924, 1051 926, 1051 928 C 1051 930, 1051 933, 1051 935 C 1051 937, 1051 938, 1051 940 C 1051 942, 1051 943, 1051 945 C 1051 947, 1051 948, 1051 950 C 1051 952, 1052 954, 1052 956 C 1052 958, 1053 959, 1053 961 C 1053 963, 1054 964, 1054 966 C 1054 968, 1055 970, 1055 972 C 1055 974, 1056 976, 1056 978 C 1056 980, 1057 981, 1057 983 C 1057 985, 1058 989, 1058 991 C 1058 993, 1058 995, 1059 997 C 1060 999, 1061 1000, 1062 1002 C 1063 1004, 1063 1006, 1063 1008 C 1064 1010, 1065 1013, 1065 1015 C 1065 1017, 1065 1018, 1065 1020 C 1065 1022, 1067 1023, 1067 1025 C 1067 1027, 1067 1028, 1067 1030 C 1067 1032, 1068 1034, 1069 1035 C 1070 1037, 1071 1038, 1072 1039 C 1073 1040, 1075 1042, 1075 1043",
+            "nome": "Divisa 2",
+            "descricao": "",
+            "pontos": [
+              {
+                "x": 1052,
+                "y": 868
+              },
+              {
+                "x": 1051,
+                "y": 873
+              },
+              {
+                "x": 1051,
+                "y": 878
+              },
+              {
+                "x": 1051,
+                "y": 883
+              },
+              {
+                "x": 1051,
+                "y": 889
+              },
+              {
+                "x": 1051,
+                "y": 894
+              },
+              {
+                "x": 1051,
+                "y": 900
+              },
+              {
+                "x": 1051,
+                "y": 905
+              },
+              {
+                "x": 1051,
+                "y": 910
+              },
+              {
+                "x": 1051,
+                "y": 915
+              },
+              {
+                "x": 1051,
+                "y": 922
+              },
+              {
+                "x": 1051,
+                "y": 928
+              },
+              {
+                "x": 1051,
+                "y": 935
+              },
+              {
+                "x": 1051,
+                "y": 940
+              },
+              {
+                "x": 1051,
+                "y": 945
+              },
+              {
+                "x": 1051,
+                "y": 950
+              },
+              {
+                "x": 1052,
+                "y": 956
+              },
+              {
+                "x": 1053,
+                "y": 961
+              },
+              {
+                "x": 1054,
+                "y": 966
+              },
+              {
+                "x": 1055,
+                "y": 972
+              },
+              {
+                "x": 1056,
+                "y": 978
+              },
+              {
+                "x": 1057,
+                "y": 983
+              },
+              {
+                "x": 1058,
+                "y": 991
+              },
+              {
+                "x": 1059,
+                "y": 997
+              },
+              {
+                "x": 1062,
+                "y": 1002
+              },
+              {
+                "x": 1063,
+                "y": 1008
+              },
+              {
+                "x": 1065,
+                "y": 1015
+              },
+              {
+                "x": 1065,
+                "y": 1020
+              },
+              {
+                "x": 1067,
+                "y": 1025
+              },
+              {
+                "x": 1067,
+                "y": 1030
+              },
+              {
+                "x": 1069,
+                "y": 1035
+              },
+              {
+                "x": 1072,
+                "y": 1039
+              },
+              {
+                "x": 1075,
+                "y": 1043
+              }
+            ],
+            "cor": "#7b3b3a",
+            "espessura": 2.2,
+            "dash": "8 3 2 3",
+            "racaPredominante": "",
+            "populacao": "",
+            "governo": "",
+            "corPreenchimento": "#7b3b3a",
+            "corBorda": "#7b3b3a"
+          },
+          {
+            "id": "07b4902c-7da8-403a-a0f1-c253bf491d78",
+            "tipo": "linha",
+            "categoria": "rio",
+            "nome": "Rio 3",
+            "descricao": "",
+            "pontos": [
+              {
+                "x": 1392,
+                "y": 856
+              },
+              {
+                "x": 772,
+                "y": 1008
+              }
+            ],
+            "cor": "#4a708b",
+            "espessura": 2.8,
+            "dash": "",
+            "racaPredominante": "",
+            "populacao": "",
+            "governo": "",
+            "corPreenchimento": "#4a708b",
+            "corBorda": "#4a708b"
+          }
+        ]
+      }
+    ]
+  }
+}
