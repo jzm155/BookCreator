@@ -1912,7 +1912,7 @@
 
   // Salva o conteúdo do projeto (livro + personagens + raças + mapas) no navegador.
   function persistProject(){
-    alfaSaveProjectData(projectId, { book, characters, races, maps });
+    alfaSaveProjectData(projectId, { book, characters, races, maps, genealogy: { nodeOffsets: genNodeOffsets } });
     alfaTouchProject(projectId);
   }
   const persistProjectDebounced = alfaDebounce(persistProject, 500);
@@ -2823,6 +2823,15 @@
   let genDragging = false, genDragStart = {x:0,y:0}, genPanStart = {x:0,y:0};
   let collapsedIds = new Set();
   const genNodeOffsets = {};
+  const savedNodeOffsets = savedProjectData && savedProjectData.genealogy && savedProjectData.genealogy.nodeOffsets;
+  if (savedNodeOffsets && typeof savedNodeOffsets === 'object'){
+    Object.keys(savedNodeOffsets).forEach(id => {
+      const offset = savedNodeOffsets[id];
+      if (offset && Number.isFinite(Number(offset.x)) && Number.isFinite(Number(offset.y))){
+        genNodeOffsets[id] = { x: Number(offset.x), y: Number(offset.y) };
+      }
+    });
+  }
   let genNodeDragging = null;
   let genNodeDragMoved = false;
 
@@ -2840,7 +2849,6 @@
   document.getElementById('gen-zoom-out').addEventListener('click', () => { genZoom = Math.max(0.35, genZoom - 0.15); applyGenTransform(); });
   document.getElementById('gen-reset-view').addEventListener('click', () => { genZoom = 1; genPanX = 0; genPanY = 0; applyGenTransform(); });
   document.getElementById('gen-add-char').addEventListener('click', () => openCharForm(null));
-
   genViewport.addEventListener('wheel', (e) => {
     e.preventDefault();
     const delta = e.deltaY > 0 ? -0.08 : 0.08;
@@ -2877,7 +2885,9 @@
     genDragging = false;
     genViewport.classList.remove('grabbing');
     if (genNodeDragging){
+      const wasMoved = genNodeDragMoved;
       genNodeDragging = null;
+      if (wasMoved) persistProject();
       setTimeout(() => { genNodeDragMoved = false; }, 0);
     }
   });
