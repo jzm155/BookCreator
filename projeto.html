@@ -3266,32 +3266,49 @@
       return null;
     }
     familyLinks.forEach(fl => {
-      const isCouple = fl.parents.length > 1;
-      const childPositions = fl.children.map(cid => positions[cid]).filter(Boolean);
-      if (childPositions.length === 0) return;
-
-      const parentPositions = fl.parents.map(pid => positions[pid]).filter(Boolean);
-      if (parentPositions.length === 0) return;
-      const linkMidX = parentPositions.reduce((sum, p) => sum + p.x, 0) / parentPositions.length;
-      const linkMidY = Math.max(...parentPositions.map(p => p.y));
-      const yFork = linkMidY + 36;
-
-      if (isCouple){
-        const p1 = positions[fl.parents[0]];
-        const p2 = positions[fl.parents[1]];
-        if (p1 && p2){
-          renderedCouples.add([fl.parents[0], fl.parents[1]].sort().join("|"));
-          svgHtml += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" class="gen-line-couple" />`;
-          svgHtml += `<circle cx="${linkMidX}" cy="${linkMidY}" r="4" class="gen-junction-dot" />`;
+      const childGroups = new Map();
+      fl.children.forEach(childId => {
+        const parentIds = [...fl.parents];
+        if (parentIds.length === 1){
+          const { pai, mae } = getCharParents(childId);
+          const otherParent = [pai, mae].find(parent =>
+            parent && parent.id !== parentIds[0] && positions[parent.id]
+          );
+          if (otherParent) parentIds.push(otherParent.id);
         }
-      }
+        const key = parentIds.slice().sort().join("|");
+        if (!childGroups.has(key)) childGroups.set(key, { parents: parentIds, children: [] });
+        childGroups.get(key).children.push(childId);
+      });
 
-      const stemStartY = isCouple ? linkMidY : linkMidY + 18;
-      svgHtml += `<path d="M ${linkMidX} ${stemStartY} L ${linkMidX} ${yFork}" class="gen-line" />`;
+      childGroups.forEach(link => {
+        const childPositions = link.children.map(cid => positions[cid]).filter(Boolean);
+        if (childPositions.length === 0) return;
 
-      childPositions.forEach(cp => {
-        const elbowY = Math.max(yFork, cp.y - 56);
-        svgHtml += `<path d="M ${linkMidX} ${yFork} L ${linkMidX} ${elbowY} L ${cp.x} ${elbowY} L ${cp.x} ${cp.y - 36}" class="gen-line" />`;
+        const parentPositions = link.parents.map(pid => positions[pid]).filter(Boolean);
+        if (parentPositions.length === 0) return;
+        const isCouple = link.parents.length > 1 && parentPositions.length > 1;
+        const linkMidX = parentPositions.reduce((sum, p) => sum + p.x, 0) / parentPositions.length;
+        const linkMidY = Math.max(...parentPositions.map(p => p.y));
+        const yFork = linkMidY + 36;
+
+        if (isCouple){
+          const p1 = positions[link.parents[0]];
+          const p2 = positions[link.parents[1]];
+          if (p1 && p2){
+            renderedCouples.add(link.parents.slice().sort().join("|"));
+            svgHtml += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" class="gen-line-couple" />`;
+            svgHtml += `<circle cx="${linkMidX}" cy="${linkMidY}" r="4" class="gen-junction-dot" />`;
+          }
+        }
+
+        const stemStartY = isCouple ? linkMidY : linkMidY + 18;
+        svgHtml += `<path d="M ${linkMidX} ${stemStartY} L ${linkMidX} ${yFork}" class="gen-line" />`;
+
+        childPositions.forEach(cp => {
+          const elbowY = Math.max(yFork, cp.y - 56);
+          svgHtml += `<path d="M ${linkMidX} ${yFork} L ${linkMidX} ${elbowY} L ${cp.x} ${elbowY} L ${cp.x} ${cp.y - 36}" class="gen-line" />`;
+        });
       });
     });
 
