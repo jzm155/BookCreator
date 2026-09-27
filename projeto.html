@@ -176,6 +176,9 @@
   }
   .fmt-btn:hover{ background: var(--paper); }
   .fmt-btn.active{ background: var(--wine); color:#f4efe3; }
+  .fmt-group .fmt-select{ max-width:150px; }
+  #image-position, #image-size{ width:auto; max-width:142px; }
+  #image-position:disabled, #image-size:disabled{ opacity:.55; }
   .fmt-select{
     font-size:.82rem; padding:6px 26px 6px 10px; border-radius:6px;
     border:1px solid var(--line); background: var(--card) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7"><path d="M1 1l4 4 4-4" stroke="%2357626b" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 8px center;
@@ -319,6 +322,48 @@
     color: var(--ink-soft); font-style: italic;
   }
   .editable ul, .editable ol{ margin: 0 0 1em; padding-left: 1.4em; }
+  .book-image{
+    box-sizing:border-box; max-width:100%; margin:1.1em auto; text-align:center;
+    clear:both; line-height:1.35;
+  }
+  .book-image img{ display:block; width:100%; height:auto; margin:0 auto; }
+  .book-image figcaption{
+    min-height:1.2em; margin-top:.45em; color:var(--slate); font:italic .82rem/1.4 'Inter',sans-serif;
+  }
+  .book-image figcaption:empty::before{ content:attr(data-placeholder); opacity:.72; }
+  .book-image.position-left{ float:left; clear:none; margin:.25em 1.2em .8em 0; text-align:left; }
+  .book-image.position-right{ float:right; clear:none; margin:.25em 0 .8em 1.2em; text-align:right; }
+  .book-image.position-inline{ display:inline-block; vertical-align:middle; clear:none; margin:.25em .65em; }
+  .book-image.position-inline img{ display:inline-block; vertical-align:middle; }
+  .book-image.is-selected{ outline:2px solid var(--wine); outline-offset:4px; }
+  .book-image.size-25{ width:25%; }
+  .book-image.size-40{ width:40%; }
+  .book-image.size-60{ width:60%; }
+  .book-image.size-80{ width:80%; }
+  .book-image.size-100{ width:100%; }
+  .image-library-grid{
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px;
+  }
+  .image-library-card{
+    min-width:0; overflow:hidden; border:1px solid var(--line); border-radius:8px; background:var(--card);
+  }
+  .image-library-card img{
+    display:block; width:100%; height:120px; object-fit:contain; background:#e3dac5;
+  }
+  .image-library-name{
+    overflow:hidden; padding:8px 9px 2px; white-space:nowrap; text-overflow:ellipsis;
+    font-size:.76rem; font-weight:600; color:var(--ink);
+  }
+  .image-library-actions{ display:flex; gap:6px; padding:7px; }
+  .image-library-actions .btn{ flex:1; padding:6px 8px; font-size:.75rem; }
+  .image-library-empty{
+    grid-column:1/-1; padding:26px 16px; text-align:center; color:var(--slate);
+    border:1px dashed var(--line); border-radius:8px; font-size:.86rem;
+  }
+  @media (max-width: 700px){
+    .fmt-group{ flex-wrap:wrap; }
+    .fmt-group .fmt-select{ max-width:120px; }
+  }
 
   /* livro (spread) mode */
   .spread-outer{
@@ -1108,8 +1153,28 @@
           <button class="fmt-btn" data-cmd="insertUnorderedList" title="Lista"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="2.3" cy="3.5" r="1"/><circle cx="2.3" cy="7" r="1"/><circle cx="2.3" cy="10.5" r="1"/><path d="M5.5 3.5h7M5.5 7h7M5.5 10.5h7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></button>
           <button class="fmt-btn" data-cmd="insertOrderedList" title="Lista numerada"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><text x="0.5" y="4.6" font-size="3.4" fill="currentColor">1</text><text x="0.5" y="8.1" font-size="3.4" fill="currentColor">2</text><text x="0.5" y="11.6" font-size="3.4" fill="currentColor">3</text><path d="M5.5 3.5h7M5.5 7h7M5.5 10.5h7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></button>
           <div class="fmt-sep"></div>
+          <button class="fmt-btn" data-cmd="justifyLeft" data-align title="Alinhar à esquerda" aria-label="Alinhar à esquerda" aria-pressed="false"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 3h12M2 6h8M2 9h12M2 12h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+          <button class="fmt-btn" data-cmd="justifyCenter" data-align title="Centralizar" aria-label="Centralizar" aria-pressed="false"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 3h12M4 6h8M2 9h12M4 12h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+          <button class="fmt-btn" data-cmd="justifyRight" data-align title="Alinhar à direita" aria-label="Alinhar à direita" aria-pressed="false"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 3h12M6 6h8M2 9h12M6 12h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+          <button class="fmt-btn" data-cmd="justifyFull" data-align title="Justificar" aria-label="Justificar" aria-pressed="false"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 3h12M2 6h12M2 9h12M2 12h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+          <div class="fmt-sep"></div>
           <button class="fmt-btn" id="undo-btn" title="Desfazer"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 4H10.5A2.5 2.5 0 0113 6.5v0A2.5 2.5 0 0110.5 9H5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M6 1.8L3.5 4 6 6.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           <button class="fmt-btn" id="redo-btn" title="Refazer"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M10 4H3.5A2.5 2.5 0 001 6.5v0A2.5 2.5 0 003.5 9H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M8 1.8L10.5 4 8 6.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="fmt-sep"></div>
+          <button class="btn btn-ghost" id="insert-image-btn" type="button" title="Inserir imagem da biblioteca do projeto">Imagem</button>
+          <select class="fmt-select" id="image-position" aria-label="Posicionamento da imagem" title="Posicionamento da imagem" disabled>
+            <option value="center">Centralizar</option>
+            <option value="left">Esquerda (texto ao redor)</option>
+            <option value="right">Direita (texto ao redor)</option>
+            <option value="inline">Em linha</option>
+          </select>
+          <select class="fmt-select" id="image-size" aria-label="Largura da imagem" title="Largura da imagem" disabled>
+            <option value="25">25%</option>
+            <option value="40">40%</option>
+            <option value="60">60%</option>
+            <option value="80">80%</option>
+            <option value="100">Largura total</option>
+          </select>
         </div>
 
         <div class="view-toggle">
@@ -1139,6 +1204,24 @@
         <span id="status-count">0 palavras · 0 caracteres</span>
       </div>
     </section>
+
+    <div class="overlay" id="image-library-overlay">
+      <div class="modal" style="max-width:820px;">
+        <div class="modal-head">
+          <h2>Imagens do projeto</h2>
+          <button class="icon-btn" id="image-library-close" aria-label="Fechar"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        </div>
+        <div class="modal-body">
+          <p style="margin:0 0 16px; color:var(--slate); font-size:.84rem; line-height:1.5;">Escolha uma imagem que já foi adicionada a este projeto. As imagens inseridas aqui ficam disponíveis para reutilizar nas páginas e acompanham a exportação do projeto.</p>
+          <div class="image-library-grid" id="image-library-grid"></div>
+          <input type="file" id="project-image-input" accept="image/png,image/jpeg,image/webp,image/gif,image/avif,image/bmp" hidden>
+        </div>
+        <div class="modal-foot" style="justify-content:space-between;">
+          <button class="btn btn-ghost" id="image-library-add" type="button">Adicionar imagem ao projeto</button>
+          <button class="btn btn-ghost" id="image-library-cancel" type="button">Cancelar</button>
+        </div>
+      </div>
+    </div>
 
     <!-- ---- Personagens ---- -->
     <section class="view" id="view-personagens">
@@ -1899,6 +1982,7 @@
   // ================= LIVRO =================
 
   let book = (savedProjectData && savedProjectData.book) ? savedProjectData.book : { chapters: [] };
+  let projectImages = savedProjectData && Array.isArray(savedProjectData.images) ? savedProjectData.images : [];
   book.chapters.forEach(chapter => {
     chapter.scenes.forEach((scene, index) => {
       if (/^Cena \d+$/.test(scene.title)) scene.title = `Página ${index + 1}`;
@@ -1912,8 +1996,9 @@
 
   // Salva o conteúdo do projeto (livro + personagens + raças + mapas) no navegador.
   function persistProject(){
-    alfaSaveProjectData(projectId, { book, characters, races, maps, genealogy: { nodeOffsets: genNodeOffsets } });
-    alfaTouchProject(projectId);
+    const saved = alfaSaveProjectData(projectId, { book, characters, races, maps, images: projectImages, genealogy: { nodeOffsets: genNodeOffsets } });
+    if (saved) alfaTouchProject(projectId);
+    return saved;
   }
   const persistProjectDebounced = alfaDebounce(persistProject, 500);
 
@@ -2085,6 +2170,8 @@
 
   function renderEditor(){
     activeEditable = null;
+    activeBookImage = null;
+    updateBookImageControls();
     editorWrap.innerHTML = "";
 
     if (!currentSceneId){
@@ -2102,10 +2189,12 @@
       page.className = 'page';
       page.innerHTML = `
         <div class="scene-heading">${escapeHtml(chapter.title)} — ${escapeHtml(scene.title)}</div>
-        <div class="editable" contenteditable="true" id="editable-area">${scene.content}</div>
+        <div class="editable" contenteditable="true" id="editable-area">${hydrateBookImages(scene.content)}</div>
       `;
       editorWrap.appendChild(page);
       bindEditable(document.getElementById('editable-area'), scene);
+      activeEditable = document.getElementById('editable-area');
+      updateBookImageControls();
     } else {
       renderBookView();
       renderStatus();
@@ -2194,13 +2283,13 @@
       spread.innerHTML = `
         <div class="spread-page left">
           <div class="scene-heading" style="font-size:1.1rem;">${escapeHtml(leftEntry.chapter.title)} — ${escapeHtml(leftEntry.scene.title)}</div>
-          <div class="editable">${leftEntry.scene.content}</div>
+          <div class="editable">${hydrateBookImages(leftEntry.scene.content)}</div>
           <div class="page-num">${i * 2 + 1}</div>
         </div>
         <div class="spread-page right">
           ${rightEntry ? `
             <div class="scene-heading" style="font-size:1.1rem;">${escapeHtml(rightEntry.chapter.title)} — ${escapeHtml(rightEntry.scene.title)}</div>
-            <div class="editable">${rightEntry.scene.content}</div>
+            <div class="editable">${hydrateBookImages(rightEntry.scene.content)}</div>
             <div class="page-num">${i * 2 + 2}</div>
           ` : `<div style="color:var(--slate); font-size:.85rem; padding-top:8px;">Fim do conteúdo escrito até aqui.</div>`}
         </div>
@@ -2282,13 +2371,61 @@
   function bindEditable(el, scene){
     if (!el) return;
     el.addEventListener('input', () => {
-      scene.content = el.innerHTML;
+      scene.content = serializeBookContent(el);
       if (scene.id === currentSceneId) renderStatus();
+      updateAlignmentControls();
       persistProjectDebounced();
     });
-    el.addEventListener('focus', () => { activeEditable = el; });
-    el.addEventListener('keyup', updateBlockTypeSelect);
-    el.addEventListener('mouseup', updateBlockTypeSelect);
+    el.addEventListener('focus', () => { activeEditable = el; updateAlignmentControls(); });
+    el.addEventListener('keyup', () => { updateBlockTypeSelect(); rememberBookSelection(); updateAlignmentControls(); });
+    el.addEventListener('mouseup', () => { updateBlockTypeSelect(); rememberBookSelection(); updateAlignmentControls(); });
+    el.addEventListener('click', (event) => {
+      const image = event.target.closest('.book-image');
+      if (image && el.contains(image)){
+        selectBookImage(image);
+      } else {
+        activeBookImage = null;
+        el.querySelectorAll('.book-image.is-selected').forEach(selected => selected.classList.remove('is-selected'));
+        updateBookImageControls();
+        updateAlignmentControls();
+      }
+      rememberBookSelection();
+    });
+    el.addEventListener('paste', event => {
+      const html = event.clipboardData && event.clipboardData.getData('text/html');
+      if (!html || !/<img\b/i.test(html)) return;
+      event.preventDefault();
+      const pasted = document.createElement('div');
+      pasted.innerHTML = html;
+      pasted.querySelectorAll('img').forEach(image => {
+        const asset = projectImages.find(item => item.id === image.dataset.projectImage);
+        if (!asset){
+          image.remove();
+          return;
+        }
+        image.src = asset.src;
+        image.alt = asset.name;
+      });
+      const selection = window.getSelection();
+      const range = selection && selection.rangeCount ? selection.getRangeAt(0) : document.createRange();
+      if (!selection || !el.contains(range.startContainer)){
+        range.selectNodeContents(el);
+        range.collapse(false);
+      }
+      range.deleteContents();
+      const fragment = document.createDocumentFragment();
+      while (pasted.firstChild) fragment.appendChild(pasted.firstChild);
+      range.insertNode(fragment);
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    el.addEventListener('drop', event => {
+      const imageFiles = [...(event.dataTransfer && event.dataTransfer.files || [])]
+        .some(file => file.type.startsWith('image/'));
+      const droppedHtml = event.dataTransfer && event.dataTransfer.getData('text/html') || '';
+      if (!imageFiles && !/<img\b/i.test(droppedHtml)) return;
+      event.preventDefault();
+      appNotice('Adicione a imagem a biblioteca do projeto antes de inseri-la na pagina.');
+    });
   }
 
   function escapeHtml(str){
@@ -2309,14 +2446,307 @@
   // ---------- Formatting toolbar ----------
 
   let activeEditable = null;
+  let activeBookImage = null;
+  let savedBookRange = null;
+  const imageLibraryOverlay = document.getElementById('image-library-overlay');
+  const imageLibraryGrid = document.getElementById('image-library-grid');
+  const projectImageInput = document.getElementById('project-image-input');
+  const imagePositionSelect = document.getElementById('image-position');
+  const imageSizeSelect = document.getElementById('image-size');
+  const alignmentButtons = [...document.querySelectorAll('.fmt-btn[data-align]')];
+
+  function updateAlignmentControls(){
+    const selection = window.getSelection();
+    const hasEditorSelection = Boolean(activeEditable && activeEditable.isConnected && selection &&
+      selection.rangeCount > 0 && activeEditable.contains(selection.getRangeAt(0).startContainer));
+    const imageSelected = Boolean(activeBookImage && activeBookImage.isConnected);
+    const imageAlignment = imageSelected
+      ? ['left', 'right', 'center'].find(position => activeBookImage.classList.contains(`position-${position}`))
+      : null;
+    alignmentButtons.forEach(button => {
+      const imagePosition = {
+        justifyLeft: 'left',
+        justifyCenter: 'center',
+        justifyRight: 'right'
+      }[button.dataset.cmd];
+      const isActive = imageSelected
+        ? imagePosition === imageAlignment
+        : hasEditorSelection && document.queryCommandState(button.dataset.cmd);
+      button.disabled = imageSelected
+        ? !imagePosition
+        : !activeEditable || viewMode !== 'editor' || !document.getElementById('view-livro').classList.contains('active');
+      button.classList.toggle('active', isActive);
+      button.setAttribute('aria-pressed', String(isActive));
+    });
+  }
+
+  function rememberBookSelection(){
+    const selection = window.getSelection();
+    if (!activeEditable || !selection || selection.rangeCount === 0) return;
+    const range = selection.getRangeAt(0);
+    if (activeEditable.contains(range.startContainer) && activeEditable.contains(range.endContainer)){
+      savedBookRange = range.cloneRange();
+    }
+  }
+
+  document.addEventListener('selectionchange', rememberBookSelection);
+  document.addEventListener('selectionchange', updateAlignmentControls);
+
+  function hydrateBookImages(content){
+    const container = document.createElement('div');
+    container.innerHTML = content || '';
+    container.querySelectorAll('img[data-project-image]').forEach(image => {
+      const asset = projectImages.find(item => item.id === image.dataset.projectImage);
+      if (asset) image.src = asset.src;
+    });
+    return container.innerHTML;
+  }
+
+  function serializeBookContent(editable){
+    const container = editable.cloneNode(true);
+    container.querySelectorAll('.book-image.is-selected').forEach(image => image.classList.remove('is-selected'));
+    container.querySelectorAll('img[data-project-image]').forEach(image => image.removeAttribute('src'));
+    return container.innerHTML;
+  }
+
+  function updateBookImageControls(){
+    const hasImage = Boolean(activeBookImage && activeBookImage.isConnected);
+    const canEdit = Boolean(activeEditable && activeEditable.isConnected &&
+      viewMode === 'editor' && document.getElementById('view-livro').classList.contains('active'));
+    document.getElementById('insert-image-btn').disabled = !canEdit;
+    imagePositionSelect.disabled = !hasImage;
+    imageSizeSelect.disabled = !hasImage;
+    if (hasImage){
+      const position = ['left', 'right', 'inline'].find(value => activeBookImage.classList.contains(`position-${value}`)) || 'center';
+      const size = ['25', '40', '60', '80', '100'].find(value => activeBookImage.classList.contains(`size-${value}`)) || '100';
+      imagePositionSelect.value = position;
+      imageSizeSelect.value = size;
+    }
+  }
+
+  function selectBookImage(image){
+    if (activeBookImage) activeBookImage.classList.remove('is-selected');
+    activeBookImage = image;
+    activeBookImage.classList.add('is-selected');
+    updateBookImageControls();
+    updateAlignmentControls();
+  }
+
+  function insertProjectImage(assetId){
+    const asset = projectImages.find(item => item.id === assetId);
+    const editable = activeEditable;
+    if (!asset || !editable || !editable.isConnected ||
+        !document.getElementById('view-livro').classList.contains('active')) return;
+
+    editable.focus();
+    const selection = window.getSelection();
+    let range = savedBookRange && editable.contains(savedBookRange.startContainer)
+      ? savedBookRange.cloneRange()
+      : document.createRange();
+    if (!savedBookRange || !editable.contains(range.startContainer)){
+      range.selectNodeContents(editable);
+      range.collapse(false);
+    }
+
+    const figure = document.createElement('figure');
+    figure.className = 'book-image position-center size-60';
+    figure.dataset.projectImage = asset.id;
+    const image = document.createElement('img');
+    image.src = asset.src;
+    image.alt = asset.name;
+    image.dataset.projectImage = asset.id;
+    image.draggable = false;
+    const caption = document.createElement('figcaption');
+    caption.dataset.placeholder = 'Adicionar legenda (opcional)';
+    figure.append(image, caption);
+
+    range.deleteContents();
+    range.collapse(true);
+    let block = range.startContainer.nodeType === Node.ELEMENT_NODE
+      ? range.startContainer
+      : range.startContainer.parentElement;
+    while (block && block !== editable &&
+        !['P', 'H1', 'H2', 'BLOCKQUOTE'].includes(block.tagName)){
+      block = block.parentElement;
+    }
+
+    let typingBlock;
+    if (block && block !== editable && block.parentElement){
+      const trailingRange = document.createRange();
+      trailingRange.selectNodeContents(block);
+      trailingRange.setStart(range.startContainer, range.startOffset);
+      const trailingContent = trailingRange.extractContents();
+      typingBlock = block.cloneNode(false);
+      typingBlock.appendChild(trailingContent);
+      if (!typingBlock.textContent.trim() && !typingBlock.querySelector('img,br')){
+        typingBlock.innerHTML = '<br>';
+      }
+      block.after(figure, typingBlock);
+    } else {
+      range.insertNode(figure);
+      typingBlock = document.createElement('p');
+      typingBlock.innerHTML = '<br>';
+      figure.after(typingBlock);
+    }
+
+    range = document.createRange();
+    range.selectNodeContents(typingBlock);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    savedBookRange = range.cloneRange();
+    selectBookImage(figure);
+    editable.dispatchEvent(new Event('input', { bubbles: true }));
+    imageLibraryOverlay.classList.remove('open');
+  }
+
+  function renderProjectImageLibrary(){
+    imageLibraryGrid.innerHTML = '';
+    if (projectImages.length === 0){
+      imageLibraryGrid.innerHTML = '<div class="image-library-empty">Ainda não há imagens neste projeto. Adicione uma imagem para poder inseri-la nas páginas.</div>';
+      return;
+    }
+
+    projectImages.forEach(asset => {
+      const card = document.createElement('div');
+      card.className = 'image-library-card';
+      const preview = document.createElement('img');
+      preview.src = asset.src;
+      preview.alt = asset.name;
+      const name = document.createElement('div');
+      name.className = 'image-library-name';
+      name.textContent = asset.name;
+      name.title = asset.name;
+      const actions = document.createElement('div');
+      actions.className = 'image-library-actions';
+      const useButton = document.createElement('button');
+      useButton.className = 'btn btn-primary';
+      useButton.type = 'button';
+      useButton.textContent = 'Inserir';
+      useButton.addEventListener('click', () => insertProjectImage(asset.id));
+      const removeButton = document.createElement('button');
+      removeButton.className = 'btn btn-ghost';
+      removeButton.type = 'button';
+      removeButton.textContent = 'Remover';
+      removeButton.title = 'Remover imagem do projeto';
+      removeButton.addEventListener('click', () => removeProjectImage(asset.id));
+      actions.append(useButton, removeButton);
+      card.append(preview, name, actions);
+      imageLibraryGrid.appendChild(card);
+    });
+  }
+
+  function openProjectImageLibrary(){
+    activeEditable = activeEditable || document.getElementById('editable-area');
+    if (!activeEditable || !activeEditable.isConnected || viewMode !== 'editor' ||
+        !document.getElementById('view-livro').classList.contains('active')) return;
+    rememberBookSelection();
+    renderProjectImageLibrary();
+    imageLibraryOverlay.classList.add('open');
+  }
+
+  function isProjectImageInUse(assetId){
+    return book.chapters.some(chapter => chapter.scenes.some(scene => {
+      const content = document.createElement('div');
+      content.innerHTML = scene.content || '';
+      return [...content.querySelectorAll('img[data-project-image]')]
+        .some(image => image.dataset.projectImage === assetId);
+    }));
+  }
+
+  function removeProjectImage(assetId){
+    if (isProjectImageInUse(assetId)){
+      appNotice('Esta imagem está sendo usada em uma ou mais páginas. Remova-a das páginas antes de excluí-la da biblioteca.');
+      return;
+    }
+    const index = projectImages.findIndex(asset => asset.id === assetId);
+    if (index < 0) return;
+    appConfirm('Remover esta imagem da biblioteca do projeto?', () => {
+      const [asset] = projectImages.splice(index, 1);
+      if (!persistProject()){
+        projectImages.splice(index, 0, asset);
+        appNotice('Não foi possível salvar a alteração. O armazenamento do navegador pode estar cheio ou bloqueado.');
+        return;
+      }
+      renderProjectImageLibrary();
+    }, { title: 'Remover imagem', okLabel: 'Remover' });
+  }
+
+  document.getElementById('insert-image-btn').addEventListener('mousedown', event => event.preventDefault());
+  document.getElementById('insert-image-btn').addEventListener('click', openProjectImageLibrary);
+  document.getElementById('image-library-close').addEventListener('click', () => imageLibraryOverlay.classList.remove('open'));
+  document.getElementById('image-library-cancel').addEventListener('click', () => imageLibraryOverlay.classList.remove('open'));
+  imageLibraryOverlay.addEventListener('click', event => {
+    if (event.target === imageLibraryOverlay) imageLibraryOverlay.classList.remove('open');
+  });
+  document.getElementById('image-library-add').addEventListener('click', () => projectImageInput.click());
+  projectImageInput.addEventListener('change', event => {
+    const file = event.target.files[0];
+    projectImageInput.value = '';
+    if (!file) return;
+    if (!file.type.startsWith('image/') || file.type === 'image/svg+xml'){
+      appNotice('Escolha uma imagem raster, como PNG, JPG, WebP, GIF ou AVIF.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onerror = () => appNotice('Não foi possível ler o arquivo de imagem.');
+    reader.onload = () => {
+      if (typeof reader.result !== 'string'){
+        appNotice('Não foi possível carregar o arquivo de imagem.');
+        return;
+      }
+      const asset = { id: crypto.randomUUID(), name: file.name, src: reader.result };
+      projectImages.unshift(asset);
+      if (!persistProject()){
+        projectImages.shift();
+        appNotice('Não foi possível salvar a imagem. O armazenamento do navegador pode estar cheio; tente uma imagem menor.');
+        return;
+      }
+      renderProjectImageLibrary();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  imagePositionSelect.addEventListener('change', () => {
+    if (!activeBookImage) return;
+    activeBookImage.classList.remove('position-left', 'position-right', 'position-center', 'position-inline');
+    activeBookImage.classList.add(`position-${imagePositionSelect.value}`);
+    activeEditable.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+  imageSizeSelect.addEventListener('change', () => {
+    if (!activeBookImage) return;
+    activeBookImage.classList.remove('size-25', 'size-40', 'size-60', 'size-80', 'size-100');
+    activeBookImage.classList.add(`size-${imageSizeSelect.value}`);
+    activeEditable.dispatchEvent(new Event('input', { bubbles: true }));
+  });
 
   document.querySelectorAll('.fmt-btn[data-cmd]').forEach(btn => {
+    if (btn.hasAttribute('data-align')){
+      btn.addEventListener('mousedown', event => event.preventDefault());
+    }
     btn.addEventListener('click', () => {
       const editable = activeEditable || document.getElementById('editable-area');
       if (!editable) return;
+      if (btn.hasAttribute('data-align') && activeBookImage && activeBookImage.isConnected){
+        const position = {
+          justifyLeft: 'left',
+          justifyCenter: 'center',
+          justifyRight: 'right'
+        }[btn.dataset.cmd];
+        if (!position) return;
+        activeBookImage.classList.remove('position-left', 'position-right', 'position-center', 'position-inline');
+        activeBookImage.classList.add(`position-${position}`);
+        imagePositionSelect.value = position;
+        editable.dispatchEvent(new Event('input', { bubbles: true }));
+        updateBookImageControls();
+        updateAlignmentControls();
+        return;
+      }
       editable.focus();
       document.execCommand(btn.dataset.cmd, false, null);
       editable.dispatchEvent(new Event('input'));
+      updateAlignmentControls();
     });
   });
 
