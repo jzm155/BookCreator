@@ -360,6 +360,14 @@
     grid-column:1/-1; padding:26px 16px; text-align:center; color:var(--slate);
     border:1px dashed var(--line); border-radius:8px; font-size:.86rem;
   }
+  #view-galeria{ overflow-y:auto; }
+  .gallery-toolbar{
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:22px 28px 10px; flex-wrap:wrap;
+  }
+  .gallery-toolbar h1{ margin:0; font-size:1.65rem; }
+  .gallery-toolbar p{ margin:5px 0 0; color:var(--slate); font-size:.86rem; }
+  .project-gallery-grid{ padding:14px 28px 60px; }
   @media (max-width: 700px){
     .fmt-group{ flex-wrap:wrap; }
     .fmt-group .fmt-select{ max-width:120px; }
@@ -1117,6 +1125,10 @@
         <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M8.5 2.2l5.5 3.2v6.2L8.5 14.8 3 11.6V5.4l5.5-3.2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M8.5 2.2v12.6M3 5.4l5.5 3.2 5.5-3.2" stroke="currentColor" stroke-width="1.1"/></svg>
         <span>Raças</span>
       </button>
+      <button class="nav-item" data-view="galeria">
+        <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><rect x="2.2" y="2.5" width="12.6" height="12" rx="1.5" stroke="currentColor" stroke-width="1.2"/><circle cx="6" cy="6.3" r="1.2" stroke="currentColor" stroke-width="1.1"/><path d="M3 12l3.5-3.5 2.4 2.3 2.1-2 3.1 3.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Galeria</span>
+      </button>
       <button class="nav-item" data-view="config">
         <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><circle cx="8.5" cy="8.5" r="2.4" stroke="currentColor" stroke-width="1.2"/><path d="M8.5 2.5v2M8.5 12v2M2.5 8.5h2M12 8.5h2M4.4 4.4l1.4 1.4M11.2 11.2l1.4 1.4M12.6 4.4l-1.4 1.4M5.8 11.2l-1.4 1.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
         <span>Configurações</span>
@@ -1212,7 +1224,7 @@
           <button class="icon-btn" id="image-library-close" aria-label="Fechar"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
         </div>
         <div class="modal-body">
-          <p style="margin:0 0 16px; color:var(--slate); font-size:.84rem; line-height:1.5;">Escolha uma imagem que já foi adicionada a este projeto. As imagens inseridas aqui ficam disponíveis para reutilizar nas páginas e acompanham a exportação do projeto.</p>
+          <p style="margin:0 0 16px; color:var(--slate); font-size:.84rem; line-height:1.5;">As imagens adicionadas ao projeto aparecem aqui, incluindo fotos de personagens, imagens de raças, fundos de mapas e a capa. Escolha uma para reutilizar nas páginas; elas também acompanham a exportação do projeto.</p>
           <div class="image-library-grid" id="image-library-grid"></div>
           <input type="file" id="project-image-input" accept="image/png,image/jpeg,image/webp,image/gif,image/avif,image/bmp" hidden>
         </div>
@@ -1222,6 +1234,17 @@
         </div>
       </div>
     </div>
+
+    <section class="view" id="view-galeria">
+      <div class="gallery-toolbar">
+        <div>
+          <h1>Galeria do projeto</h1>
+          <p>Imagens adicionadas ao projeto, incluindo fotos, capa e fundos de mapas.</p>
+        </div>
+        <button class="btn btn-primary" id="project-gallery-add" type="button">Adicionar imagem</button>
+      </div>
+      <div class="image-library-grid project-gallery-grid" id="project-gallery-grid"></div>
+    </section>
 
     <!-- ---- Personagens ---- -->
     <section class="view" id="view-personagens">
@@ -1961,6 +1984,18 @@
   }
   const savedProjectData = alfaLoadProjectData(projectId); // { book, characters } ou null
 
+  function resolveProjectImageSource(source, data){
+    if (!source || !data) return null;
+    if (source.collection === 'projects'){
+      const project = alfaLoadProjects().find(item => item.id === source.id);
+      return project && typeof project.capa === 'string' ? project.capa : null;
+    }
+    const collection = data[source.collection];
+    const item = Array.isArray(collection) ? collection.find(entry => entry.id === source.id) : null;
+    const image = item && item[source.field];
+    return typeof image === 'string' ? image : null;
+  }
+
   // ---------- Navegação lateral ----------
   const app = document.getElementById('app');
   const navItems = document.querySelectorAll('.nav-item');
@@ -1982,7 +2017,12 @@
   // ================= LIVRO =================
 
   let book = (savedProjectData && savedProjectData.book) ? savedProjectData.book : { chapters: [] };
-  let projectImages = savedProjectData && Array.isArray(savedProjectData.images) ? savedProjectData.images : [];
+  let projectImages = savedProjectData && Array.isArray(savedProjectData.images)
+    ? savedProjectData.images.map(asset => ({
+        ...asset,
+        src: asset.src || resolveProjectImageSource(asset.source, savedProjectData)
+      })).filter(asset => typeof asset.src === 'string')
+    : [];
   book.chapters.forEach(chapter => {
     chapter.scenes.forEach((scene, index) => {
       if (/^Cena \d+$/.test(scene.title)) scene.title = `Página ${index + 1}`;
@@ -1996,7 +2036,14 @@
 
   // Salva o conteúdo do projeto (livro + personagens + raças + mapas) no navegador.
   function persistProject(){
-    const saved = alfaSaveProjectData(projectId, { book, characters, races, maps, images: projectImages, genealogy: { nodeOffsets: genNodeOffsets } });
+    const images = projectImages.map(asset => {
+      const { id, name, src, source } = asset;
+      const currentSource = source && resolveProjectImageSource(source, { characters, races, maps });
+      if (source && currentSource === src) return { id, name, source };
+      if (source) delete asset.source;
+      return { id, name, src };
+    });
+    const saved = alfaSaveProjectData(projectId, { book, characters, races, maps, images, genealogy: { nodeOffsets: genNodeOffsets } });
     if (saved) alfaTouchProject(projectId);
     return saved;
   }
@@ -2450,6 +2497,7 @@
   let savedBookRange = null;
   const imageLibraryOverlay = document.getElementById('image-library-overlay');
   const imageLibraryGrid = document.getElementById('image-library-grid');
+  const projectGalleryGrid = document.getElementById('project-gallery-grid');
   const projectImageInput = document.getElementById('project-image-input');
   const imagePositionSelect = document.getElementById('image-position');
   const imageSizeSelect = document.getElementById('image-size');
@@ -2600,10 +2648,60 @@
     imageLibraryOverlay.classList.remove('open');
   }
 
-  function renderProjectImageLibrary(){
-    imageLibraryGrid.innerHTML = '';
+  function syncProjectImageLibrary(persistChanges = true){
+    const sources = [];
+    const addSource = (name, src, source) => {
+      if (typeof src === 'string' && src.startsWith('data:image/') &&
+          !src.startsWith('data:image/svg+xml')){
+        sources.push({ id: `${source.collection}:${source.id}:${source.field || ''}`, name, src, source });
+      }
+    };
+
+    characters.forEach(character => {
+      addSource(`Foto de perfil — ${character.nome}`, character.fotoPerfil,
+        { collection: 'characters', id: character.id, field: 'fotoPerfil' });
+      addSource(`Foto de corpo inteiro — ${character.nome}`, character.fotoCorpo,
+        { collection: 'characters', id: character.id, field: 'fotoCorpo' });
+    });
+    races.forEach(race => {
+      addSource(`Imagem — ${race.nome}`, race.imagem,
+        { collection: 'races', id: race.id, field: 'imagem' });
+    });
+    maps.forEach(map => {
+      addSource(`Imagem de fundo — ${map.nome}`, map.bgImage,
+        { collection: 'maps', id: map.id, field: 'bgImage' });
+    });
+
+    const project = alfaLoadProjects().find(item => item.id === projectId);
+    if (project) addSource(`Capa — ${project.nome}`, project.capa,
+      { collection: 'projects', id: project.id, field: 'capa' });
+
+    const additions = sources.filter(source =>
+      !projectImages.some(asset => asset.source &&
+        asset.source.collection === source.source.collection &&
+        asset.source.id === source.source.id &&
+        asset.source.field === source.source.field &&
+        asset.src === source.src)
+    ).map(source => ({
+      id: crypto.randomUUID(),
+      name: source.name,
+      src: source.src,
+      source: source.source
+    }));
+
+    if (!additions.length) return false;
+    projectImages.unshift(...additions);
+    if (persistChanges && !persistProject()){
+      appNotice('Não foi possível salvar a biblioteca de imagens. O armazenamento do navegador pode estar cheio ou bloqueado.');
+    }
+    return true;
+  }
+
+  function renderProjectImageLibrary(grid = imageLibraryGrid, allowInsert = true){
+    syncProjectImageLibrary();
+    grid.innerHTML = '';
     if (projectImages.length === 0){
-      imageLibraryGrid.innerHTML = '<div class="image-library-empty">Ainda não há imagens neste projeto. Adicione uma imagem para poder inseri-la nas páginas.</div>';
+      grid.innerHTML = '<div class="image-library-empty">Ainda não há imagens neste projeto. Use “Adicionar imagem” para começar.</div>';
       return;
     }
 
@@ -2619,20 +2717,23 @@
       name.title = asset.name;
       const actions = document.createElement('div');
       actions.className = 'image-library-actions';
-      const useButton = document.createElement('button');
-      useButton.className = 'btn btn-primary';
-      useButton.type = 'button';
-      useButton.textContent = 'Inserir';
-      useButton.addEventListener('click', () => insertProjectImage(asset.id));
+      if (allowInsert){
+        const useButton = document.createElement('button');
+        useButton.className = 'btn btn-primary';
+        useButton.type = 'button';
+        useButton.textContent = 'Inserir';
+        useButton.addEventListener('click', () => insertProjectImage(asset.id));
+        actions.appendChild(useButton);
+      }
       const removeButton = document.createElement('button');
       removeButton.className = 'btn btn-ghost';
       removeButton.type = 'button';
       removeButton.textContent = 'Remover';
       removeButton.title = 'Remover imagem do projeto';
       removeButton.addEventListener('click', () => removeProjectImage(asset.id));
-      actions.append(useButton, removeButton);
+      actions.appendChild(removeButton);
       card.append(preview, name, actions);
-      imageLibraryGrid.appendChild(card);
+      grid.appendChild(card);
     });
   }
 
@@ -2655,6 +2756,11 @@
   }
 
   function removeProjectImage(assetId){
+    const asset = projectImages.find(item => item.id === assetId);
+    if (asset && asset.source){
+      appNotice('Esta imagem está vinculada a uma ficha, mapa ou capa. Remova-a pelo item de origem.');
+      return;
+    }
     if (isProjectImageInUse(assetId)){
       appNotice('Esta imagem está sendo usada em uma ou mais páginas. Remova-a das páginas antes de excluí-la da biblioteca.');
       return;
@@ -2669,6 +2775,7 @@
         return;
       }
       renderProjectImageLibrary();
+      renderProjectImageLibrary(projectGalleryGrid, false);
     }, { title: 'Remover imagem', okLabel: 'Remover' });
   }
 
@@ -2680,6 +2787,10 @@
     if (event.target === imageLibraryOverlay) imageLibraryOverlay.classList.remove('open');
   });
   document.getElementById('image-library-add').addEventListener('click', () => projectImageInput.click());
+  document.getElementById('project-gallery-add').addEventListener('click', () => projectImageInput.click());
+  document.querySelector('.nav-item[data-view="galeria"]').addEventListener('click', () => {
+    renderProjectImageLibrary(projectGalleryGrid, false);
+  });
   projectImageInput.addEventListener('change', event => {
     const file = event.target.files[0];
     projectImageInput.value = '';
@@ -2704,6 +2815,7 @@
         return;
       }
       renderProjectImageLibrary();
+      renderProjectImageLibrary(projectGalleryGrid, false);
     };
     reader.readAsDataURL(file);
   });
@@ -3234,6 +3346,7 @@
       characters.unshift({ id: crypto.randomUUID(), ...data });
     }
 
+    syncProjectImageLibrary(false);
     closeCharForm();
     renderCharGrid();
     persistProject();
@@ -4311,6 +4424,7 @@
       races.unshift({ id: crypto.randomUUID(), subracas: [], ...data });
     }
 
+    syncProjectImageLibrary(false);
     closeRaceForm();
     renderRaceGrid();
     populateCharRaceDatalist();
@@ -5353,6 +5467,7 @@
     const reader = new FileReader();
     reader.onload = (ev) => {
       map.bgImage = ev.target.result;
+      syncProjectImageLibrary(false);
       renderActiveMap();
       persistProject();
     };
