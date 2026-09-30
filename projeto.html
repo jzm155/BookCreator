@@ -157,6 +157,19 @@
     padding:5px 12px; border-radius:999px;
   }
 
+  #view-editar{ overflow-y:auto; }
+  .project-settings{
+    width:min(760px, 100%);
+    margin:0 auto;
+    padding:36px 28px 60px;
+  }
+  .project-settings h2{ margin:0 0 8px; font-size:1.5rem; }
+  .project-settings > p{ margin:0 0 28px; color:var(--slate); font-size:.9rem; }
+  .settings-cover{ display:flex; align-items:center; gap:16px; }
+  .settings-cover-preview{ width:74px; height:100px; border-radius:4px; }
+  .settings-cover-actions{ display:flex; gap:10px; flex-wrap:wrap; }
+  .settings-actions{ display:flex; justify-content:flex-end; margin-top:26px; }
+
   /* ============ Livro view ============ */
 
   .book-toolbar{
@@ -1109,6 +1122,10 @@
         <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M2.5 3.2c1.6-.7 3.6-.7 5.2.4v9.8c-1.6-1.1-3.6-1.1-5.2-.4V3.2zM14.5 3.2c-1.6-.7-3.6-.7-5.2.4v9.8c1.6-1.1 3.6-1.1 5.2-.4V3.2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
         <span>Livro</span>
       </button>
+      <button class="nav-item" data-view="editar">
+        <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M10.2 3.1l3.7 3.7M2.5 14.5l3.6-.8 7.7-7.7a1.8 1.8 0 00-2.5-2.5l-7.7 7.7-.8 3.3z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Editar</span>
+      </button>
       <button class="nav-item" data-view="personagens">
         <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><circle cx="8.5" cy="5.5" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M2.8 14.2c1-2.6 3.2-4 5.7-4s4.7 1.4 5.7 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
         <span>Personagens</span>
@@ -1173,7 +1190,9 @@
           <button class="fmt-btn" id="undo-btn" title="Desfazer"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 4H10.5A2.5 2.5 0 0113 6.5v0A2.5 2.5 0 0110.5 9H5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M6 1.8L3.5 4 6 6.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           <button class="fmt-btn" id="redo-btn" title="Refazer"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M10 4H3.5A2.5 2.5 0 001 6.5v0A2.5 2.5 0 003.5 9H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M8 1.8L10.5 4 8 6.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           <div class="fmt-sep"></div>
-          <button class="btn btn-ghost" id="insert-image-btn" type="button" title="Inserir imagem da biblioteca do projeto">Imagem</button>
+          <button class="fmt-btn" id="insert-image-btn" type="button" title="Inserir imagem da biblioteca do projeto" aria-label="Inserir imagem da biblioteca do projeto">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 8.5 4.25-4.25a2.12 2.12 0 0 1 3 3L7.6 12.9a3.18 3.18 0 0 1-4.5-4.5l5.3-5.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
           <select class="fmt-select" id="image-position" aria-label="Posicionamento da imagem" title="Posicionamento da imagem" disabled>
             <option value="center">Centralizar</option>
             <option value="left">Esquerda (texto ao redor)</option>
@@ -1900,11 +1919,62 @@
     </div>
 
     <!-- ---- Configurações ---- -->
+    <section class="view" id="view-editar">
+      <div class="project-settings">
+        <h2>Editar projeto</h2>
+        <p>Altere os dados e a capa deste livro.</p>
+        <form id="project-settings-form">
+          <div class="form-grid">
+            <div class="form-field full">
+              <label for="settings-cover-input">Capa</label>
+              <div class="settings-cover">
+                <div class="cover-preview settings-cover-preview" id="settings-cover-preview">sem capa</div>
+                <div class="settings-cover-actions">
+                  <button type="button" class="btn btn-ghost" id="settings-cover-upload">Escolher imagem</button>
+                  <button type="button" class="btn btn-ghost" id="settings-cover-remove">Remover</button>
+                  <input type="file" id="settings-cover-input" accept="image/*" hidden>
+                </div>
+              </div>
+            </div>
+            <div class="form-field">
+              <label for="settings-name">Nome do projeto *</label>
+              <input type="text" id="settings-name" required>
+            </div>
+            <div class="form-field">
+              <label for="settings-title">Título do livro</label>
+              <input type="text" id="settings-title" placeholder="Se diferente do nome do projeto">
+            </div>
+            <div class="form-field">
+              <label for="settings-author">Autor</label>
+              <input type="text" id="settings-author" placeholder="Seu nome ou pseudônimo">
+            </div>
+            <div class="form-field">
+              <label for="settings-status">Status</label>
+              <select id="settings-status">
+                <option value="rascunho">Rascunho</option>
+                <option value="desenvolvimento">Em desenvolvimento</option>
+                <option value="revisao">Em revisão</option>
+                <option value="finalizado">Finalizado</option>
+                <option value="publicado">Publicado</option>
+              </select>
+            </div>
+            <div class="form-field full">
+              <label for="settings-description">Descrição</label>
+              <textarea id="settings-description" rows="4" placeholder="Do que trata a história?"></textarea>
+            </div>
+          </div>
+          <div class="settings-actions">
+            <button type="submit" class="btn btn-primary">Salvar alterações</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
     <section class="view" id="view-config">
       <div class="placeholder">
-        <div class="glyph"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="1.5"/><path d="M12 3v2.6M12 18.4V21M3 12h2.6M18.4 12H21M5.8 5.8l1.8 1.8M16.4 16.4l1.8 1.8M18.2 5.8l-1.8 1.8M7.6 16.4l-1.8 1.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="glyph"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="1.5"/><path d="M12 3v2.6M12 18.4V21M3 12h2.6M18.4 12H21M5.8 5.8l1.8 1.8M16.4 16.4l1.8 1.8M18.2 5.8l-1.8 1.8M7.6 16.4l-1.8-1.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
         <h2>Configurações do projeto</h2>
-        <p>Renomear o projeto, gerenciar a capa, exportações e preferências de escrita.</p>
+        <p>Preferências do projeto e de escrita.</p>
         <span class="tag">Próxima etapa</span>
       </div>
     </section>
@@ -1974,11 +2044,16 @@
   // ---------- Identidade do projeto + dados persistidos ----------
   const params = new URLSearchParams(location.search);
   const projName = params.get('nome');
-  if (projName) document.getElementById('proj-name-label').textContent = decodeURIComponent(projName);
+  if (projName) document.getElementById('proj-name-label').textContent = projName;
 
   // id vem da tela de Projetos (index.html); sem ele, cai num id fixo local
   // (funciona sozinho, mas não fica ligado a nenhum card na lista de projetos)
   const projectId = params.get('id') || 'sem-id';
+  let projectMetadata = alfaLoadProjects().find(item => item.id === projectId) || null;
+  if (projectMetadata){
+    document.getElementById('proj-name-label').textContent = projectMetadata.nome;
+    document.title = `Alfarrábio — ${projectMetadata.nome}`;
+  }
   if (!params.get('id')){
     console.warn('Alfarrábio: projeto aberto sem id — abra pela tela de projetos (index.html) para salvar corretamente.');
   }
@@ -2009,9 +2084,100 @@
       views.forEach(v => v.classList.toggle('active', v.id === 'view-' + target));
     });
   });
+  if (params.get('view') === 'editar'){
+    document.querySelector('.nav-item[data-view="editar"]').click();
+  }
 
   document.getElementById('collapse-toggle').addEventListener('click', () => {
     app.classList.toggle('collapsed');
+  });
+
+  // ---------- Edição dos dados do projeto ----------
+  const settingsForm = document.getElementById('project-settings-form');
+  const settingsName = document.getElementById('settings-name');
+  const settingsTitle = document.getElementById('settings-title');
+  const settingsAuthor = document.getElementById('settings-author');
+  const settingsStatus = document.getElementById('settings-status');
+  const settingsDescription = document.getElementById('settings-description');
+  const settingsCoverPreview = document.getElementById('settings-cover-preview');
+  const settingsCoverInput = document.getElementById('settings-cover-input');
+  let settingsCover = projectMetadata ? projectMetadata.capa || null : null;
+
+  function renderSettingsCover(){
+    settingsCoverPreview.style.backgroundImage = settingsCover ? `url('${settingsCover}')` : '';
+    settingsCoverPreview.textContent = settingsCover ? '' : 'sem capa';
+  }
+
+  if (projectMetadata){
+    settingsName.value = projectMetadata.nome || '';
+    settingsTitle.value = projectMetadata.titulo || '';
+    settingsAuthor.value = projectMetadata.autor || '';
+    settingsStatus.value = projectMetadata.status || 'rascunho';
+    settingsDescription.value = projectMetadata.descricao || '';
+  } else {
+    settingsName.value = projName || '';
+    document.getElementById('project-settings-form').querySelectorAll('input, select, textarea, button').forEach(field => {
+      field.disabled = true;
+    });
+    if (params.get('view') === 'editar'){
+      appNotice('Não foi possível localizar os dados deste projeto. Volte à lista e abra um livro existente.', 'Projeto não encontrado');
+    }
+  }
+  renderSettingsCover();
+
+  document.getElementById('settings-cover-upload').addEventListener('click', () => settingsCoverInput.click());
+  document.getElementById('settings-cover-remove').addEventListener('click', () => {
+    settingsCover = null;
+    renderSettingsCover();
+  });
+  settingsCoverInput.addEventListener('change', () => {
+    const file = settingsCoverInput.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result !== 'string'){
+        appNotice('Não foi possível carregar a imagem da capa.');
+        return;
+      }
+      settingsCover = reader.result;
+      renderSettingsCover();
+    };
+    reader.onerror = () => appNotice('Não foi possível ler a imagem selecionada.');
+    reader.readAsDataURL(file);
+    settingsCoverInput.value = '';
+  });
+  settingsForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!projectMetadata) return;
+    const nome = settingsName.value.trim();
+    if (!nome){
+      settingsName.focus();
+      appNotice('Informe um nome para o projeto antes de salvar.');
+      return;
+    }
+
+    const projects = alfaLoadProjects();
+    const project = projects.find(item => item.id === projectId);
+    if (!project){
+      projectMetadata = null;
+      appNotice('Este projeto não está mais disponível na lista. Volte à lista de projetos e tente novamente.', 'Projeto não encontrado');
+      return;
+    }
+    project.nome = nome;
+    project.titulo = settingsTitle.value.trim();
+    project.autor = settingsAuthor.value.trim();
+    project.status = settingsStatus.value;
+    project.descricao = settingsDescription.value.trim();
+    project.capa = settingsCover;
+    project.updatedAt = new Date().toISOString();
+    if (!alfaSaveProjects(projects)){
+      appNotice('Não foi possível salvar as alterações. Verifique o espaço disponível no navegador e tente novamente.');
+      return;
+    }
+    projectMetadata = project;
+    document.getElementById('proj-name-label').textContent = nome;
+    document.title = `Alfarrábio — ${nome}`;
+    appNotice('As alterações foram salvas.', 'Projeto atualizado');
   });
 
   // ================= LIVRO =================

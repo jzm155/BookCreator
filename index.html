@@ -205,6 +205,7 @@
     overflow:hidden;
     border: 1px solid rgba(28,32,41,.06);
     transition: transform .18s ease, box-shadow .18s ease;
+    cursor:pointer;
   }
 
   .book-card::before{
@@ -516,7 +517,7 @@
 
   <div class="shelf" id="shelf"></div>
 
-  <!-- Modal: criar/editar -->
+  <!-- Modal: criar projeto -->
   <div class="overlay" id="overlay-form">
     <div class="modal">
       <div class="modal-head">
@@ -567,7 +568,7 @@
             <div class="form-field full">
               <label for="f-descricao">Descrição</label>
               <textarea id="f-descricao" rows="3" placeholder="Do que trata a história?"></textarea>
-              <div class="hint">Os dados ficam só nesta sessão do navegador — recarregar a página os apaga.</div>
+              <div class="hint">Os dados ficam salvos neste navegador.</div>
             </div>
           </div>
         </form>
@@ -609,7 +610,6 @@
   // Carrega os projetos já salvos no navegador (se existirem)
   let projects = alfaLoadProjects();
 
-  let editingId = null;
   let deletingId = null;
   let pendingCoverData = null;
 
@@ -729,6 +729,9 @@
     list.forEach(p => {
       const card = document.createElement('div');
       card.className = 'book-card';
+      card.tabIndex = 0;
+      card.setAttribute('role', 'link');
+      card.setAttribute('aria-label', `Abrir projeto ${p.nome}`);
 
       const hasCover = !!p.capa;
       const displayTitle = p.titulo || p.nome;
@@ -760,8 +763,14 @@
         </div>
       `;
 
-      card.querySelector('.book-cover').addEventListener('click', () => openProject(p));
-      card.querySelector('[data-action="edit"]').addEventListener('click', (e)=>{ e.stopPropagation(); openEditModal(p.id); });
+      card.addEventListener('click', () => openProject(p));
+      card.addEventListener('keydown', (e) => {
+        if (e.target === card && (e.key === 'Enter' || e.key === ' ')){
+          e.preventDefault();
+          openProject(p);
+        }
+      });
+      card.querySelector('[data-action="edit"]').addEventListener('click', (e)=>{ e.stopPropagation(); openProject(p, 'editar'); });
       card.querySelector('[data-action="duplicate"]').addEventListener('click', (e)=>{ e.stopPropagation(); duplicateProject(p.id); });
       card.querySelector('[data-action="delete"]').addEventListener('click', (e)=>{ e.stopPropagation(); openDeleteConfirm(p.id); });
       card.querySelector('[data-action="export"]').addEventListener('click', (e)=>{ e.stopPropagation(); exportProject(p.id); });
@@ -772,8 +781,9 @@
 
   // ---------- Ações ----------
 
-  function openProject(p){
-    window.location.href = `projeto.html?id=${encodeURIComponent(p.id)}&nome=${encodeURIComponent(p.nome)}`;
+  function openProject(p, view = 'livro'){
+    const params = new URLSearchParams({ id: p.id, nome: p.nome, view });
+    window.location.href = `projeto.html?${params}`;
   }
 
   function duplicateProject(id){
@@ -908,7 +918,7 @@
   document.getElementById('close-confirm').addEventListener('click', closeConfirm);
   overlayConfirm.addEventListener('click', (e) => { if (e.target === overlayConfirm) closeConfirm(); });
 
-  // ---------- Modal criar/editar ----------
+  // ---------- Modal criar ----------
 
   function resetForm(){
     fNome.value = "";
@@ -922,38 +932,14 @@
   }
 
   function openCreateModal(){
-    editingId = null;
     resetForm();
     formTitle.textContent = "Novo projeto";
     overlayForm.classList.add('open');
     setTimeout(()=> fNome.focus(), 50);
   }
 
-  function openEditModal(id){
-    const p = projects.find(x => x.id === id);
-    if (!p) return;
-    editingId = id;
-    fNome.value = p.nome;
-    fTitulo.value = p.titulo || "";
-    fAutor.value = p.autor || "";
-    fStatus.value = p.status;
-    fDescricao.value = p.descricao || "";
-    pendingCoverData = p.capa || null;
-    if (p.capa){
-      coverPreview.style.backgroundImage = `url('${p.capa}')`;
-      coverPreview.textContent = "";
-    } else {
-      coverPreview.style.backgroundImage = "";
-      coverPreview.textContent = "sem capa";
-    }
-    formTitle.textContent = "Editar projeto";
-    overlayForm.classList.add('open');
-    setTimeout(()=> fNome.focus(), 50);
-  }
-
   function closeForm(){
     overlayForm.classList.remove('open');
-    editingId = null;
   }
 
   document.getElementById('btn-new-top').addEventListener('click', openCreateModal);
@@ -990,30 +976,18 @@
 
     const now = new Date().toISOString();
 
-    if (editingId){
-      const p = projects.find(x => x.id === editingId);
-      p.nome = nome;
-      p.titulo = fTitulo.value.trim();
-      p.autor = fAutor.value.trim();
-      p.status = fStatus.value;
-      p.descricao = fDescricao.value.trim();
-      p.capa = pendingCoverData;
-      p.updatedAt = now;
-      toast(`"${nome}" atualizado`);
-    } else {
-      projects.unshift({
-        id: crypto.randomUUID(),
-        nome,
-        titulo: fTitulo.value.trim(),
-        autor: fAutor.value.trim(),
-        status: fStatus.value,
-        descricao: fDescricao.value.trim(),
-        capa: pendingCoverData,
-        createdAt: now,
-        updatedAt: now,
-      });
-      toast(`"${nome}" criado`);
-    }
+    projects.unshift({
+      id: crypto.randomUUID(),
+      nome,
+      titulo: fTitulo.value.trim(),
+      autor: fAutor.value.trim(),
+      status: fStatus.value,
+      descricao: fDescricao.value.trim(),
+      capa: pendingCoverData,
+      createdAt: now,
+      updatedAt: now,
+    });
+    toast(`"${nome}" criado`);
 
     alfaSaveProjects(projects);
     closeForm();
