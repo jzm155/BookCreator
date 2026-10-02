@@ -214,6 +214,40 @@
   #view-livro.book-preview-mode .status-bar{
     display:none;
   }
+  #view-livro{ position:relative; }
+  .character-reference-panel{
+    position:absolute; top:62px; right:20px; z-index:30;
+    display:flex; flex-direction:column; width:min(390px, calc(100% - 32px));
+    max-height:calc(100% - 112px); background:var(--paper);
+    border:1px solid var(--line); border-radius:10px;
+    box-shadow:0 16px 38px -16px rgba(28,32,41,.45);
+  }
+  .character-reference-panel[hidden]{ display:none; }
+  .character-reference-head{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:12px 14px; border-bottom:1px solid var(--line);
+  }
+  .character-reference-head h2{ margin:0; font-size:1rem; }
+  .character-reference-search{ padding:12px 14px 8px; }
+  .character-reference-search input{
+    width:100%; padding:9px 11px; border:1px solid var(--line); border-radius:7px;
+    background:var(--card); color:var(--ink); font: .84rem 'Inter',sans-serif;
+  }
+  .character-reference-search input:focus{ outline:2px solid rgba(123,59,58,.25); border-color:var(--wine); }
+  .character-reference-results{ overflow-y:auto; padding:4px 14px 14px; }
+  .character-reference-result{
+    padding:10px 0; border-bottom:1px solid rgba(202,191,159,.65);
+  }
+  .character-reference-result:last-child{ border-bottom:0; }
+  .character-reference-result h3{
+    margin:0 0 4px; font:600 .72rem 'Inter',sans-serif; color:var(--wine);
+  }
+  .character-reference-result p{
+    margin:0 0 8px; color:var(--ink-soft); font-size:.8rem; line-height:1.45;
+    white-space:pre-wrap; overflow-wrap:anywhere;
+  }
+  .character-reference-result .btn{ padding:6px 10px; font-size:.76rem; }
+  .character-reference-empty{ margin:8px 0; color:var(--slate); font-size:.84rem; line-height:1.5; }
   #view-livro.book-preview-mode .book-toolbar{
     justify-content:flex-end;
     border-bottom:0;
@@ -1208,11 +1242,27 @@
           </select>
         </div>
 
-        <div class="view-toggle">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <button class="btn btn-ghost" id="character-reference-toggle" type="button" aria-expanded="false" aria-controls="character-reference-panel">Consultar personagens</button>
+          <div class="view-toggle">
           <button data-mode="editor" class="active">Editor</button>
           <button data-mode="livro">Livro</button>
+          </div>
         </div>
       </div>
+
+      <aside class="character-reference-panel" id="character-reference-panel" aria-label="Consultar informações dos personagens" hidden>
+        <div class="character-reference-head">
+          <h2>Personagens</h2>
+          <button class="icon-btn" id="character-reference-close" type="button" aria-label="Fechar consulta de personagens">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 2l11 11M13 2L2 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <div class="character-reference-search">
+          <input type="search" id="character-reference-search" placeholder="Buscar nome, biografia, personalidade..." aria-label="Buscar informações dos personagens">
+        </div>
+        <div class="character-reference-results" id="character-reference-results" aria-live="polite"></div>
+      </aside>
 
       <div class="book-body">
         <!-- tree -->
@@ -3227,6 +3277,7 @@
         }
       });
       renderCharGrid();
+      if (!characterReferencePanel.hidden) renderCharacterReferenceResults();
       closeCharDrawer();
       persistProject();
     });
@@ -3344,6 +3395,147 @@
     'personalidade','objetivos','medos','gostos','desgostos','curiosidades','observacoes'];
 
   function fieldEl(name){ return document.getElementById('char-' + name); }
+
+  const characterFieldLabels = {
+    nome: 'Nome',
+    apelido: 'Apelido',
+    nascimento: 'Data de nascimento',
+    genero: 'Gênero',
+    raca: 'Raça',
+    descricao: 'Descrição',
+    biografia: 'Biografia',
+    aparencia: 'Aparência',
+    altura: 'Altura',
+    peso: 'Peso',
+    profissao: 'Profissão / ocupação',
+    'local-nascimento': 'Local de nascimento',
+    'local-atual': 'Local atual',
+    personalidade: 'Personalidade',
+    objetivos: 'Objetivos',
+    medos: 'Medos',
+    gostos: 'Gostos',
+    desgostos: 'Desgostos',
+    curiosidades: 'Curiosidades',
+    observacoes: 'Observações'
+  };
+  const characterReferencePanel = document.getElementById('character-reference-panel');
+  const characterReferenceToggle = document.getElementById('character-reference-toggle');
+  const characterReferenceSearch = document.getElementById('character-reference-search');
+  const characterReferenceResults = document.getElementById('character-reference-results');
+
+  function normalizeCharacterSearch(value){
+    return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+  }
+
+  function renderCharacterReferenceResults(){
+    const query = normalizeCharacterSearch(characterReferenceSearch.value);
+    characterReferenceResults.replaceChildren();
+
+    if (!characters.length){
+      const empty = document.createElement('p');
+      empty.className = 'character-reference-empty';
+      empty.textContent = 'Cadastre um personagem para consultar a biografia e os demais campos durante a escrita.';
+      characterReferenceResults.appendChild(empty);
+      return;
+    }
+
+    let resultCount = 0;
+    characters.forEach(character => {
+      charFields.forEach(field => {
+        const value = String(character[field.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())] || '').trim();
+        if (!value) return;
+
+        const label = characterFieldLabels[field];
+        const searchable = normalizeCharacterSearch(`${character.nome} ${character.apelido || ''} ${label} ${value}`);
+        if (query && !searchable.includes(query)) return;
+
+        const result = document.createElement('article');
+        result.className = 'character-reference-result';
+        const heading = document.createElement('h3');
+        heading.textContent = `${character.nome} — ${label}`;
+        const content = document.createElement('p');
+        content.textContent = value;
+        const insertButton = document.createElement('button');
+        insertButton.type = 'button';
+        insertButton.className = 'btn btn-ghost';
+        insertButton.textContent = 'Inserir no texto';
+        insertButton.disabled = !activeEditable || !activeEditable.isConnected || viewMode !== 'editor' ||
+          !document.getElementById('view-livro').classList.contains('active');
+        insertButton.addEventListener('click', () => insertCharacterReference(value));
+        result.append(heading, content, insertButton);
+        characterReferenceResults.appendChild(result);
+        resultCount += 1;
+      });
+    });
+
+    if (!resultCount){
+      const empty = document.createElement('p');
+      empty.className = 'character-reference-empty';
+      empty.textContent = 'Nenhuma informação encontrada. Tente buscar por outro nome ou termo.';
+      characterReferenceResults.appendChild(empty);
+    }
+  }
+
+  function insertCharacterReference(value){
+    const editable = activeEditable;
+    if (!editable || !editable.isConnected || viewMode !== 'editor' ||
+        !document.getElementById('view-livro').classList.contains('active')){
+      appNotice('Abra uma página no modo Editor para inserir informações dos personagens.');
+      return;
+    }
+
+    editable.focus();
+    const selection = window.getSelection();
+    const range = savedBookRange && editable.contains(savedBookRange.startContainer)
+      ? savedBookRange.cloneRange()
+      : document.createRange();
+    if (!savedBookRange || !editable.contains(range.startContainer)){
+      range.selectNodeContents(editable);
+      range.collapse(false);
+    }
+
+    const fragment = document.createDocumentFragment();
+    String(value).split(/\r?\n/).forEach((line, index) => {
+      if (index) fragment.appendChild(document.createElement('br'));
+      fragment.appendChild(document.createTextNode(line));
+    });
+    const insertedNodes = [...fragment.childNodes];
+    range.deleteContents();
+    range.insertNode(fragment);
+
+    const lastInsertedNode = insertedNodes[insertedNodes.length - 1];
+    if (lastInsertedNode && lastInsertedNode.parentNode){
+      range.setStartAfter(lastInsertedNode);
+      range.collapse(true);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      savedBookRange = range.cloneRange();
+    }
+    editable.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  characterReferenceToggle.addEventListener('click', () => {
+    const isOpening = characterReferencePanel.hidden;
+    characterReferencePanel.hidden = !isOpening;
+    characterReferenceToggle.setAttribute('aria-expanded', String(isOpening));
+    if (isOpening){
+      renderCharacterReferenceResults();
+      characterReferenceSearch.focus();
+    }
+  });
+  document.getElementById('character-reference-close').addEventListener('click', () => {
+    characterReferencePanel.hidden = true;
+    characterReferenceToggle.setAttribute('aria-expanded', 'false');
+    characterReferenceToggle.focus();
+  });
+  characterReferenceSearch.addEventListener('input', renderCharacterReferenceResults);
+  characterReferencePanel.addEventListener('keydown', event => {
+    if (event.key === 'Escape'){
+      characterReferencePanel.hidden = true;
+      characterReferenceToggle.setAttribute('aria-expanded', 'false');
+      characterReferenceToggle.focus();
+    }
+  });
 
   function resetCharForm(){
     charFields.forEach(f => { const el = fieldEl(f); if (el) el.value = ""; });
@@ -3515,6 +3707,7 @@
     syncProjectImageLibrary(false);
     closeCharForm();
     renderCharGrid();
+    if (!characterReferencePanel.hidden) renderCharacterReferenceResults();
     persistProject();
   });
 
